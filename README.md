@@ -1,6 +1,7 @@
 # mc-sid — a local Voyager + Project-Sid style Minecraft agent society
 
-> **⭐ Before doing any work on this project, read the PROJECT DIRECTION section at
+> **Notes for LLM code assistance**
+> **Before doing any work on this project, read the PROJECT DIRECTION section at
 > the top of `GOVERNANCE_PLAN.md`.** Short version: the goal is emergent
 > *civilization* (politics, trade, currency, logical settlement), not a perfect
 > tech tree. The mechanical layer (mining/crafting/survival) is PLUMBING — make it
@@ -162,6 +163,10 @@ setup_check.py           verifies deps + pings every endpoint
    set `online-mode=false` in `server.properties` and use `MC_AUTH="offline"`. With 20
    bots, give the server enough RAM and set a generous `max-players`/view distance.
    Set difficulty to `easy` so the protector/defender roles have threats to handle.
+
+   Current MC Server startup
+
+   java -Xms16G -Xmx16G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8m -XX:G1ReservePercent=20 -XX:G1MixedGCLiveThresholdPercent=90 -jar /path/to/server/server.jar
 2. **Node deps:** `cd node_host && npm install`
 3. **Python deps:** `pip install requests`
 4. **Secrets/endpoints:** `cp orchestrator/local_settings_example.py orchestrator/local_settings.py`
