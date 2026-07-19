@@ -2,7 +2,11 @@
 
   python runner.py            # runs every bot in config.BOTS concurrently
   python runner.py Mason      # runs just the named bot(s)
+  python runner.py --debug    # ONLY the llama.cpp actor/critic bots; skip the vLLM
+                              #   boxes so they can be freed for local LLM coding.
+                              #   Omit the flag and ALL bots run again — no code change.
 """
+import argparse
 import json
 import os
 import sys
@@ -889,7 +893,29 @@ def run_bot(bot_cfg, start_delay=0.0):
     finally:
         bridge.close()
 
+def _uses_only_llamacpp(bot_cfg):
+    """True if this bot's actor AND critic run on llama.cpp boxes (the V100 actor +
+    Mac critic), i.e. it needs NONE of the vLLM boxes. Server-type based, so it never
+    hardcodes an IP and keeps working if you re-address the boxes in local_settings."""
+    try:
+        a = llm.get_endpoint(bot_cfg.get("actor_endpoint", "actor"))
+        c = llm.get_endpoint(bot_cfg.get("critic_endpoint", "critic"))
+    except Exception:
+        return False
+    return a.get("server") != "vllm" and c.get("server") != "vllm"
+
+
 def main():
+    ap = argparse.ArgumentParser(
+        description="Run the mc-sid agent society (all bots by default).")
+    ap.add_argument("usernames", nargs="*",
+                    help="optional: only run these named bots (default: all).")
+    ap.add_argument("--debug", action="store_true",
+                    help="only run the llama.cpp actor/critic bots (V100 + Mac); skip "
+                         "the vLLM boxes so they can be repurposed for local LLM "
+                         "coding. Without this flag, ALL bots run.")
+    args = ap.parse_args()
+
     os.makedirs(STATE_DIR, exist_ok=True); os.makedirs(LOG_DIR, exist_ok=True)
     # Route LLM warnings (timeouts, retries, slow calls) to the console so they're
     # visible live across all bot threads, not swallowed silently.
@@ -898,8 +924,18 @@ def main():
         write_blackboard({"notes": [], "structures": [], "needs": []})
 
     # optional CLI filter: python runner.py Mason Garrick
-    wanted = set(sys.argv[1:])
+    wanted = set(args.usernames)
     bots = [b for b in config.BOTS if not wanted or b["username"] in wanted]
+
+    # --debug: drop every bot that needs a vLLM box, leaving only the llama.cpp
+    # (actor/critic) bots so the vLLM machines are free. Purely a launch-time filter —
+    # no config or code changes, and a normal run (no flag) launches everyone again.
+    if args.debug:
+        kept = [b for b in bots if _uses_only_llamacpp(b)]
+        skipped = [b["username"] for b in bots if b not in kept]
+        print(f"[debug] vLLM boxes DISABLED — skipping {len(skipped)} bot(s): {skipped}")
+        bots = kept
+
     if not bots:
         print(f"No matching bots. Available: {[b['username'] for b in config.BOTS]}")
         return

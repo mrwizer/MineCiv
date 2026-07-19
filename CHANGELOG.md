@@ -11,6 +11,30 @@ look if the next run misbehaves.
 
 ---
 
+## 2026-07-18 — v21: `--debug` flag to run only the llama.cpp bots (free the vLLM boxes)
+
+Added a launch-time `--debug` flag to `runner.py`. With it, only the bots whose actor
+AND critic run on llama.cpp boxes launch (the original 4 — Mason/Garrick/Flint/Rowan on
+the V100 actor + Mac critic); every bot that needs a vLLM box is skipped, so those
+machines are free to be repurposed for local LLM coding. Without the flag, all 20 bots
+run exactly as before — no config or code change needed to switch back.
+
+- `python runner.py` → all bots. `python runner.py --debug` → llama.cpp bots only.
+  Still composes with the existing username filter (`runner.py --debug Mason`).
+- The filter is by endpoint SERVER TYPE (`server != "vllm"`), not by IP, so it keeps
+  working if the box addresses change in `local_settings.py`. Prints which bots it skips.
+- Switched arg handling to `argparse` (adds `-h/--help`) while preserving the old bare
+  `runner.py Mason Garrick` positional-username behavior.
+
+### Files
+`orchestrator/runner.py` (argparse + `_uses_only_llamacpp` + debug filter in `main()`).
+
+### Verified
+`py_compile`; `--help` renders; filter test confirms default launches all 20 and
+`--debug` launches exactly the 4 llama.cpp bots, skipping the 16 vLLM bots.
+
+---
+
 ## 2026-07-18 — v20: bring the README up to date
 
 The README still described the original setup — "two local Unsloth Studio machines"
