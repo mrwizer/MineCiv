@@ -104,8 +104,8 @@
   {
     "text": "Always ensure generated code is syntactically complete and valid before execution to prevent parse errors.",
     "from_task": "Move to the shelter site at (-117, 68, -89) and clear any blocks in the immediat",
-    "weight": 1,
-    "last_seen": "2026-07-19 09:15"
+    "weight": 2,
+    "last_seen": "2026-07-19 11:55"
   },
   {
     "text": "Ensure all strings are properly closed and comments do not break code syntax.",

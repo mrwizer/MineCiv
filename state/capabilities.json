@@ -3,51 +3,51 @@
     "outcomes": [
       {
         "ok": false,
-        "task": "Explore the immediate area to locate passive mobs (cows, sheep, pigs, or chicken",
-        "reason": "The agent failed to find any passive mobs during exploration, resulting in no food being obtained or stored.",
-        "t": "2026-07-19 09:13:42"
-      },
-      {
-        "ok": true,
-        "task": "Craft a wooden pickaxe and a wooden sword to enable mining and self-defense for ",
-        "reason": "",
-        "t": "2026-07-19 09:14:42"
+        "task": "Hunt the nearby chicken for food.",
+        "reason": "The agent failed to acquire the chicken as evidenced by the 'failed_to_acquire_food' status and the lack of any change i",
+        "t": "2026-07-19 10:57:02"
       },
       {
         "ok": false,
-        "task": "Explore the immediate area to locate and kill a passive mob (cow, sheep, pig, or",
-        "reason": "The agent explored the area but explicitly reported 'No passive mobs found', resulting in no mobs killed and no raw food",
-        "t": "2026-07-19 09:18:13"
+        "task": "Equip a wooden sword (or stick if no sword available) and hunt the nearby chicke",
+        "reason": "The agent equipped a wooden sword but failed to acquire raw chicken because the execution report indicates no chicken wa",
+        "t": "2026-07-19 11:07:30"
       },
       {
         "ok": false,
-        "task": "Collect dropped apples from nearby trees and hunt any nearby passive mobs (cows,",
+        "task": "Hunt nearby passive mobs (chickens, cows, pigs) for food or break tall grass in ",
         "reason": "(no reason given)",
-        "t": "2026-07-19 09:22:27"
+        "t": "2026-07-19 11:20:06"
       },
       {
         "ok": false,
-        "task": "Use the wooden sword to hunt any nearby passive mobs (cows, sheep, pigs, chicken",
-        "reason": "The agent did not acquire any new food; the inventory remained identical to the start state and the execution report exp",
-        "t": "2026-07-19 09:22:51"
-      },
-      {
-        "ok": false,
-        "task": "Explore the immediate area to locate and kill a cow or sheep to obtain raw meat ",
-        "reason": "The agent failed to acquire any raw meat or seeds, as confirmed by the unchanged inventory and the execution report stat",
-        "t": "2026-07-19 09:32:52"
+        "task": "Hunt nearby passive mobs (chickens, cows, pigs) for food to eat, and break tall ",
+        "reason": "ran clean but no measurable progress",
+        "t": "2026-07-19 11:30:52"
       },
       {
         "ok": true,
-        "task": "Equip the wooden sword and search for nearby passive mobs (chickens, pigs, or co",
+        "task": "Hunt nearby passive mobs (salmon in water, or chickens/pigs on land) for raw foo",
         "reason": "",
-        "t": "2026-07-19 09:50:38"
+        "t": "2026-07-19 11:31:39"
       },
       {
         "ok": false,
-        "task": "Equip the wooden sword and actively hunt any nearby passive mobs (chickens, pigs",
-        "reason": "The agent's inventory remained unchanged (wheat_seeds count stayed at 1) despite the log claiming it broke grass, indica",
-        "t": "2026-07-19 09:52:47"
+        "task": "Hunt for passive mobs (chickens, pigs, cows) or break tall grass to collect seed",
+        "reason": "The agent reported finding seeds but the inventory count for wheat_seeds remained unchanged (1 before, 1 after), indicat",
+        "t": "2026-07-19 11:34:14"
+      },
+      {
+        "ok": false,
+        "task": "Hunt nearby passive mobs (chickens, cows, pigs) for raw food to stock in shared ",
+        "reason": "(no reason given)",
+        "t": "2026-07-19 11:36:31"
+      },
+      {
+        "ok": true,
+        "task": "Hunt nearby passive mobs (salmon in water, or chickens/pigs on land) for raw foo",
+        "reason": "",
+        "t": "2026-07-19 11:40:10"
       }
     ],
     "ok": 2,
@@ -55,18 +55,6 @@
   },
   "craft_wooden_pickaxe": {
     "outcomes": [
-      {
-        "ok": false,
-        "task": "Gather oak logs and craft a wooden pickaxe",
-        "reason": "The agent failed to gather logs, reporting 'No logs found nearby' despite oak_log being present in the nearby block cens",
-        "t": "2026-07-19 09:11:21"
-      },
-      {
-        "ok": true,
-        "task": "Gather wood logs and craft a wooden pickaxe",
-        "reason": "",
-        "t": "2026-07-19 09:11:46"
-      },
       {
         "ok": true,
         "task": "Gather 5 wood logs and craft a wooden pickaxe",
@@ -102,6 +90,18 @@
         "task": "Craft oak planks from oak_log, then craft sticks from planks, and finally craft ",
         "reason": "craft error: Error: missing ingredient",
         "t": "2026-07-19 09:55:59"
+      },
+      {
+        "ok": true,
+        "task": "Craft a wooden pickaxe from the oak planks and sticks in inventory.",
+        "reason": "",
+        "t": "2026-07-19 10:53:01"
+      },
+      {
+        "ok": false,
+        "task": "Gather oak logs to craft a wooden pickaxe and wooden hoe, then use the hoe to ti",
+        "reason": "(no reason given)",
+        "t": "2026-07-19 11:34:30"
       }
     ],
     "ok": 5,
@@ -110,56 +110,56 @@
   "build_structure": {
     "outcomes": [
       {
+        "ok": false,
+        "task": "Place a chest at the Stone Storage location (-117, 68, -91) by moving to (-117, ",
+        "reason": "skill reported: Could not craft chest: craft error: craft window did not open",
+        "t": "2026-07-19 11:46:06"
+      },
+      {
+        "ok": false,
+        "task": "Execute workshop perimeter wall placement: Navigate to the end of the existing w",
+        "reason": "runtime error: SYNTAX ERROR in generated code (Unexpected identifier 'Ground'). The code did no",
+        "t": "2026-07-19 11:49:02"
+      },
+      {
+        "ok": false,
+        "task": "Place 1 cobblestone block at (-117, 68, -91) to start the Stone Storage foundati",
+        "reason": "skill status=blocked",
+        "t": "2026-07-19 11:49:04"
+      },
+      {
+        "ok": false,
+        "task": "Navigate to the Community Workshop at (-115, 68, -89). Once there, place a craft",
+        "reason": "The execution report indicates a fatal error ('Cannot read properties of undefined (reading 'ok')'), and the inventory r",
+        "t": "2026-07-19 11:49:12"
+      },
+      {
         "ok": true,
-        "task": "Move to the Stone Storage location at (-117, 68, -91), equip the stone pickaxe, ",
+        "task": "Navigate to the end of the existing workshop perimeter wall segment at (-92, 68,",
         "reason": "",
-        "t": "2026-07-19 09:37:26"
+        "t": "2026-07-19 11:50:02"
+      },
+      {
+        "ok": false,
+        "task": "continue building workshop perimeter",
+        "reason": "runtime error: SYNTAX ERROR in generated code (Unexpected token ':'). The code did not parse. C",
+        "t": "2026-07-19 11:52:45"
+      },
+      {
+        "ok": false,
+        "task": "Navigate to the Stone Storage location at (-117, 68, -91). Look at the block at ",
+        "reason": "runtime error: SYNTAX ERROR in generated code (Unexpected end of input). The code did not parse",
+        "t": "2026-07-19 11:55:03"
       },
       {
         "ok": true,
-        "task": "Navigate to the Community Workshop at (-115, 68, -89) and attempt to deposit 5 c",
+        "task": "Claim the community_storage_hub slot and place the chest to establish the storag",
         "reason": "",
-        "t": "2026-07-19 09:41:18"
-      },
-      {
-        "ok": false,
-        "task": "Move to the nearby crafting table at (-92, 68, -127), craft sticks and oak plank",
-        "reason": "critic could not be parsed twice: no JSON found in: The agent was tasked to:\n    1. Move to a crafting table at (-92, 68",
-        "t": "2026-07-19 09:42:47"
-      },
-      {
-        "ok": true,
-        "task": "Swim out of the water to the nearest land block, then navigate to the Stone Stor",
-        "reason": "",
-        "t": "2026-07-19 09:43:41"
-      },
-      {
-        "ok": false,
-        "task": "Move to the community workshop area at (-115, 68, -89), locate the shared storag",
-        "reason": "The agent moved to the target location but failed to deposit the items due to a code error ('Cannot read properties of u",
-        "t": "2026-07-19 09:47:37"
-      },
-      {
-        "ok": false,
-        "task": "Navigate to the Community Workshop at (-115, 68, -89) and deposit the 4 coal and",
-        "reason": "The execution failed with a code error ('Cannot read properties of undefined') and the agent's inventory remains unchang",
-        "t": "2026-07-19 09:50:06"
-      },
-      {
-        "ok": false,
-        "task": "Navigate to the Community Workshop at (-115, 68, -89). Check if a chest exists a",
-        "reason": "critic could not be parsed twice: no JSON found in: {\"",
-        "t": "2026-07-19 09:54:52"
-      },
-      {
-        "ok": false,
-        "task": "Navigate to the Stone Storage chest at (-117, 68, -91), place a crafting table i",
-        "reason": "The agent timed out and failed to place the crafting table or deposit items, as evidenced by the error log and unchanged",
-        "t": "2026-07-19 09:55:38"
+        "t": "2026-07-19 11:59:22"
       }
     ],
-    "ok": 3,
-    "fail": 5
+    "ok": 2,
+    "fail": 6
   },
   "gather_wood": {
     "outcomes": [
@@ -198,9 +198,15 @@
         "task": "Craft planks from oak logs, then craft a chest using the planks and sticks.",
         "reason": "",
         "t": "2026-07-19 09:56:01"
+      },
+      {
+        "ok": true,
+        "task": "Craft and equip a stone axe to efficiently gather wood for the community.",
+        "reason": "",
+        "t": "2026-07-19 10:54:08"
       }
     ],
-    "ok": 5,
+    "ok": 6,
     "fail": 1
   },
   "craft_crafting_table": {
@@ -216,10 +222,28 @@
         "task": "Craft a crafting table from oak logs and place it at the Community Workshop coor",
         "reason": "The agent timed out and failed to place the crafting table, as evidenced by the error log stating placement attempts fai",
         "t": "2026-07-19 09:34:19"
+      },
+      {
+        "ok": false,
+        "task": "Place the held crafting table on the ground at (-115, 68, -89) to free up invent",
+        "reason": "The execution failed with an error ('Cannot read properties of undefined'), and the after-state shows the agent moved to",
+        "t": "2026-07-19 11:16:38"
+      },
+      {
+        "ok": false,
+        "task": "Place the held crafting table on the ground at (-115, 68, -89) to free up invent",
+        "reason": "The execution report explicitly states 'Deposit failed' with the reason 'no chest within reach and none to place', meani",
+        "t": "2026-07-19 11:19:21"
+      },
+      {
+        "ok": true,
+        "task": "Use the craft_crafting_table skill to ensure a crafting table is available and f",
+        "reason": "",
+        "t": "2026-07-19 11:50:05"
       }
     ],
-    "ok": 1,
-    "fail": 1
+    "ok": 2,
+    "fail": 3
   },
   "escape_hole": {
     "outcomes": [
@@ -236,56 +260,56 @@
   "reach_location": {
     "outcomes": [
       {
-        "ok": true,
-        "task": "Go to the nearby crafting table at (-87, 65, -81), craft a stone axe using the c",
-        "reason": "",
-        "t": "2026-07-19 09:41:49"
+        "ok": false,
+        "task": "Dig out of the current hole to reach the surface.",
+        "reason": "The agent failed to execute any actions because the generated code contained a syntax error and did not parse.",
+        "t": "2026-07-19 11:50:07"
       },
       {
         "ok": false,
-        "task": "Move to the nearby water source and actively search the surrounding grass blocks",
-        "reason": "critic could not be parsed twice: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
-        "t": "2026-07-19 09:42:15"
+        "task": "Navigate to the water source nearby and hunt for salmon to secure raw food, then",
+        "reason": "The agent moved position but inventory remained unchanged (no raw salmon or wheat seeds collected), and the execution re",
+        "t": "2026-07-19 11:50:26"
       },
       {
         "ok": false,
-        "task": "Dig out of the hole to reach the surface.",
-        "reason": "The agent failed to execute any code due to a syntax error in the generated script, resulting in no change to the game s",
-        "t": "2026-07-19 09:43:44"
-      },
-      {
-        "ok": false,
-        "task": "Go to the nearby crafting table at (-87, 65, -81), craft sticks from the oak pla",
-        "reason": "The agent failed to acquire seeds or hunt mobs, resulting in no progress toward the success criterion (seeds planted or ",
-        "t": "2026-07-19 09:46:40"
-      },
-      {
-        "ok": false,
-        "task": "Navigate to the Community Workshop at (-115, 68, -89) and place a crafting table",
-        "reason": "The agent timed out and failed to place the crafting table at the target coordinates, as evidenced by the error logs sta",
-        "t": "2026-07-19 09:47:11"
-      },
-      {
-        "ok": false,
-        "task": "Dig out of the hole to reach the surface.",
-        "reason": "critic could not be parsed twice: no JSON found in: *   Task: Dig out of the hole to reach the surface.\n    *   Success ",
-        "t": "2026-07-19 09:52:49"
+        "task": "Navigate to the nearby crafting table at (-78, 63, -87) to ensure I am in the op",
+        "reason": "The agent's inventory remained unchanged and the execution report explicitly states 'no_resources_found', indicating no ",
+        "t": "2026-07-19 11:50:40"
       },
       {
         "ok": true,
-        "task": "Go to the nearby crafting table at (-87, 65, -81) to ensure I have a good view a",
+        "task": "Navigate to the nearby water body and break tall grass to collect wheat seeds. I",
         "reason": "",
-        "t": "2026-07-19 09:54:08"
+        "t": "2026-07-19 11:51:21"
       },
       {
-        "ok": true,
-        "task": "Go to the nearby crafting table at (-87, 65, -81), craft a stone hoe using the c",
-        "reason": "",
-        "t": "2026-07-19 09:56:57"
+        "ok": false,
+        "task": "Navigate to the nearby water body at (-71, 64, -84) and break tall grass to coll",
+        "reason": "The agent already had wheat seeds in its inventory before the run and performed no actions to collect more or hunt for f",
+        "t": "2026-07-19 11:53:13"
+      },
+      {
+        "ok": false,
+        "task": "Navigate to (-117, 68, -90), look at the ground block at (-117, 68, -91), and pl",
+        "reason": "The agent failed to place a chest because it had no chest in its inventory, as confirmed by the error log 'No chest in i",
+        "t": "2026-07-19 11:53:16"
+      },
+      {
+        "ok": false,
+        "task": "Navigate to the nearby water source (approx -73, 62, -81), equip a fishing rod (",
+        "reason": "The agent ate its only food source (apple) but failed to acquire any new food or seeds, resulting in a 'no_food_source' ",
+        "t": "2026-07-19 11:53:44"
+      },
+      {
+        "ok": false,
+        "task": "Move to (-117, 68, -90), look at the ground block at (-117, 67, -91) (the block ",
+        "reason": "The chest placement failed twice due to neighbor conflicts, and the chest remains in the inventory with no change to the",
+        "t": "2026-07-19 11:54:11"
       }
     ],
-    "ok": 3,
-    "fail": 5
+    "ok": 1,
+    "fail": 7
   },
   "craft_stone_pickaxe": {
     "outcomes": [
@@ -426,10 +450,22 @@
         "task": "Search the immediate area for grass blocks and break them to obtain wheat seeds,",
         "reason": "(no reason given)",
         "t": "2026-07-19 09:35:56"
+      },
+      {
+        "ok": false,
+        "task": "Craft a wooden hoe and till the dirt blocks near the crafting table to prepare f",
+        "reason": "(no reason given)",
+        "t": "2026-07-19 11:03:16"
+      },
+      {
+        "ok": true,
+        "task": "Craft a wooden hoe and use it to till nearby dirt blocks near water to prepare f",
+        "reason": "",
+        "t": "2026-07-19 11:15:05"
       }
     ],
-    "ok": 0,
-    "fail": 2
+    "ok": 1,
+    "fail": 3
   },
   "craft_stone_sword": {
     "outcomes": [
@@ -450,6 +486,30 @@
         "task": "Break tall grass and azalea leaves near the water source to search for wheat see",
         "reason": "The agent reported 'no_seeds_found' and the inventory and world state remained unchanged, meaning the task to find seeds",
         "t": "2026-07-19 09:37:06"
+      },
+      {
+        "ok": false,
+        "task": "Break tall grass and bushes near my current location to collect wheat seeds, the",
+        "reason": "The agent failed to find any wheat seeds in the grass or bushes, as confirmed by the execution report and the unchanged ",
+        "t": "2026-07-19 11:17:22"
+      },
+      {
+        "ok": true,
+        "task": "Dig out of the hole I am currently stuck in.",
+        "reason": "",
+        "t": "2026-07-19 11:27:23"
+      }
+    ],
+    "ok": 1,
+    "fail": 2
+  },
+  "place_torch": {
+    "outcomes": [
+      {
+        "ok": false,
+        "task": "Craft a fence gate and 10 fence gates from planks, then place torches around the",
+        "reason": "(no reason given)",
+        "t": "2026-07-19 10:56:28"
       }
     ],
     "ok": 0,

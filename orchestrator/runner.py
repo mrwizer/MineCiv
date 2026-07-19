@@ -380,7 +380,48 @@ def _reverify_design(bridge, design_for_code, username, log):
                             f"({updated.get('present')} blocks)")
 
 
-def run_cycle(bridge, bot_cfg, log, recent, recent_failures, blocked_prereqs):
+def _programmatic_verdict(run, delta_nonzero, design_progressed):
+    """A fast, LLM-FREE success judgement for cases where we have a grounded signal:
+    a reused PROVEN skill, or a persistent-design build (verified against the world).
+    This replaces a ~40s critic call on the bulk of routine/continuing work — the
+    biggest single source of bots standing idle. It is deliberately conservative:
+    a runtime error or an explicit failure status is a fail; real, measured progress
+    (design cells placed, inventory/world changed, a success status) is a pass; a
+    clean run with NO measurable effect is a fail (so nothing is credited for nothing)."""
+    err = run.get("error")
+    if err:
+        return {"success": False, "confidence": 0.9,
+                "reason": f"runtime error: {str(err)[:80]}", "_programmatic": True}
+    res = run.get("result")
+    if isinstance(res, dict) and res.get("error"):
+        return {"success": False, "confidence": 0.85,
+                "reason": f"skill reported: {str(res.get('error'))[:80]}", "_programmatic": True}
+    st = str(res.get("status", "")).lower() if isinstance(res, dict) else ""
+    if st in ("blocked", "no_progress", "failed", "fail", "timeout", "error", "stuck"):
+        return {"success": False, "confidence": 0.8,
+                "reason": f"skill status={st}", "_programmatic": True}
+    if design_progressed:
+        return {"success": True, "confidence": 0.8,
+                "reason": "design cells placed (verified in world)", "_programmatic": True}
+    if st in ("built", "ok", "done", "placed", "crafted", "complete", "completed",
+              "deposited", "success", "collected", "gathered"):
+        return {"success": True, "confidence": 0.8,
+                "reason": f"skill status={st}", "_programmatic": True}
+    if delta_nonzero:
+        return {"success": True, "confidence": 0.7,
+                "reason": "inventory/world changed, no error", "_programmatic": True}
+    return {"success": False, "confidence": 0.6,
+            "reason": "ran clean but no measurable progress", "_programmatic": True}
+
+
+# How many cycles in a row a bot may CONTINUE the same design build without a fresh
+# propose call. High enough to skip most redundant planning on a multi-cycle build,
+# low enough that survival/community needs still get re-evaluated periodically.
+CONT_MAX_CYCLES = 6
+
+
+def run_cycle(bridge, bot_cfg, log, recent, recent_failures, blocked_prereqs,
+              continuation=None):
     purpose = bot_cfg["purpose"]; username = bot_cfg["username"]
     state = bridge.get_state()
     if not state.get("ready"):
@@ -455,50 +496,74 @@ def run_cycle(bridge, bot_cfg, log, recent, recent_failures, blocked_prereqs):
             except Exception as e:
                 log(f"  ↳ pre-emptive getUnstuck error: {e}")
 
-    plan_raw = llm.actor(prompts.propose_prompt(
-        purpose, state, skills.manifest_summary(), bb, recent[-4:],
-        recent_failures=recent_failures, lessons=lessons.lessons_block(),
-        goal=bot_cfg.get("goal", "(no specific long-term goal)"),
-        progress=goals.progress_block(username),
-        community_structures=reg,
-        blocked_prereqs=blocked_prereqs,
-        broken_capabilities=capabilities.broken_block(),
-        stuck_loop=stuck_block,
-        workshop=ws_block, is_decider=is_decider,
-        plan=structures.plan_block(username),
-        structure_purpose=structures.purpose_block(),
-        community_needs=community_needs, designs=designs_txt),
-        label="strategy")   # thinking driven by llm.THINKING_LABELS (off today)
-    try: plan = llm.extract_json(plan_raw)
-    except Exception as e:
-        # Truncation-safe retry: a reasoning trace that ran long can eat the token
-        # budget before the JSON answer finishes, producing unparseable/empty output.
-        # Retry ONCE with reasoning OFF — a non-reasoning call spends its whole budget
-        # on the answer, so the JSON always completes. This rescues the cycle instead
-        # of wasting it on a truncated strategy call.
-        log(f"propose parse failed (retrying without reasoning): {e}")
-        try:
-            plan_raw = llm.actor(prompts.propose_prompt(
-                purpose, state, skills.manifest_summary(), bb, recent[-4:],
-                recent_failures=recent_failures, lessons=lessons.lessons_block(),
-                goal=bot_cfg.get("goal", "(no specific long-term goal)"),
-                progress=goals.progress_block(username),
-                community_structures=reg,
-                blocked_prereqs=blocked_prereqs,
-                broken_capabilities=capabilities.broken_block(),
-                stuck_loop=stuck_block,
-                workshop=ws_block, is_decider=is_decider,
-                plan=structures.plan_block(username),
-                structure_purpose=structures.purpose_block(),
-                community_needs=community_needs, designs=designs_txt),
-                think=False, label="strategy-retry")
-            plan = llm.extract_json(plan_raw)
-        except Exception as e2:
-            log(f"propose parse failed again (no-reasoning retry): {e2}; raw={str(plan_raw)[:200]}")
-            return {"task": None, "outcome": "propose_parse_fail"}
-    if not isinstance(plan, dict) or not plan.get("task"):
-        log(f"propose returned no task (likely truncated reasoning); raw={str(plan)[:150]}")
-        return {"task": None, "outcome": "propose_no_task"}
+    # ---- CONTINUATION (#2): skip the propose LLM call when there is obvious
+    # unfinished work to carry straight on with — specifically a build design still
+    # missing cells that we made progress on last cycle. A multi-cycle build used to
+    # spend a propose (+ a critic) call EVERY cycle re-deciding to keep building the
+    # same thing; those calls are pure idle time. Bounded two ways so a bot never gets
+    # trapped: we stop after CONT_MAX_CYCLES in a row (so survival/community needs get
+    # re-evaluated), and any cycle that fails to progress clears the continuation (so a
+    # stuck build drops back to a fresh propose that can gather, relocate, or abandon).
+    # Skipped while stuck-looping, so the pattern-break path above still runs.
+    plan = None
+    cont = continuation if isinstance(continuation, dict) else None
+    if cont and cont.get("kind") == "design" and not stuck_block \
+            and cont.get("n", 0) < CONT_MAX_CYCLES:
+        _d = structures.get_design(cont.get("id"))
+        if _d and _d.get("status") != "complete" and _d.get("missing"):
+            plan = {"task": f"continue building {_d['name']}",
+                    "build_intent": True, "design_id": _d["id"],
+                    "success_looks_like": (f"more of {_d['name']} ({_d['purpose']}) is "
+                        f"built — place its remaining {len(_d['missing'])} block(s)")}
+            log(f"  ⏩ continuing design '{_d['id']}' "
+                f"({_d.get('present')}/{_d.get('total')} placed, "
+                f"streak {cont.get('n',0)+1}/{CONT_MAX_CYCLES}) — no propose call")
+
+    if plan is None:
+        plan_raw = llm.actor(prompts.propose_prompt(
+            purpose, state, skills.manifest_summary(), bb, recent[-4:],
+            recent_failures=recent_failures, lessons=lessons.lessons_block(),
+            goal=bot_cfg.get("goal", "(no specific long-term goal)"),
+            progress=goals.progress_block(username),
+            community_structures=reg,
+            blocked_prereqs=blocked_prereqs,
+            broken_capabilities=capabilities.broken_block(),
+            stuck_loop=stuck_block,
+            workshop=ws_block, is_decider=is_decider,
+            plan=structures.plan_block(username),
+            structure_purpose=structures.purpose_block(),
+            community_needs=community_needs, designs=designs_txt),
+            label="strategy")   # thinking driven by llm.THINKING_LABELS (off today)
+        try: plan = llm.extract_json(plan_raw)
+        except Exception as e:
+            # Truncation-safe retry: a reasoning trace that ran long can eat the token
+            # budget before the JSON answer finishes, producing unparseable/empty output.
+            # Retry ONCE with reasoning OFF — a non-reasoning call spends its whole budget
+            # on the answer, so the JSON always completes. This rescues the cycle instead
+            # of wasting it on a truncated strategy call.
+            log(f"propose parse failed (retrying without reasoning): {e}")
+            try:
+                plan_raw = llm.actor(prompts.propose_prompt(
+                    purpose, state, skills.manifest_summary(), bb, recent[-4:],
+                    recent_failures=recent_failures, lessons=lessons.lessons_block(),
+                    goal=bot_cfg.get("goal", "(no specific long-term goal)"),
+                    progress=goals.progress_block(username),
+                    community_structures=reg,
+                    blocked_prereqs=blocked_prereqs,
+                    broken_capabilities=capabilities.broken_block(),
+                    stuck_loop=stuck_block,
+                    workshop=ws_block, is_decider=is_decider,
+                    plan=structures.plan_block(username),
+                    structure_purpose=structures.purpose_block(),
+                    community_needs=community_needs, designs=designs_txt),
+                    think=False, label="strategy-retry")
+                plan = llm.extract_json(plan_raw)
+            except Exception as e2:
+                log(f"propose parse failed again (no-reasoning retry): {e2}; raw={str(plan_raw)[:200]}")
+                return {"task": None, "outcome": "propose_parse_fail"}
+        if not isinstance(plan, dict) or not plan.get("task"):
+            log(f"propose returned no task (likely truncated reasoning); raw={str(plan)[:150]}")
+            return {"task": None, "outcome": "propose_no_task"}
     task = plan["task"]
     success_looks_like = plan.get("success_looks_like", "task completed")
     reuse = plan.get("reuse_skill")
@@ -600,12 +665,14 @@ def run_cycle(bridge, bot_cfg, log, recent, recent_failures, blocked_prereqs):
         if run.get("error"): log(f"  runtime error: {run['error']}")
         # INVENTORY DELTA: did this attempt actually change what the bot holds?
         # Directly answers "did mining ever yield cobblestone" instead of guessing.
+        delta_nonzero = False
         try:
             _b = (run.get("before") or {}).get("inventory", {}) or {}
             _a = (run.get("after") or {}).get("inventory", {}) or {}
             _keys = set(_b) | set(_a)
             _delta = {k: _a.get(k, 0) - _b.get(k, 0) for k in _keys
                       if _a.get(k, 0) - _b.get(k, 0) != 0}
+            delta_nonzero = bool(_delta)
             if _delta:
                 _ds = " ".join(f"{k}{'+' if v>0 else ''}{v}" for k, v in sorted(_delta.items()))
                 log(f"  Δinv: {_ds}")
@@ -616,11 +683,14 @@ def run_cycle(bridge, bot_cfg, log, recent, recent_failures, blocked_prereqs):
         # DESIGN PROGRESS: re-check the persistent design against the world so the
         # next attempt gets only the still-missing cells, and a completed structure
         # marks its plan slot built. Grounded in reality (verifyCells), not claims.
+        design_progressed = False
         if design_for_code:
+            _prev_present = design_for_code.get("present", 0)
             try:
                 _reverify_design(bridge, design_for_code, username, log)
             except Exception as e:
                 log(f"  design reverify error: {e}")
+            design_progressed = design_for_code.get("present", 0) > _prev_present
         # WORKSHOP side effects reported factually by the skill (independent of the
         # task verdict): a decider establishing the site, infra placed at it, or a
         # non-decider signalling that a workshop is needed.
@@ -644,32 +714,43 @@ def run_cycle(bridge, bot_cfg, log, recent, recent_failures, blocked_prereqs):
             if _res.get("noWorkshop") or _res.get("need_workshop"):
                 structures.signal_workshop_need(by=username)
                 log(f"  📣 {username} signalled a workshop is needed")
-        # The critic's verdict is what marks a plan slot BUILT. Give it the STRUCTURE
-        # GOALS (what a shelter/wall is FOR) so it grades against purpose instead of
-        # "some blocks moved" — otherwise a roofless wall passes and the bot moves on.
-        # NOTE: the SHORT form. The critic runs on the small model with a small
-        # context window; sending the full purpose_block() overran it and every judge
-        # call came back 400 Bad Request.
-        _goals = structures.critic_goals_block()
-        try:
-            verdict = llm.extract_json(llm.critic(
-                prompts.critic_prompt(task, success_looks_like, run,
-                                      structure_goals=_goals)))
-        except Exception:
-            # Critic returned non-JSON (Gemma sometimes emits markdown). Retry once
-            # with an explicit correction, then FAIL-SAFE to not-success — never
-            # treat an unparseable verdict as success (that promotes broken skills).
+        # VERDICT. Skip the slow (~40s) LLM critic when we already have a GROUNDED
+        # success signal and don't need the critic's promotion-gating role:
+        #   - a persistent-design build (verified against the world by verifyCells), or
+        #   - a reused PROVEN skill (solid track record — see skills.is_proven).
+        # This is the main lever against bots standing idle: the LLM critic runs only
+        # for NEW/unproven code, which is exactly where its judgement is needed.
+        if bool(design_for_code) or (active_skill and skills.is_proven(active_skill)):
+            verdict = _programmatic_verdict(run, delta_nonzero, design_progressed)
+            log(f"  ⚡ fast verdict (no LLM critic): success={verdict['success']} "
+                f"— {verdict.get('reason','')}")
+        else:
+            # The critic's verdict is what marks a plan slot BUILT. Give it the STRUCTURE
+            # GOALS (what a shelter/wall is FOR) so it grades against purpose instead of
+            # "some blocks moved" — otherwise a roofless wall passes and the bot moves on.
+            # NOTE: the SHORT form. The critic runs on the small model with a small
+            # context window; sending the full purpose_block() overran it and every judge
+            # call came back 400 Bad Request.
+            _goals = structures.critic_goals_block()
             try:
                 verdict = llm.extract_json(llm.critic(
                     prompts.critic_prompt(task, success_looks_like, run,
-                                          structure_goals=_goals)
-                    + [{"role": "user", "content":
-                        "Your last reply was not valid JSON. Reply with ONLY the JSON "
-                        "object: {\"success\": true|false, \"confidence\": 0-1, "
-                        "\"reason\": \"...\"} and nothing else."}]))
-            except Exception as e:
-                verdict = {"success": False, "confidence": 0.2,
-                           "reason": f"critic could not be parsed twice: {e}"}
+                                          structure_goals=_goals)))
+            except Exception:
+                # Critic returned non-JSON (Gemma sometimes emits markdown). Retry once
+                # with an explicit correction, then FAIL-SAFE to not-success — never
+                # treat an unparseable verdict as success (that promotes broken skills).
+                try:
+                    verdict = llm.extract_json(llm.critic(
+                        prompts.critic_prompt(task, success_looks_like, run,
+                                              structure_goals=_goals)
+                        + [{"role": "user", "content":
+                            "Your last reply was not valid JSON. Reply with ONLY the JSON "
+                            "object: {\"success\": true|false, \"confidence\": 0-1, "
+                            "\"reason\": \"...\"} and nothing else."}]))
+                except Exception as e:
+                    verdict = {"success": False, "confidence": 0.2,
+                               "reason": f"critic could not be parsed twice: {e}"}
         # Normalize: the parsed JSON might be valid but missing/renaming keys.
         # Coerce to a safe shape so nothing downstream can KeyError.
         if not isinstance(verdict, dict):
@@ -688,7 +769,8 @@ def run_cycle(bridge, bot_cfg, log, recent, recent_failures, blocked_prereqs):
                 skills.record_use(active_skill, True)
                 tag = "revised skill" if revised_this_cycle else "reused skill"
                 log(f"  {tag} '{active_skill}' worked")
-            elif verdict.get("confidence", 0) >= config.CONFIDENCE_TO_PROMOTE:
+            elif (not verdict.get("_programmatic")
+                  and verdict.get("confidence", 0) >= config.CONFIDENCE_TO_PROMOTE):
                 try:
                     ident = llm.extract_json(llm.actor(prompts.name_prompt(task, code), label="naming"))
                     slug, created = skills.promote(ident["name"], ident["description"],
@@ -706,7 +788,16 @@ def run_cycle(bridge, bot_cfg, log, recent, recent_failures, blocked_prereqs):
             goals.record_step(username, task)   # log progress toward long-term goal
             capabilities.record(task, True)     # this capability works right now
             blocked_prereqs.clear()   # made progress; drop any stale prereq block
-            return {"task": task, "outcome": "success", "attempts": attempt}
+            # CONTINUATION: if this was a design build that progressed but isn't done,
+            # tell the next cycle to carry straight on with it (no propose call). The
+            # streak counter (n) enforces CONT_MAX_CYCLES so it can't monopolise forever.
+            next_cont = None
+            if design_for_code and design_for_code.get("missing"):
+                _same = bool(cont and cont.get("id") == design_for_code["id"])
+                next_cont = {"kind": "design", "id": design_for_code["id"],
+                             "n": (cont.get("n", 0) + 1) if _same else 1}
+            return {"task": task, "outcome": "success", "attempts": attempt,
+                    "continuation": next_cont}
 
         # ---- failure bookkeeping ----
         logs = run.get("logs") or []
@@ -831,7 +922,7 @@ def run_cycle(bridge, bot_cfg, log, recent, recent_failures, blocked_prereqs):
     elif cycle_had_failure and cycle_all_env:
         log("  ↩ no lesson written — failure was environmental "
             "(world lacked reachable materials), not a code defect")
-    return {"task": task, "outcome": "gave_up"}
+    return {"task": task, "outcome": "gave_up", "continuation": None}
 
 def run_bot(bot_cfg, start_delay=0.0):
     """One bot's full lifecycle: connect, loop, disconnect. Runs in a thread."""
@@ -861,11 +952,12 @@ def run_bot(bot_cfg, start_delay=0.0):
         recent = []
         recent_failures = []   # rolling memory of tasks this bot gave up on
         blocked_prereqs = []   # structured missing-materials from the last blocked task
+        cont = None            # continuation: carry an unfinished build to the next cycle
         for cycle in range(1, config.MAX_CYCLES + 1):
             log(f"\n----- {username} cycle {cycle}/{config.MAX_CYCLES} -----")
             try:
                 outcome = run_cycle(bridge, bot_cfg, log, recent,
-                                    recent_failures, blocked_prereqs)
+                                    recent_failures, blocked_prereqs, continuation=cont)
             except Exception as e:
                 log(f"cycle error: {e}")
                 outcome = {"task": None, "outcome": "cycle_exception"}
@@ -882,6 +974,7 @@ def run_bot(bot_cfg, start_delay=0.0):
                     time.sleep(30)
             if outcome:
                 recent.append(outcome); recent = recent[-8:]
+            cont = (outcome or {}).get("continuation")   # carry-forward build, if any
             # LLM health each cycle — makes retries/timeouts/slow calls visible so
             # you can watch for concurrency pressure as bot count grows.
             log("  " + llm.stats_line())

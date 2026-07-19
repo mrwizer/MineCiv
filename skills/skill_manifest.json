@@ -30,7 +30,7 @@
       "tool"
     ],
     "file": "craft_crafting_table.js",
-    "uses": 0,
+    "uses": 1,
     "fails": 0,
     "revisions": 0,
     "retired": false,
@@ -51,7 +51,7 @@
       "gather"
     ],
     "file": "craft_wooden_pickaxe.js",
-    "uses": 5,
+    "uses": 6,
     "fails": 6,
     "revisions": 0,
     "retired": false,
@@ -93,7 +93,7 @@
       "cobblestone"
     ],
     "file": "craft_stone_pickaxe.js",
-    "uses": 15,
+    "uses": 16,
     "fails": 4,
     "revisions": 0,
     "retired": false,
@@ -222,7 +222,7 @@
     ],
     "file": "craft_and_till.js",
     "uses": 0,
-    "fails": 1,
+    "fails": 4,
     "revisions": 0,
     "retired": false,
     "sig": [
@@ -243,16 +243,16 @@
     ],
     "file": "deposit_materials.js",
     "uses": 0,
-    "fails": 0,
-    "revisions": 2,
-    "retired": false,
+    "fails": 1,
+    "revisions": 4,
+    "retired": true,
     "sig": [
       "deposit",
       "material"
     ],
     "created": "2026-07-19 09:25:56",
-    "last_revised": "2026-07-19 09:57:32",
-    "revision_note": "The execution failed with an error ('Cannot read properties of undefined') and the agent's position changed significantl"
+    "last_revised": "2026-07-19 11:43:23",
+    "revision_note": "The execution failed with an error ('Cannot read properties of undefined (reading 'ok')'), resulting in no change to the"
   },
   "dig_out_of_hole": {
     "description": "Manually breaks blocks above or adjacent to escape a stuck hole when automated unstuck fails.",
@@ -265,8 +265,8 @@
       "mobility"
     ],
     "file": "dig_out_of_hole.js",
-    "uses": 0,
-    "fails": 1,
+    "uses": 1,
+    "fails": 2,
     "revisions": 0,
     "retired": false,
     "sig": [
@@ -288,7 +288,7 @@
       "resource"
     ],
     "file": "mine_cobblestone.js",
-    "uses": 0,
+    "uses": 1,
     "fails": 0,
     "revisions": 0,
     "retired": false,
@@ -310,7 +310,7 @@
     ],
     "file": "deposit_or_gather.js",
     "uses": 0,
-    "fails": 1,
+    "fails": 3,
     "revisions": 0,
     "retired": false,
     "sig": [
@@ -330,7 +330,7 @@
       "logging"
     ],
     "file": "craft_and_chop.js",
-    "uses": 0,
+    "uses": 1,
     "fails": 0,
     "revisions": 0,
     "retired": false,
@@ -350,8 +350,8 @@
       "waypoint"
     ],
     "file": "navigate_to_landmark.js",
-    "uses": 0,
-    "fails": 0,
+    "uses": 1,
+    "fails": 1,
     "revisions": 0,
     "retired": false,
     "sig": [
@@ -370,16 +370,18 @@
       "passive"
     ],
     "file": "hunt_or_forage.js",
-    "uses": 1,
-    "fails": 1,
-    "revisions": 0,
+    "uses": 6,
+    "fails": 7,
+    "revisions": 3,
     "retired": false,
     "sig": [
       "forage",
       "hunt",
       "or"
     ],
-    "created": "2026-07-19 09:50:38"
+    "created": "2026-07-19 09:50:38",
+    "last_revised": "2026-07-19 11:44:12",
+    "revision_note": "critic could not be parsed twice: no JSON found in: *   Task: Go to crafting table at (-80, 63, -83), craft a wooden pic"
   },
   "craft_chest_from_logs": {
     "description": "Gathers oak logs, crafts planks and sticks, and produces a chest, optionally creating a crafting table if required by the environment.",
@@ -393,7 +395,7 @@
     ],
     "file": "craft_chest_from_logs.js",
     "uses": 0,
-    "fails": 0,
+    "fails": 4,
     "revisions": 0,
     "retired": false,
     "sig": [
@@ -422,5 +424,67 @@
       "hoe"
     ],
     "created": "2026-07-19 09:56:57"
+  },
+  "dig_out_and_hunt": {
+    "description": "Unstuck from confined spaces and locate nearby passive mobs for food.",
+    "keywords": [
+      "unstuck",
+      "passive",
+      "mobs",
+      "food",
+      "escape"
+    ],
+    "file": "dig_out_and_hunt.js",
+    "uses": 0,
+    "fails": 0,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "dig",
+      "hunt",
+      "out"
+    ],
+    "created": "2026-07-19 11:15:24"
+  },
+  "farm_replenish": {
+    "description": "Till dirt, plant wheat seeds, and harvest seeds from tall grass to sustain farming resources.",
+    "keywords": [
+      "farming",
+      "planting",
+      "seeds",
+      "tilling",
+      "harvesting"
+    ],
+    "file": "farm_replenish.js",
+    "uses": 0,
+    "fails": 0,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "farm",
+      "replenish"
+    ],
+    "created": "2026-07-19 11:30:46"
+  },
+  "farm_wheat": {
+    "description": "Tills nearby dirt, plants wheat seeds, and collects additional seeds from tall grass.",
+    "keywords": [
+      "farming",
+      "wheat",
+      "seeds",
+      "tilling",
+      "planting",
+      "harvesting"
+    ],
+    "file": "farm_wheat.js",
+    "uses": 1,
+    "fails": 0,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "farm",
+      "wheat"
+    ],
+    "created": "2026-07-19 11:39:26"
   }
 }

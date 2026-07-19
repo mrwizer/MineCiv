@@ -5,6 +5,7 @@ if (helpers.mobility().surroundedAtFeet >= 3 || helpers.mobility().likelyStuckIn
 }
 
 // 2. Navigate to workshop target
+// Use the provided WORKSHOP object if available, otherwise fallback to hardcoded coords
 const target = WORKSHOP || new Vec3(-80, 65, -82);
 const travel = await helpers.gotoXYZ(target.x, target.y, target.z, 2);
 if (!travel.ok) return { error: 'Failed to travel to workshop' };
@@ -24,8 +25,10 @@ if (itemsToDeposit.length === 0) {
 
 // Deposit to chest at workshop
 const deposit = await helpers.depositToChest(itemsToDeposit);
-if (!deposit || !deposit.ok) {
-  return { error: `Deposit failed: ${deposit?.reason || 'Unknown'}` };
+if (!deposit.ok) {
+  // If no chest exists, we might need to place one, but depositToChest usually handles finding/placing.
+  // If it fails, we return the error.
+  return { error: `Deposit failed: ${deposit.reason || 'Unknown'}` };
 }
 
 return { status: 'deposited', items: deposit.deposited, location: 'workshop' };

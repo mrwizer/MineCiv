@@ -11,6 +11,62 @@ look if the next run misbehaves.
 
 ---
 
+## 2026-07-18 — v22: cut LLM calls per cycle — skip critic on trusted work + continue builds without re-planning
+
+Bots stood idle ~78% of the time not because of threading (they're already fully
+parallel) but because each cycle makes three serial LLM round-trips (propose ≈160s
+before v16, code-gen, critic ≈44s) that dwarf the actual in-world action. Two changes
+remove LLM calls from the common path.
+
+### #1 — Programmatic verdict (skip the LLM critic when we already know)
+The LLM critic's real value is gating promotion of NEW skills. For work where we have a
+GROUNDED success signal it's pure latency, so it's now skipped in two cases:
+- a **persistent-design build** — success/failure is read directly from the world
+  (`verifyCells` progress), and
+- a **reused PROVEN skill** — `skills.is_proven()` (≥3 uses and more successes than
+  fails); young/shaky skills still get the full LLM critic.
+`_programmatic_verdict()` judges from the run: runtime error or explicit failure status
+→ fail; verified design progress, a success status, or a real inventory/world change →
+pass; a clean run with no measurable effect → fail (nothing credited for nothing).
+Programmatic passes are tagged so they never trigger skill promotion (which would spend
+an LLM naming call). New/unproven code is unaffected — it still gets the real critic.
+
+### #2 — Continue a build without re-planning
+A multi-cycle build used to spend a propose (and, pre-#1, a critic) call every cycle
+just to decide to keep building the same thing. Now, when a bot has a design still
+missing cells that it progressed on last cycle, the next cycle carries straight on with
+it and skips the propose call entirely. Bounded so a bot can't get trapped: it re-plans
+after `CONT_MAX_CYCLES` (6) in a row so survival/community needs resurface, any cycle
+that fails to progress clears the continuation (a stuck build drops back to a fresh
+propose that can gather/relocate/abandon), and it never overrides the stuck-loop
+pattern-break path. Continuation state is grounded in the design record and threaded
+through `run_bot` across cycles.
+
+Net effect: a builder mid-structure can run several cycles with **zero** propose/critic
+calls — code-gen + execute only — so the avatar is acting, not waiting. A routine gather
+with a proven skill drops from three LLM calls to one (propose only). This stacks on
+v16 (thinking off) and is the highest-leverage latency win short of a full
+action/planning pipeline.
+
+### Files
+`orchestrator/runner.py` (`_programmatic_verdict`, `CONT_MAX_CYCLES`, continuation in
+`run_cycle`/`run_bot`, verdict gate, promotion guard), `orchestrator/skills.py`
+(`is_proven`).
+
+### Verified
+`py_compile` + full import; unit tests of `_programmatic_verdict` (error/blocked →
+fail; design-progress/inventory/status → pass; clean-but-nothing → fail; all tagged
+`_programmatic`) and `is_proven` (0 uses → no; 3-0 → yes; 3-4 → no). Behaviour to watch
+live: far fewer `strategy`/critic calls per builder, `⚡ fast verdict` and `⏩ continuing
+design` lines in the logs, and much less idle time per bot.
+
+### Still unverified
+Not run live. Watch that programmatic verdicts aren't masking real build failures (the
+`no measurable progress → fail` guard should prevent false passes), and that the
+6-cycle continuation cap keeps survival responsive.
+
+---
+
 ## 2026-07-18 — v21: `--debug` flag to run only the llama.cpp bots (free the vLLM boxes)
 
 Added a launch-time `--debug` flag to `runner.py`. With it, only the bots whose actor

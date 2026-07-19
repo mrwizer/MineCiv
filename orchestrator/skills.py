@@ -237,6 +237,20 @@ def record_use(name, success):
         _save(m)
         return dict(m[name])
 
+def is_proven(name, min_uses=3):
+    """True if a saved skill has a solid track record: enough successful uses AND
+    clearly more successes than failures. Used to skip the (slow) LLM critic when a
+    TRUSTED skill is reused — a fast programmatic pass/fail is enough there, and the
+    LLM critic's real job (gating promotion of NEW skills) doesn't apply to a skill
+    that's already proven. Young or shaky skills still get the full LLM verdict."""
+    with _lock:
+        m = _load()
+    e = m.get(name)
+    if not e or e.get("retired"):
+        return False
+    uses, fails = e.get("uses", 0), e.get("fails", 0)
+    return uses >= min_uses and uses > fails
+
 # kept for backward-compat with earlier callers
 def bump_use(name):
     return record_use(name, True)

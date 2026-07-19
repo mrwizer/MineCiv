@@ -11,10 +11,8 @@ if (passive) {
   await helpers.equipItem('wooden_sword');
   await helpers.gotoXYZ(passive.pos.x, passive.pos.y, passive.pos.z, 2);
   await helpers.attack(passive);
-  const result = await helpers.collectBlock(passive.kind, 5);
-  if (result.collected > 0) {
-    return { status: 'hunted', mob: passive.kind, collected: result.collected };
-  }
+  await helpers.collectBlock(passive.kind, 5); // Collect drops
+  return { status: 'hunted', mob: passive.kind };
 }
 
 // 3. Fallback: Forage seeds from grass
@@ -22,11 +20,9 @@ const grasses = helpers.findBlocks('tall_grass', 10, 8).concat(helpers.findBlock
 if (grasses.length > 0) {
   const target = grasses[0];
   await helpers.gotoXYZ(target.x, target.y, target.z, 1);
-  await helpers.dig(target);
-  const result = await helpers.collectBlock('wheat_seeds', 5);
-  if (result.collected > 0) {
-    return { status: 'found_seeds', collected: result.collected };
-  }
+  await helpers.dig(target); // Break grass to get seeds
+  await helpers.collectBlock('wheat_seeds', 5);
+  if (helpers.hasItem('wheat_seeds')) return { status: 'found_seeds' };
 }
 
 return { status: 'no_resources' };

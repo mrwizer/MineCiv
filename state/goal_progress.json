@@ -20,6 +20,30 @@
       {
         "did": "Mine stone blocks to expose and collect coal ore, then craft a stone sword for defense.",
         "t": "2026-07-19 09:27"
+      },
+      {
+        "did": "Craft stone swords and torches to prepare for perimeter defense, then restart the perimeter wall construction using cobblestone walls (walls) instead of fences.",
+        "t": "2026-07-19 11:12"
+      },
+      {
+        "did": "Continue building the workshop perimeter wall using the existing design.",
+        "t": "2026-07-19 11:19"
+      },
+      {
+        "did": "Continue building the workshop perimeter wall using the existing design, but ensure the code explicitly crafts 'cobblestone_wall' items from cobblestone and sticks if not already present, and places them one by one with position verification.",
+        "t": "2026-07-19 11:29"
+      },
+      {
+        "did": "Continue placing cobblestone walls to extend the workshop perimeter defensive line from the current position.",
+        "t": "2026-07-19 11:40"
+      },
+      {
+        "did": "continue building workshop perimeter",
+        "t": "2026-07-19 11:41"
+      },
+      {
+        "did": "Navigate to the end of the existing workshop perimeter wall segment at (-92, 68, -127), look at the adjacent block to the west at (-93, 68, -127), and place one cobblestone_wall there to extend the defensive line.",
+        "t": "2026-07-19 11:50"
       }
     ]
   },
@@ -28,6 +52,18 @@
       {
         "did": "Collect an oak log using the collect_any_log skill.",
         "t": "2026-07-19 08:41"
+      },
+      {
+        "did": "Craft a wooden pickaxe from the oak planks and sticks in inventory.",
+        "t": "2026-07-19 10:53"
+      },
+      {
+        "did": "Craft a wooden hoe and use it to till nearby dirt blocks near water to prepare farmland.",
+        "t": "2026-07-19 11:15"
+      },
+      {
+        "did": "Navigate to the nearby water body and break tall grass to collect wheat seeds. If no seeds are found or the area is empty, attack any nearby passive mobs (chickens, cows, pigs) for raw food.",
+        "t": "2026-07-19 11:51"
       }
     ]
   },
@@ -64,6 +100,14 @@
       {
         "did": "Mine 10 cobblestone using the wooden pickaxe, then craft a stone pickaxe.",
         "t": "2026-07-19 09:34"
+      },
+      {
+        "did": "Mine at least 20 cobblestone to prepare materials for the stone storage building.",
+        "t": "2026-07-19 11:13"
+      },
+      {
+        "did": "Claim the community_storage_hub slot and place the chest to establish the storage foundation.",
+        "t": "2026-07-19 11:59"
       }
     ]
   },
@@ -128,6 +172,10 @@
       {
         "did": "Move to the nearest oak tree and mine 5 oak logs to replenish the community's wood supply.",
         "t": "2026-07-19 09:34"
+      },
+      {
+        "did": "Craft and equip a stone axe to efficiently gather wood for the community.",
+        "t": "2026-07-19 10:54"
       }
     ]
   },
@@ -208,6 +256,22 @@
       {
         "did": "Craft planks from oak logs, then craft a chest using the planks and sticks.",
         "t": "2026-07-19 09:56"
+      },
+      {
+        "did": "Mine cobblestone using the stone pickaxe and craft a chest if not already crafted, then place the chest at the Stone Storage location.",
+        "t": "2026-07-19 11:02"
+      },
+      {
+        "did": "Navigate to the Stone Storage location at (-117, 68, -91) to begin construction.",
+        "t": "2026-07-19 11:04"
+      },
+      {
+        "did": "Dig out of the hole I am currently stuck in.",
+        "t": "2026-07-19 11:27"
+      },
+      {
+        "did": "Use the craft_crafting_table skill to ensure a crafting table is available and functional, then use the mine_cobblestone skill to verify I can interact with the environment, before attempting to place the chest again.",
+        "t": "2026-07-19 11:50"
       }
     ]
   },
@@ -288,6 +352,38 @@
       {
         "did": "Go to the nearby crafting table at (-87, 65, -81), craft a stone hoe using the cobblestone and sticks, then till the dirt blocks near the water source (2 blocks away) to prepare more farmland. If I have seeds (I have 1), plant them. If no seeds are available, use the stone axe to chop down a tree to collect more apples from leaves, or hunt nearby passive mobs for food.",
         "t": "2026-07-19 09:56"
+      },
+      {
+        "did": "Go to the crafting table at (-87, 65, -81), then hunt for passive mobs or break tall grass to collect seeds and apples.",
+        "t": "2026-07-19 10:54"
+      },
+      {
+        "did": "Go to the crafting table at (-87, 65, -81), then hunt for passive mobs or break tall grass to collect seeds and apples.",
+        "t": "2026-07-19 10:55"
+      },
+      {
+        "did": "Dig out of the hole to reach the surface and locate nearby passive mobs for food.",
+        "t": "2026-07-19 11:15"
+      },
+      {
+        "did": "Go to the tilled farmland near the water source, plant the wheat seeds, and break tall grass to collect more seeds for future planting.",
+        "t": "2026-07-19 11:30"
+      },
+      {
+        "did": "Hunt nearby passive mobs (salmon in water, or chickens/pigs on land) for raw food, and break tall grass to collect additional seeds.",
+        "t": "2026-07-19 11:31"
+      },
+      {
+        "did": "Go to the tilled farmland near the water source, plant the wheat seeds, and break tall grass to collect more seeds for future planting.",
+        "t": "2026-07-19 11:39"
+      },
+      {
+        "did": "Hunt nearby passive mobs (salmon in water, or chickens/pigs on land) for raw food, and break tall grass to collect additional seeds.",
+        "t": "2026-07-19 11:40"
+      },
+      {
+        "did": "Go to the crafting table at (-80, 63, -83), craft a stone hoe, then till the dirt blocks near the water source (2 blocks away) and plant the 1 wheat seed I have. After planting, break nearby tall grass to collect more seeds for future planting.",
+        "t": "2026-07-19 11:41"
       }
     ]
   }
