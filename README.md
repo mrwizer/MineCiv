@@ -166,7 +166,9 @@ setup_check.py           verifies deps + pings every endpoint
 
    Current MC Server startup
 
+   ```
    java -Xms16G -Xmx16G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8m -XX:G1ReservePercent=20 -XX:G1MixedGCLiveThresholdPercent=90 -jar /path/to/server/server.jar
+   ```
 2. **Node deps:** `cd node_host && npm install`
 3. **Python deps:** `pip install requests`
 4. **Secrets/endpoints:** `cp orchestrator/local_settings_example.py orchestrator/local_settings.py`
