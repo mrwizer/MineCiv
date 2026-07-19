@@ -1,6 +1,6 @@
 # mc-sid — a local Voyager + Project-Sid style Minecraft agent society
 
-> **Notes for LLM code assistance**
+> -- **Notes for LLM code assistance** --
 > **Before doing any work on this project, read the PROJECT DIRECTION section at
 > the top of `GOVERNANCE_PLAN.md`.** Short version: the goal is emergent
 > *civilization* (politics, trade, currency, logical settlement), not a perfect
