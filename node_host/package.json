@@ -1,0 +1,13 @@
+{
+  "name": "mc-sid-bot-host",
+  "version": "1.0.0",
+  "description": "Long-lived Mineflayer bot host controlled by the Python orchestrator",
+  "main": "bot_host.js",
+  "type": "commonjs",
+  "dependencies": {
+    "mineflayer": "^4.37.1",
+    "mineflayer-pathfinder": "^2.4.5",
+    "vec3": "^0.1.10",
+    "minecraft-data": "^3.108.0"
+  }
+}

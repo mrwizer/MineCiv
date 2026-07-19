@@ -1,0 +1,294 @@
+{
+  "Garrick": {
+    "steps": [
+      {
+        "did": "Gather oak logs and craft a wooden pickaxe to enable stone mining.",
+        "t": "2026-07-19 08:39"
+      },
+      {
+        "did": "Gather oak logs and craft a wooden pickaxe to enable stone mining.",
+        "t": "2026-07-19 09:08"
+      },
+      {
+        "did": "Craft a wooden pickaxe from oak logs and sticks, then craft a crafting table to enable stone mining and advanced crafting.",
+        "t": "2026-07-19 09:11"
+      },
+      {
+        "did": "Mine 10 cobblestone using the wooden pickaxe, then craft a stone pickaxe.",
+        "t": "2026-07-19 09:16"
+      },
+      {
+        "did": "Mine stone blocks to expose and collect coal ore, then craft a stone sword for defense.",
+        "t": "2026-07-19 09:27"
+      }
+    ]
+  },
+  "Rowan": {
+    "steps": [
+      {
+        "did": "Collect an oak log using the collect_any_log skill.",
+        "t": "2026-07-19 08:41"
+      }
+    ]
+  },
+  "Birch": {
+    "steps": [
+      {
+        "did": "Find and punch a nearby tree to collect 5 wood logs.",
+        "t": "2026-07-19 08:58"
+      },
+      {
+        "did": "Craft a crafting table using the oak logs I have collected.",
+        "t": "2026-07-19 08:59"
+      },
+      {
+        "did": "Craft a wooden pickaxe using oak planks and sticks.",
+        "t": "2026-07-19 09:00"
+      },
+      {
+        "did": "Locate a nearby tree, mine 5 oak logs, and craft them into planks to have enough wood for shelter walls.",
+        "t": "2026-07-19 09:09"
+      }
+    ]
+  },
+  "Mason": {
+    "steps": [
+      {
+        "did": "Gather 5 wood logs and craft a wooden pickaxe",
+        "t": "2026-07-19 08:59"
+      },
+      {
+        "did": "Gather 5 wood logs and craft a wooden pickaxe",
+        "t": "2026-07-19 09:15"
+      },
+      {
+        "did": "Mine 10 cobblestone using the wooden pickaxe, then craft a stone pickaxe.",
+        "t": "2026-07-19 09:34"
+      }
+    ]
+  },
+  "Ferris": {
+    "steps": [
+      {
+        "did": "Find a tree, chop wood to get logs, craft planks, then craft sticks and a wooden pickaxe.",
+        "t": "2026-07-19 09:00"
+      },
+      {
+        "did": "Craft a wooden pickaxe using the oak planks and sticks in my inventory.",
+        "t": "2026-07-19 09:09"
+      },
+      {
+        "did": "Move to the nearby crafting table at (-78, 63, -87), craft a stone pickaxe using existing cobblestone if available (or mine stone if I can reach it, but since wooden pickaxe fails on stone, I must first check if I have cobblestone to craft the pickaxe. Looking at inventory, I have 0 cobblestone. I need to find a way to get cobblestone. Wait, wooden pickaxe CANNOT mine stone. This is a deadlock. However, looking at the 'nearbyBlockCensus', there is 'stone': 9. But I can't mine it with wood. I need to check if I have any cobblestone already? No. I have 0. This is a hard deadlock unless I can find cobblestone elsewhere or use a different method. Wait, looking at the inventory again: 'oak_log': 6. I have logs. I can craft planks. I can craft sticks. I have a wooden pickaxe. I cannot mine stone. Is there another way? Maybe I can find cobblestone generated naturally? Or maybe I missed something. Let's re-read the inventory. 'stick': 4, 'wooden_pickaxe': 1, 'oak_planks': 3, 'oak_sapling': 7, 'oak_log': 6, 'apple': 1. No cobblestone. No coal. I cannot craft a stone pickaxe without cobblestone. I cannot mine cobblestone with a wooden pickaxe. This is a classic 'chicken and egg' problem. However, usually, there is cobblestone available in the world or from other players. Or perhaps I can mine 'stone' if it's actually 'cobblestone' block? In 1.21, stone is the ore. Cobblestone is the drop. You need a pickaxe to mine stone. Wooden pickaxe is too weak. I am stuck. Let's look at the 'nearbyBlockCensus' again. 'stone': 9. 'dirt': 91. 'grass_block': 39. I am on the surface. I can dig dirt. But I need stone. Is it possible I can get cobblestone from a chest? No chests nearby. Is it possible I can trade? No villager. Is it possible I can kill a mob for drops? No. Wait, maybe I can use the 'craft_stone_pickaxe' skill which says 'Mine cobblestone if necessary'. This implies the skill handles the mining. But my previous attempt failed because I didn't have the tool. The skill likely tries to mine stone with the current tool. If I don't have a stone pickaxe, I can't mine stone. I need to find cobblestone. Is there any cobblestone in the inventory? No. Is there any cobblestone in the world I can pick up? No. This is a critical state. Let's look at the 'structuresNearby'. There is a crafting table. Maybe I can place a crafting table and... no. I need cobblestone. Let's look at the 'nearbyEntities'. Just players and items. Maybe an item drop? 'item' at dist 3.2. If that item is cobblestone, I can pick it up. I should move towards it. If not, I am truly stuck. Let's assume the item is not cobblestone. I need to break the deadlock. Is there any other source of cobblestone? No. I must have missed something. Let's re-read the 'recent attempts'. 'Mine stone/cobblestone nearby to get cobblestone... gave_up'. 'Mine cobblestone and coal... gave_up'. 'Craft a wooden pickaxe... success'. Okay, I have a wooden pickaxe. I have logs. I have planks. I have sticks. I have saplings. I have an apple. I have NO cobblestone. I CANNOT mine stone. I CANNOT craft a stone pickaxe. I CANNOT get cobblestone. This is a game-breaking state unless I can get cobblestone from somewhere else. Let's check the 'nearbyEntities' again. There is an item at distance 3.2. I should go there. If it's cobblestone, I win. If not, I might be able to mine 'stone' if the server allows it? No, 1.21 is strict. Wait, maybe I can use a 'stone pickaxe' skill which might have a fallback? No. Let's look at the 'reuse_skill'. 'craft_stone_pickaxe' is listed as [2 ok/0 fail]. This suggests other agents have succeeded. How? They must have had cobblestone. Maybe they mined it with a better pickaxe? No, they started with wood too. Ah, maybe they found cobblestone naturally exposed? Or maybe they picked it up from the ground? Or maybe they traded? Or maybe they killed a zombie and got iron? No, stone pickaxe needs cobblestone. Wait, in some versions/mods, you can mine stone with a shovel? No. Let's look at the 'nearbyBlockCensus'. 'stone': 9. These are stone blocks. I can't mine them. 'dirt': 91. I can dig dirt. But that doesn't give cobblestone. Is it possible that the 'stone' census entry refers to 'cobblestone' blocks? If so, I still need a pickaxe. Wooden pickaxe is too weak. I am stuck. Let's try a different approach. Maybe I can craft a 'furnace' to smelt something? No, I need cobblestone for that too. I need to get cobblestone. I will move to the nearby item at 3.2 blocks. If it's cobblestone, I pick it up. If not, I will have to dig dirt to make a hole and see if there's cobblestone underground? No, digging dirt gives dirt. I need to find a vein of cobblestone or stone. But I can't mine stone. This is a paradox. Let's look at the 'plan_action'. The village plan has a 'Stone Storage' slot. Maybe I can claim it? No, I need materials to build it. Let's look at the 'reuse_skill' 'collect_wood'. I have wood. 'craft_wooden_pickaxe'. I have that. 'craft_stone_pickaxe'. I need cobblestone. 'setup_workshop_table'. I need logs. I have logs. Maybe I can craft a crafting table? I have logs. I can craft a crafting table. I have a crafting table nearby. I don't need to craft one. I need cobblestone. I will move to the item at 3.2. If it's not cobblestone, I will dig down to find stone? No, I can't mine it. I will dig dirt to make a shelter? No, I am a supplier. I need cobblestone. I will check the item. If it's not cobblestone, I am stuck. But wait, maybe I can use the 'craft_stone_pickaxe' skill which might be smarter? It says 'Mine cobblestone if necessary'. It might try to find cobblestone. If it can't find it, it fails. I am going to try to move to the item. If it's cobblestone, I pick it up. Then I can craft a stone pickaxe. If it's not, I will try to dig a hole to see if there is cobblestone nearby? No, that's inefficient. Let's assume the item is cobblestone. If not, I will have to wait for another player or give up. But I must act. I will move to the item. If it's cobblestone, I pick it up. Then I craft a stone pickaxe. Then I mine stone. Then I craft a stone pickaxe (if I used the cobblestone). Then I mine more stone. Then I deposit. This is the plan. If the item is not cobblestone, I will dig dirt to create a small hole to see if I can find cobblestone? No, that's not reliable. I will move to the item.",
+        "t": "2026-07-19 09:14"
+      },
+      {
+        "did": "Mine cobblestone from nearby stone blocks and deposit surplus into the shared workshop chests.",
+        "t": "2026-07-19 09:15"
+      },
+      {
+        "did": "Mine more cobblestone from the nearby stone blocks to build a surplus for the workshop.",
+        "t": "2026-07-19 09:16"
+      },
+      {
+        "did": "Mine additional cobblestone from the nearby stone blocks to build a surplus for the workshop.",
+        "t": "2026-07-19 09:17"
+      },
+      {
+        "did": "Mine cobblestone from the nearby stone blocks to replenish and build a surplus for the workshop.",
+        "t": "2026-07-19 09:18"
+      },
+      {
+        "did": "Dig out of the hole to reach the surface at Y=67 or higher.",
+        "t": "2026-07-19 09:32"
+      }
+    ]
+  },
+  "Flint": {
+    "steps": [
+      {
+        "did": "Find and mine a nearby oak log, craft it into planks, then craft sticks and a wooden pickaxe.",
+        "t": "2026-07-19 09:00"
+      },
+      {
+        "did": "Locate and mine 5 oak logs to replenish wood supply for the community.",
+        "t": "2026-07-19 09:03"
+      },
+      {
+        "did": "Craft a wooden pickaxe and then use it to mine 10 cobblestone to enable stone tool crafting.",
+        "t": "2026-07-19 09:25"
+      },
+      {
+        "did": "Move to the nearby crafting table at (-78, 63, -87), craft a stone pickaxe using the 10 cobblestone, and equip it.",
+        "t": "2026-07-19 09:29"
+      },
+      {
+        "did": "Move to the crafting table at (-78, 63, -87), craft a stone axe using the existing cobblestone and sticks, and equip it to begin efficiently gathering wood for the community.",
+        "t": "2026-07-19 09:31"
+      },
+      {
+        "did": "Move to the nearest oak tree and mine 5 oak logs to replenish the community's wood supply.",
+        "t": "2026-07-19 09:34"
+      }
+    ]
+  },
+  "Bastion": {
+    "steps": [
+      {
+        "did": "Locate and mine a nearby oak log to begin gathering wood for crafting tools and shelter materials.",
+        "t": "2026-07-19 09:02"
+      },
+      {
+        "did": "Craft a wooden pickaxe using oak planks and sticks.",
+        "t": "2026-07-19 09:04"
+      },
+      {
+        "did": "Mine cobblestone using the wooden pickaxe, then craft a stone pickaxe.",
+        "t": "2026-07-19 09:05"
+      },
+      {
+        "did": "Claim the Community Workshop slot in the village plan and craft a crafting table to enable advanced construction.",
+        "t": "2026-07-19 09:08"
+      },
+      {
+        "did": "Mine cobblestone from the nearby surface to gather building materials for the workshop walls.",
+        "t": "2026-07-19 09:09"
+      }
+    ]
+  },
+  "Jules": {
+    "steps": [
+      {
+        "did": "Dig out of the hole: Move to an adjacent air block and dig upwards to reach the surface.",
+        "t": "2026-07-19 09:05"
+      },
+      {
+        "did": "Find the nearest oak tree, mine 5 oak logs, craft them into planks, craft sticks, and craft a wooden pickaxe.",
+        "t": "2026-07-19 09:06"
+      },
+      {
+        "did": "Mine cobblestone using the wooden pickaxe, then craft a stone pickaxe.",
+        "t": "2026-07-19 09:07"
+      }
+    ]
+  },
+  "Alder": {
+    "steps": [
+      {
+        "did": "Craft a crafting table from oak logs, then craft sticks from planks, then craft a wooden pickaxe.",
+        "t": "2026-07-19 09:10"
+      },
+      {
+        "did": "Mine cobblestone using the wooden pickaxe, then craft a stone pickaxe.",
+        "t": "2026-07-19 09:11"
+      },
+      {
+        "did": "Claim the 'Stone Storage' slot at (-117, 68, -91) in the village plan, then move to that location.",
+        "t": "2026-07-19 09:13"
+      },
+      {
+        "did": "Mine cobblestone using the stone pickaxe to gather building materials for the Stone Storage.",
+        "t": "2026-07-19 09:19"
+      },
+      {
+        "did": "Craft a wooden pickaxe from the nearby oak logs and planks to enable stone mining.",
+        "t": "2026-07-19 09:29"
+      },
+      {
+        "did": "Move to the Stone Storage location at (-117, 68, -91), equip the stone pickaxe, and mine cobblestone from the nearby stone blocks until I have at least 20 cobblestone for wall construction.",
+        "t": "2026-07-19 09:37"
+      },
+      {
+        "did": "Equip the stone pickaxe and mine nearby stone/cobblestone blocks until I have at least 20 cobblestone in my inventory.",
+        "t": "2026-07-19 09:40"
+      },
+      {
+        "did": "Swim out of the water to the nearest land block, then navigate to the Stone Storage location at (-117, 68, -91).",
+        "t": "2026-07-19 09:43"
+      },
+      {
+        "did": "Craft planks from oak logs, then craft a chest using the planks and sticks.",
+        "t": "2026-07-19 09:56"
+      }
+    ]
+  },
+  "Slate": {
+    "steps": [
+      {
+        "did": "Gather wood logs and craft a wooden pickaxe",
+        "t": "2026-07-19 09:11"
+      },
+      {
+        "did": "Mine cobblestone and craft a stone pickaxe",
+        "t": "2026-07-19 09:12"
+      },
+      {
+        "did": "Mine cobblestone and search for coal ore to stock up supplies.",
+        "t": "2026-07-19 09:19"
+      },
+      {
+        "did": "Dig out to the surface and move towards the community workshop area to deposit coal and cobblestone.",
+        "t": "2026-07-19 09:25"
+      },
+      {
+        "did": "Craft planks from oak logs and craft a stone pickaxe if needed, then mine more cobblestone and coal to build a larger surplus for delivery.",
+        "t": "2026-07-19 09:30"
+      },
+      {
+        "did": "Navigate to the Community Workshop at (-115, 68, -89) and attempt to deposit 5 cobblestone and 2 coal into the shared storage chest at (-117, 68, -91). If the chest is not found or accessible, switch to gathering 5 oak logs from the nearest tree.",
+        "t": "2026-07-19 09:41"
+      }
+    ]
+  },
+  "Sage": {
+    "steps": [
+      {
+        "did": "Locate and mine 5 oak logs to gather wood resources.",
+        "t": "2026-07-19 09:13"
+      },
+      {
+        "did": "Craft a wooden pickaxe using the oak planks derived from the oak logs in my inventory.",
+        "t": "2026-07-19 09:16"
+      },
+      {
+        "did": "Mine cobblestone using the wooden pickaxe to enable stone tool crafting and community storage construction.",
+        "t": "2026-07-19 09:18"
+      },
+      {
+        "did": "Move to the Stone Storage site at (-117, 68, -91) and claim the slot to begin construction.",
+        "t": "2026-07-19 09:19"
+      }
+    ]
+  },
+  "Fern": {
+    "steps": [
+      {
+        "did": "Craft a wooden pickaxe and a wooden sword to enable mining and self-defense for food gathering.",
+        "t": "2026-07-19 09:14"
+      },
+      {
+        "did": "Mine nearby stone blocks to acquire cobblestone, then craft a stone pickaxe.",
+        "t": "2026-07-19 09:19"
+      },
+      {
+        "did": "Go to the nearby crafting table at (-87, 65, -81), craft a wooden hoe, and then till the dirt blocks near the water source (2 blocks away) to prepare farmland for planting.",
+        "t": "2026-07-19 09:25"
+      },
+      {
+        "did": "Go to the nearby crafting table at (-87, 65, -81), craft a stone axe using the cobblestone and sticks in inventory, and then use it to chop down the nearest oak tree to gather more wood logs. While chopping, check for and collect any dropped apples or seeds from the leaves.",
+        "t": "2026-07-19 09:41"
+      },
+      {
+        "did": "Equip the wooden sword and search for nearby passive mobs (chickens, pigs, or cows) to hunt for raw food. If no mobs are found, break tall grass in a wider radius to search for seeds again as a secondary option.",
+        "t": "2026-07-19 09:50"
+      },
+      {
+        "did": "Go to the nearby crafting table at (-87, 65, -81) to ensure I have a good view and mobility, then actively hunt for any nearby passive mobs (chickens, pigs, cows) using the wooden sword. If a mob is found, kill it and collect the raw meat. If no mobs are found, break tall grass in a wide radius to search for seeds.",
+        "t": "2026-07-19 09:54"
+      },
+      {
+        "did": "Go to the nearby crafting table at (-87, 65, -81), craft a stone hoe using the cobblestone and sticks, then till the dirt blocks near the water source (2 blocks away) to prepare more farmland. If I have seeds (I have 1), plant them. If no seeds are available, use the stone axe to chop down a tree to collect more apples from leaves, or hunt nearby passive mobs for food.",
+        "t": "2026-07-19 09:56"
+      }
+    ]
+  }
+}

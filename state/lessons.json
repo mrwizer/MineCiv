@@ -1,0 +1,122 @@
+[
+  {
+    "text": "Verify tool tier requirements before mining; wooden pickaxes cannot mine stone.",
+    "from_task": "Mine 10 cobblestone using the wooden pickaxe, then craft a stone pickaxe.",
+    "weight": 2,
+    "last_seen": "2026-07-19 09:15"
+  },
+  {
+    "text": "Verify entity existence and visibility before pathfinding; handle cases where no targets are found gracefully.",
+    "from_task": "Kill the nearby sheep to gather mutton and wool for immediate food supply.",
+    "weight": 1,
+    "last_seen": "2026-07-19 08:38"
+  },
+  {
+    "text": "Verify block reachability before attempting collection; handle pathfinding failures by moving closer or waiting.",
+    "from_task": "Propose a Village Plan with a Shelter and Workshop slot, then claim the Shelter ",
+    "weight": 1,
+    "last_seen": "2026-07-19 08:40"
+  },
+  {
+    "text": "Verify log existence and accessibility before mining; ensure the bot is not obstructed or too far to dig efficiently.",
+    "from_task": "Find the nearest oak log, mine it to get the log item, and craft it into planks.",
+    "weight": 1,
+    "last_seen": "2026-07-19 08:59"
+  },
+  {
+    "text": "Verify inventory contents after mining to ensure drops were collected before proceeding to craft.",
+    "from_task": "Gather wood logs to craft a crafting table and wooden pickaxe.",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:00"
+  },
+  {
+    "text": "Validate physical state changes (position, block count) after actions; do not trust success flags if the environment remains unchanged.",
+    "from_task": "Dig straight down or up to escape the hole I am currently stuck in.",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:00"
+  },
+  {
+    "text": "Always validate helper function return codes before assuming success, and ensure recursive calls use the correct context method.",
+    "from_task": "Dig out of the hole: Move to an adjacent air block and dig upwards to reach the ",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:02"
+  },
+  {
+    "text": "Ensure sufficient inventory of all intermediate components, such as sticks, before attempting to craft complex items like pickaxes.",
+    "from_task": "Craft a crafting table and a wooden pickaxe.",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:03"
+  },
+  {
+    "text": "Verify ground support and clear obstructions before placing blocks; use block placement relative to existing surfaces.",
+    "from_task": "Move to the shelter site at (-117, 68, -89) and place the crafting table there t",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:04"
+  },
+  {
+    "text": "Verify helper function capabilities; craftItem may not auto-place tables or handle complex dependencies, requiring explicit placement and manual crafting steps.",
+    "from_task": "Craft a wooden pickaxe and a crafting table, then use the table to craft sticks ",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:05"
+  },
+  {
+    "text": "Always equip the best available tool before mining to prevent 'need a better tool' errors.",
+    "from_task": "Mine cobblestone and coal using the wooden pickaxe, then craft a stone pickaxe.",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:05"
+  },
+  {
+    "text": "Verify block existence at the target location before placement; handle existing blocks or invalid states explicitly.",
+    "from_task": "Move to the shelter site at (-117, 68, -89) and place the crafting table there, ",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:06"
+  },
+  {
+    "text": "Always verify inventory state after every action; do not assume previous steps succeeded or that items persist as expected.",
+    "from_task": "Craft a wooden pickaxe using the oak logs and sticks in inventory.",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:08"
+  },
+  {
+    "text": "Verify entity existence and visibility before proceeding; mobs may despawn or be obscured by terrain.",
+    "from_task": "Locate and kill a cow or sheep nearby to obtain raw meat/wool, then store the fo",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:09"
+  },
+  {
+    "text": "Ensure task completion returns valid JSON; the previous error indicates a truncated or malformed output structure.",
+    "from_task": "Mine nearby stone to get cobblestone, then craft a stone pickaxe.",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:10"
+  },
+  {
+    "text": "Verify helper function success criteria and inventory state before proceeding to subsequent steps.",
+    "from_task": "Gather oak logs and craft a wooden pickaxe",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:11"
+  },
+  {
+    "text": "Expand exploration radius and duration significantly, as passive mobs may spawn far outside initial detection ranges.",
+    "from_task": "Explore the immediate area to locate passive mobs (cows, sheep, pigs, or chicken",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:13"
+  },
+  {
+    "text": "Always ensure generated code is syntactically complete and valid before execution to prevent parse errors.",
+    "from_task": "Move to the shelter site at (-117, 68, -89) and clear any blocks in the immediat",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:15"
+  },
+  {
+    "text": "Ensure all strings are properly closed and comments do not break code syntax.",
+    "from_task": "Gather wood logs and craft a wooden pickaxe",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:17"
+  },
+  {
+    "text": "Passive mobs spawn in high-light areas; explore open, illuminated spaces rather than random coordinates to find them.",
+    "from_task": "Explore the immediate area to locate and kill a passive mob (cow, sheep, pig, or",
+    "weight": 1,
+    "last_seen": "2026-07-19 09:18"
+  }
+]

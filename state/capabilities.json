@@ -1,0 +1,458 @@
+{
+  "forage_food": {
+    "outcomes": [
+      {
+        "ok": false,
+        "task": "Explore the immediate area to locate passive mobs (cows, sheep, pigs, or chicken",
+        "reason": "The agent failed to find any passive mobs during exploration, resulting in no food being obtained or stored.",
+        "t": "2026-07-19 09:13:42"
+      },
+      {
+        "ok": true,
+        "task": "Craft a wooden pickaxe and a wooden sword to enable mining and self-defense for ",
+        "reason": "",
+        "t": "2026-07-19 09:14:42"
+      },
+      {
+        "ok": false,
+        "task": "Explore the immediate area to locate and kill a passive mob (cow, sheep, pig, or",
+        "reason": "The agent explored the area but explicitly reported 'No passive mobs found', resulting in no mobs killed and no raw food",
+        "t": "2026-07-19 09:18:13"
+      },
+      {
+        "ok": false,
+        "task": "Collect dropped apples from nearby trees and hunt any nearby passive mobs (cows,",
+        "reason": "(no reason given)",
+        "t": "2026-07-19 09:22:27"
+      },
+      {
+        "ok": false,
+        "task": "Use the wooden sword to hunt any nearby passive mobs (cows, sheep, pigs, chicken",
+        "reason": "The agent did not acquire any new food; the inventory remained identical to the start state and the execution report exp",
+        "t": "2026-07-19 09:22:51"
+      },
+      {
+        "ok": false,
+        "task": "Explore the immediate area to locate and kill a cow or sheep to obtain raw meat ",
+        "reason": "The agent failed to acquire any raw meat or seeds, as confirmed by the unchanged inventory and the execution report stat",
+        "t": "2026-07-19 09:32:52"
+      },
+      {
+        "ok": true,
+        "task": "Equip the wooden sword and search for nearby passive mobs (chickens, pigs, or co",
+        "reason": "",
+        "t": "2026-07-19 09:50:38"
+      },
+      {
+        "ok": false,
+        "task": "Equip the wooden sword and actively hunt any nearby passive mobs (chickens, pigs",
+        "reason": "The agent's inventory remained unchanged (wheat_seeds count stayed at 1) despite the log claiming it broke grass, indica",
+        "t": "2026-07-19 09:52:47"
+      }
+    ],
+    "ok": 2,
+    "fail": 6
+  },
+  "craft_wooden_pickaxe": {
+    "outcomes": [
+      {
+        "ok": false,
+        "task": "Gather oak logs and craft a wooden pickaxe",
+        "reason": "The agent failed to gather logs, reporting 'No logs found nearby' despite oak_log being present in the nearby block cens",
+        "t": "2026-07-19 09:11:21"
+      },
+      {
+        "ok": true,
+        "task": "Gather wood logs and craft a wooden pickaxe",
+        "reason": "",
+        "t": "2026-07-19 09:11:46"
+      },
+      {
+        "ok": true,
+        "task": "Gather 5 wood logs and craft a wooden pickaxe",
+        "reason": "",
+        "t": "2026-07-19 09:15:55"
+      },
+      {
+        "ok": true,
+        "task": "Craft a wooden pickaxe using the oak planks derived from the oak logs in my inve",
+        "reason": "",
+        "t": "2026-07-19 09:16:30"
+      },
+      {
+        "ok": false,
+        "task": "Gather wood logs and craft a wooden pickaxe",
+        "reason": "The execution failed due to a syntax error in the generated code, resulting in no changes to the inventory or world stat",
+        "t": "2026-07-19 09:17:03"
+      },
+      {
+        "ok": true,
+        "task": "Craft a wooden pickaxe and then use it to mine 10 cobblestone to enable stone to",
+        "reason": "",
+        "t": "2026-07-19 09:25:54"
+      },
+      {
+        "ok": true,
+        "task": "Craft a wooden pickaxe from the nearby oak logs and planks to enable stone minin",
+        "reason": "",
+        "t": "2026-07-19 09:29:18"
+      },
+      {
+        "ok": false,
+        "task": "Craft oak planks from oak_log, then craft sticks from planks, and finally craft ",
+        "reason": "craft error: Error: missing ingredient",
+        "t": "2026-07-19 09:55:59"
+      }
+    ],
+    "ok": 5,
+    "fail": 3
+  },
+  "build_structure": {
+    "outcomes": [
+      {
+        "ok": true,
+        "task": "Move to the Stone Storage location at (-117, 68, -91), equip the stone pickaxe, ",
+        "reason": "",
+        "t": "2026-07-19 09:37:26"
+      },
+      {
+        "ok": true,
+        "task": "Navigate to the Community Workshop at (-115, 68, -89) and attempt to deposit 5 c",
+        "reason": "",
+        "t": "2026-07-19 09:41:18"
+      },
+      {
+        "ok": false,
+        "task": "Move to the nearby crafting table at (-92, 68, -127), craft sticks and oak plank",
+        "reason": "critic could not be parsed twice: no JSON found in: The agent was tasked to:\n    1. Move to a crafting table at (-92, 68",
+        "t": "2026-07-19 09:42:47"
+      },
+      {
+        "ok": true,
+        "task": "Swim out of the water to the nearest land block, then navigate to the Stone Stor",
+        "reason": "",
+        "t": "2026-07-19 09:43:41"
+      },
+      {
+        "ok": false,
+        "task": "Move to the community workshop area at (-115, 68, -89), locate the shared storag",
+        "reason": "The agent moved to the target location but failed to deposit the items due to a code error ('Cannot read properties of u",
+        "t": "2026-07-19 09:47:37"
+      },
+      {
+        "ok": false,
+        "task": "Navigate to the Community Workshop at (-115, 68, -89) and deposit the 4 coal and",
+        "reason": "The execution failed with a code error ('Cannot read properties of undefined') and the agent's inventory remains unchang",
+        "t": "2026-07-19 09:50:06"
+      },
+      {
+        "ok": false,
+        "task": "Navigate to the Community Workshop at (-115, 68, -89). Check if a chest exists a",
+        "reason": "critic could not be parsed twice: no JSON found in: {\"",
+        "t": "2026-07-19 09:54:52"
+      },
+      {
+        "ok": false,
+        "task": "Navigate to the Stone Storage chest at (-117, 68, -91), place a crafting table i",
+        "reason": "The agent timed out and failed to place the crafting table or deposit items, as evidenced by the error log and unchanged",
+        "t": "2026-07-19 09:55:38"
+      }
+    ],
+    "ok": 3,
+    "fail": 5
+  },
+  "gather_wood": {
+    "outcomes": [
+      {
+        "ok": true,
+        "task": "Collect an oak log using the collect_any_log skill.",
+        "reason": "",
+        "t": "2026-07-19 08:41:27"
+      },
+      {
+        "ok": true,
+        "task": "Find and punch a nearby tree to collect 5 wood logs.",
+        "reason": "",
+        "t": "2026-07-19 08:58:43"
+      },
+      {
+        "ok": false,
+        "task": "Find the nearest oak log, mine it to get the log item, and craft it into planks.",
+        "reason": "The agent failed to mine any logs (inventory shows no oak_log or planks, only an oak_sapling) and explicitly reported 'N",
+        "t": "2026-07-19 08:59:42"
+      },
+      {
+        "ok": true,
+        "task": "Locate and mine 5 oak logs to replenish wood supply for the community.",
+        "reason": "",
+        "t": "2026-07-19 09:03:45"
+      },
+      {
+        "ok": true,
+        "task": "Locate and mine 5 oak logs to gather wood resources.",
+        "reason": "",
+        "t": "2026-07-19 09:13:33"
+      },
+      {
+        "ok": true,
+        "task": "Craft planks from oak logs, then craft a chest using the planks and sticks.",
+        "reason": "",
+        "t": "2026-07-19 09:56:01"
+      }
+    ],
+    "ok": 5,
+    "fail": 1
+  },
+  "craft_crafting_table": {
+    "outcomes": [
+      {
+        "ok": true,
+        "task": "Craft a crafting table using the oak logs I have collected.",
+        "reason": "",
+        "t": "2026-07-19 08:59:29"
+      },
+      {
+        "ok": false,
+        "task": "Craft a crafting table from oak logs and place it at the Community Workshop coor",
+        "reason": "The agent timed out and failed to place the crafting table, as evidenced by the error log stating placement attempts fai",
+        "t": "2026-07-19 09:34:19"
+      }
+    ],
+    "ok": 1,
+    "fail": 1
+  },
+  "escape_hole": {
+    "outcomes": [
+      {
+        "ok": false,
+        "task": "Dig straight down or up to escape the hole I am currently stuck in.",
+        "reason": "The agent reported success but the after-state is identical to the before-state (position, inventory, and mobility flags",
+        "t": "2026-07-19 09:00:51"
+      }
+    ],
+    "ok": 0,
+    "fail": 1
+  },
+  "reach_location": {
+    "outcomes": [
+      {
+        "ok": true,
+        "task": "Go to the nearby crafting table at (-87, 65, -81), craft a stone axe using the c",
+        "reason": "",
+        "t": "2026-07-19 09:41:49"
+      },
+      {
+        "ok": false,
+        "task": "Move to the nearby water source and actively search the surrounding grass blocks",
+        "reason": "critic could not be parsed twice: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
+        "t": "2026-07-19 09:42:15"
+      },
+      {
+        "ok": false,
+        "task": "Dig out of the hole to reach the surface.",
+        "reason": "The agent failed to execute any code due to a syntax error in the generated script, resulting in no change to the game s",
+        "t": "2026-07-19 09:43:44"
+      },
+      {
+        "ok": false,
+        "task": "Go to the nearby crafting table at (-87, 65, -81), craft sticks from the oak pla",
+        "reason": "The agent failed to acquire seeds or hunt mobs, resulting in no progress toward the success criterion (seeds planted or ",
+        "t": "2026-07-19 09:46:40"
+      },
+      {
+        "ok": false,
+        "task": "Navigate to the Community Workshop at (-115, 68, -89) and place a crafting table",
+        "reason": "The agent timed out and failed to place the crafting table at the target coordinates, as evidenced by the error logs sta",
+        "t": "2026-07-19 09:47:11"
+      },
+      {
+        "ok": false,
+        "task": "Dig out of the hole to reach the surface.",
+        "reason": "critic could not be parsed twice: no JSON found in: *   Task: Dig out of the hole to reach the surface.\n    *   Success ",
+        "t": "2026-07-19 09:52:49"
+      },
+      {
+        "ok": true,
+        "task": "Go to the nearby crafting table at (-87, 65, -81) to ensure I have a good view a",
+        "reason": "",
+        "t": "2026-07-19 09:54:08"
+      },
+      {
+        "ok": true,
+        "task": "Go to the nearby crafting table at (-87, 65, -81), craft a stone hoe using the c",
+        "reason": "",
+        "t": "2026-07-19 09:56:57"
+      }
+    ],
+    "ok": 3,
+    "fail": 5
+  },
+  "craft_stone_pickaxe": {
+    "outcomes": [
+      {
+        "ok": true,
+        "task": "Mine 10 cobblestone using the wooden pickaxe, then craft a stone pickaxe.",
+        "reason": "",
+        "t": "2026-07-19 09:16:58"
+      },
+      {
+        "ok": false,
+        "task": "Mine cobblestone and craft a stone pickaxe.",
+        "reason": "(no reason given)",
+        "t": "2026-07-19 09:19:38"
+      },
+      {
+        "ok": true,
+        "task": "Mine nearby stone blocks to acquire cobblestone, then craft a stone pickaxe.",
+        "reason": "",
+        "t": "2026-07-19 09:19:50"
+      },
+      {
+        "ok": false,
+        "task": "Use the acquire_cobblestone skill to break the resource deadlock by finding and ",
+        "reason": "(no reason given)",
+        "t": "2026-07-19 09:20:15"
+      },
+      {
+        "ok": false,
+        "task": "Mine nearby exposed stone blocks to gather cobblestone, then craft a stone picka",
+        "reason": "(no reason given)",
+        "t": "2026-07-19 09:28:40"
+      },
+      {
+        "ok": true,
+        "task": "Craft planks from oak logs and craft a stone pickaxe if needed, then mine more c",
+        "reason": "",
+        "t": "2026-07-19 09:30:57"
+      },
+      {
+        "ok": true,
+        "task": "Mine 10 cobblestone using the wooden pickaxe, then craft a stone pickaxe.",
+        "reason": "",
+        "t": "2026-07-19 09:34:46"
+      },
+      {
+        "ok": true,
+        "task": "Equip the stone pickaxe and mine nearby stone/cobblestone blocks until I have at",
+        "reason": "",
+        "t": "2026-07-19 09:40:53"
+      }
+    ],
+    "ok": 5,
+    "fail": 3
+  },
+  "obtain_stone": {
+    "outcomes": [
+      {
+        "ok": true,
+        "task": "Mine cobblestone from nearby stone blocks and deposit surplus into the shared wo",
+        "reason": "",
+        "t": "2026-07-19 09:15:12"
+      },
+      {
+        "ok": true,
+        "task": "Mine more cobblestone from the nearby stone blocks to build a surplus for the wo",
+        "reason": "",
+        "t": "2026-07-19 09:16:23"
+      },
+      {
+        "ok": true,
+        "task": "Mine additional cobblestone from the nearby stone blocks to build a surplus for ",
+        "reason": "",
+        "t": "2026-07-19 09:17:33"
+      },
+      {
+        "ok": true,
+        "task": "Mine cobblestone from the nearby stone blocks to replenish and build a surplus f",
+        "reason": "",
+        "t": "2026-07-19 09:18:34"
+      },
+      {
+        "ok": false,
+        "task": "Craft a chest from oak planks and place it at the community workshop (-115, 68, ",
+        "reason": "The chest placement failed with 'place_did_not_stick' error, meaning no chest was actually placed at the target coordina",
+        "t": "2026-07-19 09:27:31"
+      },
+      {
+        "ok": false,
+        "task": "Mine 10 cobblestone blocks using the wooden pickaxe.",
+        "reason": "The run was interrupted by a survival watchdog due to drowning/lava hazards, and the inventory shows the cobblestone cou",
+        "t": "2026-07-19 09:34:49"
+      }
+    ],
+    "ok": 4,
+    "fail": 2
+  },
+  "mine_coal": {
+    "outcomes": [
+      {
+        "ok": false,
+        "task": "Mine 10 cobblestone and 5 coal ore to replenish community supplies, then deposit",
+        "reason": "The agent failed to mine the required materials because it did not have the correct tool, as indicated by the 'need_tool",
+        "t": "2026-07-19 09:15:29"
+      },
+      {
+        "ok": true,
+        "task": "Mine cobblestone and search for coal ore to stock up supplies.",
+        "reason": "",
+        "t": "2026-07-19 09:19:38"
+      },
+      {
+        "ok": false,
+        "task": "Mine more cobblestone and coal ore, then deposit the surplus into the shared wor",
+        "reason": "The agent successfully mined cobblestone and coal, but failed to deposit them into the shared workshop chests as require",
+        "t": "2026-07-19 09:23:38"
+      },
+      {
+        "ok": true,
+        "task": "Dig out to the surface and move towards the community workshop area to deposit c",
+        "reason": "",
+        "t": "2026-07-19 09:25:56"
+      }
+    ],
+    "ok": 2,
+    "fail": 2
+  },
+  "gather_dirt": {
+    "outcomes": [
+      {
+        "ok": false,
+        "task": "Locate the nearby water, till 4-9 dirt blocks next to it using the wooden hoe, a",
+        "reason": "The execution failed with a code error 'bot.world.blockAt is not a function', resulting in no changes to the game state.",
+        "t": "2026-07-19 09:18:30"
+      },
+      {
+        "ok": false,
+        "task": "Search the immediate area for grass blocks and break them to obtain wheat seeds,",
+        "reason": "(no reason given)",
+        "t": "2026-07-19 09:35:56"
+      }
+    ],
+    "ok": 0,
+    "fail": 2
+  },
+  "craft_stone_sword": {
+    "outcomes": [
+      {
+        "ok": true,
+        "task": "Mine stone blocks to expose and collect coal ore, then craft a stone sword for d",
+        "reason": "",
+        "t": "2026-07-19 09:27:36"
+      }
+    ],
+    "ok": 1,
+    "fail": 0
+  },
+  "other": {
+    "outcomes": [
+      {
+        "ok": false,
+        "task": "Break tall grass and azalea leaves near the water source to search for wheat see",
+        "reason": "The agent reported 'no_seeds_found' and the inventory and world state remained unchanged, meaning the task to find seeds",
+        "t": "2026-07-19 09:37:06"
+      }
+    ],
+    "ok": 0,
+    "fail": 1
+  }
+}

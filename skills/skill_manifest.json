@@ -1,0 +1,426 @@
+{
+  "collect_wood": {
+    "description": "Locate and harvest 5 wood logs by mining nearby trees or exploring if none are found.",
+    "keywords": [
+      "wood",
+      "logs",
+      "collect",
+      "harvest",
+      "tree",
+      "mine"
+    ],
+    "file": "collect_wood.js",
+    "uses": 4,
+    "fails": 1,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "collect",
+      "wood"
+    ],
+    "created": "2026-07-19 08:58:43"
+  },
+  "craft_crafting_table": {
+    "description": "Crafts a crafting table from oak logs by first crafting planks.",
+    "keywords": [
+      "crafting table",
+      "planks",
+      "oak log",
+      "craft",
+      "tool"
+    ],
+    "file": "craft_crafting_table.js",
+    "uses": 0,
+    "fails": 0,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "craft",
+      "crafting",
+      "table"
+    ],
+    "created": "2026-07-19 08:59:29"
+  },
+  "craft_wooden_pickaxe": {
+    "description": "Gathers 5 wood logs and crafts a wooden pickaxe",
+    "keywords": [
+      "wood",
+      "pickaxe",
+      "craft",
+      "log",
+      "gather"
+    ],
+    "file": "craft_wooden_pickaxe.js",
+    "uses": 5,
+    "fails": 6,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "craft",
+      "pickaxe",
+      "wooden"
+    ],
+    "created": "2026-07-19 08:59:47"
+  },
+  "dig_out_stuck": {
+    "description": "Recovers from being stuck in a hole by digging upwards, pillar-upping, or digging sideways based on block checks.",
+    "keywords": [
+      "unstuck",
+      "hole",
+      "dig",
+      "escape",
+      "get unstuck"
+    ],
+    "file": "dig_out_stuck.js",
+    "uses": 0,
+    "fails": 3,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "dig",
+      "out",
+      "stuck"
+    ],
+    "created": "2026-07-19 09:05:05"
+  },
+  "craft_stone_pickaxe": {
+    "description": "Mine cobblestone if necessary and craft a stone pickaxe to improve mining efficiency.",
+    "keywords": [
+      "stone",
+      "pickaxe",
+      "craft",
+      "mine",
+      "cobblestone"
+    ],
+    "file": "craft_stone_pickaxe.js",
+    "uses": 15,
+    "fails": 4,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "craft",
+      "pickaxe",
+      "stone"
+    ],
+    "created": "2026-07-19 09:05:53"
+  },
+  "setup_workshop_table": {
+    "description": "Claims a community workshop slot and crafts a crafting table from inventory logs.",
+    "keywords": [
+      "workshop",
+      "crafting_table",
+      "claim",
+      "craft",
+      "setup"
+    ],
+    "file": "setup_workshop_table.js",
+    "uses": 0,
+    "fails": 3,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "setup",
+      "table"
+    ],
+    "created": "2026-07-19 09:08:36"
+  },
+  "craft_shelter_planks": {
+    "description": "Locate, mine, and craft oak logs into planks for shelter construction.",
+    "keywords": [
+      "oak",
+      "planks",
+      "shelter",
+      "crafting",
+      "wood",
+      "logs"
+    ],
+    "file": "craft_shelter_planks.js",
+    "uses": 0,
+    "fails": 0,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "craft",
+      "plank",
+      "shelter"
+    ],
+    "created": "2026-07-19 09:09:46"
+  },
+  "claim_and_goto": {
+    "description": "Claims a named slot in the village plan and moves the agent to its coordinates.",
+    "keywords": [
+      "claim",
+      "goto",
+      "slot",
+      "location",
+      "storage",
+      "village"
+    ],
+    "file": "claim_and_goto.js",
+    "uses": 1,
+    "fails": 5,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "claim",
+      "goto"
+    ],
+    "created": "2026-07-19 09:13:12"
+  },
+  "acquire_cobblestone": {
+    "description": "Breaks the initial resource deadlock by digging down to exposed stone or collecting dropped cobblestone to enable stone tool crafting.",
+    "keywords": [
+      "cobblestone",
+      "stone",
+      "pickaxe",
+      "deadlock",
+      "acquire",
+      "crafting"
+    ],
+    "file": "acquire_cobblestone.js",
+    "uses": 2,
+    "fails": 1,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "acquire",
+      "cobblestone"
+    ],
+    "created": "2026-07-19 09:14:21"
+  },
+  "equip_wooden_tools": {
+    "description": "Ensures the agent has a wooden pickaxe and sword by crafting them from available logs.",
+    "keywords": [
+      "craft",
+      "wooden pickaxe",
+      "wooden sword",
+      "tools",
+      "defense",
+      "mining"
+    ],
+    "file": "equip_wooden_tools.js",
+    "uses": 0,
+    "fails": 0,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "equip",
+      "tool",
+      "wooden"
+    ],
+    "created": "2026-07-19 09:14:42"
+  },
+  "craft_and_till": {
+    "description": "Crafts a wooden hoe from available resources and tills nearby dirt blocks for farming.",
+    "keywords": [
+      "crafting",
+      "hoe",
+      "tilling",
+      "farming",
+      "wooden_hoe",
+      "farmland"
+    ],
+    "file": "craft_and_till.js",
+    "uses": 0,
+    "fails": 1,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "craft",
+      "till"
+    ],
+    "created": "2026-07-19 09:25:05"
+  },
+  "deposit_materials": {
+    "description": "Navigate to the community workshop and deposit specified raw materials into storage chests.",
+    "keywords": [
+      "deposit",
+      "workshop",
+      "storage",
+      "coal",
+      "cobblestone",
+      "logistics"
+    ],
+    "file": "deposit_materials.js",
+    "uses": 0,
+    "fails": 0,
+    "revisions": 2,
+    "retired": false,
+    "sig": [
+      "deposit",
+      "material"
+    ],
+    "created": "2026-07-19 09:25:56",
+    "last_revised": "2026-07-19 09:57:32",
+    "revision_note": "The execution failed with an error ('Cannot read properties of undefined') and the agent's position changed significantl"
+  },
+  "dig_out_of_hole": {
+    "description": "Manually breaks blocks above or adjacent to escape a stuck hole when automated unstuck fails.",
+    "keywords": [
+      "unstuck",
+      "dig",
+      "escape",
+      "hole",
+      "pillar",
+      "mobility"
+    ],
+    "file": "dig_out_of_hole.js",
+    "uses": 0,
+    "fails": 1,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "dig",
+      "hole",
+      "out"
+    ],
+    "created": "2026-07-19 09:32:05"
+  },
+  "mine_cobblestone": {
+    "description": "Equip a stone pickaxe and collect at least 20 cobblestone by mining exposed blocks or digging down to the stone layer.",
+    "keywords": [
+      "cobblestone",
+      "stone",
+      "mine",
+      "pickaxe",
+      "collect",
+      "build",
+      "resource"
+    ],
+    "file": "mine_cobblestone.js",
+    "uses": 0,
+    "fails": 0,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "cobblestone",
+      "mine"
+    ],
+    "created": "2026-07-19 09:40:53"
+  },
+  "deposit_or_gather": {
+    "description": "Attempts to deposit specified items into a shared chest, falling back to gathering logs if the deposit fails.",
+    "keywords": [
+      "deposit",
+      "storage",
+      "chest",
+      "fallback",
+      "gather",
+      "log"
+    ],
+    "file": "deposit_or_gather.js",
+    "uses": 0,
+    "fails": 1,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "deposit",
+      "gather",
+      "or"
+    ],
+    "created": "2026-07-19 09:41:18"
+  },
+  "craft_and_chop": {
+    "description": "Gathers cobblestone if needed, crafts a stone axe, and uses it to chop down the nearest tree for logs.",
+    "keywords": [
+      "crafting",
+      "stone axe",
+      "chopping",
+      "wood",
+      "logging"
+    ],
+    "file": "craft_and_chop.js",
+    "uses": 0,
+    "fails": 0,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "chop",
+      "craft"
+    ],
+    "created": "2026-07-19 09:41:49"
+  },
+  "navigate_to_landmark": {
+    "description": "Swim to the nearest land block if underwater, then navigate to a specific coordinate landmark.",
+    "keywords": [
+      "navigation",
+      "landmark",
+      "shore",
+      "travel",
+      "waypoint"
+    ],
+    "file": "navigate_to_landmark.js",
+    "uses": 0,
+    "fails": 0,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "landmark",
+      "navigate"
+    ],
+    "created": "2026-07-19 09:43:41"
+  },
+  "hunt_or_forage": {
+    "description": "Hunt nearby passive mobs for food or break grass to collect seeds as a fallback.",
+    "keywords": [
+      "food",
+      "hunt",
+      "seeds",
+      "forage",
+      "passive"
+    ],
+    "file": "hunt_or_forage.js",
+    "uses": 1,
+    "fails": 1,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "forage",
+      "hunt",
+      "or"
+    ],
+    "created": "2026-07-19 09:50:38"
+  },
+  "craft_chest_from_logs": {
+    "description": "Gathers oak logs, crafts planks and sticks, and produces a chest, optionally creating a crafting table if required by the environment.",
+    "keywords": [
+      "chest",
+      "crafting",
+      "oak",
+      "planks",
+      "logs",
+      "crafting_table"
+    ],
+    "file": "craft_chest_from_logs.js",
+    "uses": 0,
+    "fails": 0,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "craft",
+      "log"
+    ],
+    "created": "2026-07-19 09:56:01"
+  },
+  "farm_cobblestone_hoe": {
+    "description": "Crafts a stone hoe using available cobblestone and sticks, tills dirt near water, and plants seeds if available.",
+    "keywords": [
+      "crafting",
+      "farming",
+      "hoe",
+      "tilling",
+      "planting"
+    ],
+    "file": "farm_cobblestone_hoe.js",
+    "uses": 0,
+    "fails": 0,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "cobblestone",
+      "farm",
+      "hoe"
+    ],
+    "created": "2026-07-19 09:56:57"
+  }
+}

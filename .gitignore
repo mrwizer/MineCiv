@@ -1,0 +1,32 @@
+# === SECRETS — never commit ===
+# Real API tokens + serving-box addresses live here (copy from local_settings_example.py)
+orchestrator/local_settings.py
+local_settings.py
+# generic safety net for any other secret files
+*.secret
+*.secrets
+.env
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# === Node ===
+node_host/node_modules/
+npm-debug.log*
+
+# === runtime data (regenerated each run; not source) ===
+logs/*.log
+logs/Old/*.log
+state/*.db
+state/*.db-wal
+state/*.db-shm
+
+# === OS / editor ===
+.DS_Store
+*.swp
+.idea/
+.vscode/
