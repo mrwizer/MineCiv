@@ -10,15 +10,17 @@
       "mine"
     ],
     "file": "collect_wood.js",
-    "uses": 5,
-    "fails": 6,
-    "revisions": 0,
+    "uses": 7,
+    "fails": 1,
+    "revisions": 1,
     "retired": false,
     "sig": [
       "collect",
       "wood"
     ],
-    "created": "2026-07-19 08:58:43"
+    "created": "2026-07-19 08:58:43",
+    "last_revised": "2026-07-20 15:08:53",
+    "revision_note": "critic could not be parsed twice: no JSON found in: The agent was tasked to navigate to a nearby tree and mine oak logs "
   },
   "craft_crafting_table": {
     "description": "Crafts a crafting table from oak logs by first crafting planks.",
@@ -31,7 +33,7 @@
     ],
     "file": "craft_crafting_table.js",
     "uses": 1,
-    "fails": 3,
+    "fails": 4,
     "revisions": 1,
     "retired": false,
     "sig": [
@@ -97,7 +99,7 @@
       "cobblestone"
     ],
     "file": "craft_stone_pickaxe.js",
-    "uses": 19,
+    "uses": 20,
     "fails": 4,
     "revisions": 0,
     "retired": false,
@@ -300,7 +302,7 @@
       "resource"
     ],
     "file": "mine_cobblestone.js",
-    "uses": 17,
+    "uses": 19,
     "fails": 0,
     "revisions": 0,
     "retired": false,
@@ -364,7 +366,7 @@
       "waypoint"
     ],
     "file": "navigate_to_landmark.js",
-    "uses": 202,
+    "uses": 236,
     "fails": 0,
     "revisions": 1,
     "retired": false,
@@ -477,7 +479,7 @@
     ],
     "file": "farm_replenish.js",
     "uses": 1,
-    "fails": 3,
+    "fails": 4,
     "revisions": 0,
     "retired": false,
     "sig": [
@@ -609,7 +611,7 @@
     ],
     "file": "gather_meat.js",
     "uses": 1,
-    "fails": 4,
+    "fails": 7,
     "revisions": 4,
     "retired": true,
     "sig": [
@@ -632,12 +634,37 @@
     "file": "escape_hole.js",
     "uses": 0,
     "fails": 0,
-    "revisions": 0,
+    "revisions": 3,
     "retired": false,
     "sig": [
       "escape",
       "hole"
     ],
-    "created": "2026-07-20 14:23:01"
+    "created": "2026-07-20 14:23:01",
+    "last_revised": "2026-07-20 17:19:29",
+    "revision_note": "The agent's position and the spatial map remained unchanged, indicating no blocks were mined and no vertical movement oc"
+  },
+  "secure_lighting_supply": {
+    "description": "Navigate to the shared storage chest, check for existing torches, and craft new ones from charcoal and sticks if the inventory is empty.",
+    "keywords": [
+      "torch",
+      "craft",
+      "chest",
+      "lighting",
+      "supply",
+      "charcoal",
+      "stick"
+    ],
+    "file": "secure_lighting_supply.js",
+    "uses": 1,
+    "fails": 0,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "lighting",
+      "secure",
+      "supply"
+    ],
+    "created": "2026-07-20 16:53:13"
   }
 }

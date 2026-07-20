@@ -3,24 +3,6 @@
     "outcomes": [
       {
         "ok": false,
-        "task": "Craft a wooden pickaxe and a wooden sword from the oak logs, then equip the swor",
-        "reason": "The agent failed to craft the required items because the crafting window did not open, as shown in the execution error.",
-        "t": "2026-07-20 11:33:26"
-      },
-      {
-        "ok": false,
-        "task": "Use the nearby crafting table to craft a wooden pickaxe and a wooden sword, then",
-        "reason": "The execution failed with a 'pickResult is not defined' error, resulting in no changes to the inventory or world state.",
-        "t": "2026-07-20 11:38:48"
-      },
-      {
-        "ok": false,
-        "task": "Use the nearby crafting table to craft a wooden sword from oak planks and sticks",
-        "reason": "craft error: craft window did not open",
-        "t": "2026-07-20 11:43:52"
-      },
-      {
-        "ok": false,
         "task": "Use the craft_wooden_pickaxe skill to craft a wooden pickaxe and a wooden sword,",
         "reason": "critic could not be parsed twice: no JSON found in: The agent was tasked to:\n    1. Use `craft_wooden_pickaxe` to craft ",
         "t": "2026-07-20 11:47:27"
@@ -48,19 +30,31 @@
         "task": "Kill the nearby sheep to gather raw mutton for the community food supply.",
         "reason": "The agent failed to find any sheep during exploration, resulting in no raw mutton being obtained.",
         "t": "2026-07-20 13:09:47"
+      },
+      {
+        "ok": false,
+        "task": "Hunt for a nearby passive mob (chicken, cow, or pig) using the wooden sword, kil",
+        "reason": "The agent failed to find any passive mobs nearby, preventing it from obtaining food and depositing it in the chest.",
+        "t": "2026-07-20 15:58:35"
+      },
+      {
+        "ok": true,
+        "task": "Craft a stone pickaxe from the 20 cobblestone in inventory, then use it to mine ",
+        "reason": "",
+        "t": "2026-07-20 16:42:43"
+      },
+      {
+        "ok": false,
+        "task": "Craft a stone sword using the cobblestone in inventory, then hunt nearby passive",
+        "reason": "(no reason given)",
+        "t": "2026-07-20 16:47:07"
       }
     ],
-    "ok": 0,
-    "fail": 8
+    "ok": 1,
+    "fail": 7
   },
   "craft_wooden_pickaxe": {
     "outcomes": [
-      {
-        "ok": false,
-        "task": "Use the collect_wood skill to gather oak logs, then craft a wooden pickaxe.",
-        "reason": "(no reason given)",
-        "t": "2026-07-19 13:48:31"
-      },
       {
         "ok": true,
         "task": "Gather wood logs to craft a wooden pickaxe and basic tools, enabling me to mine ",
@@ -102,64 +96,70 @@
         "task": "Use the equip_wooden_tools skill to craft a wooden pickaxe and sword from the oa",
         "reason": "",
         "t": "2026-07-20 13:04:07"
+      },
+      {
+        "ok": true,
+        "task": "Gather wood logs, craft a wooden pickaxe and sword, and equip them to enable min",
+        "reason": "",
+        "t": "2026-07-20 15:15:30"
       }
     ],
-    "ok": 2,
-    "fail": 6
+    "ok": 3,
+    "fail": 5
   },
   "build_structure": {
     "outcomes": [
       {
         "ok": false,
-        "task": "Navigate to (-116, 69, -90) and place 1 oak_plank to complete the shelter founda",
+        "task": "continue building workshop perimeter",
         "reason": "ran clean but no measurable progress",
-        "t": "2026-07-20 13:50:47"
-      },
-      {
-        "ok": true,
-        "task": "Navigate to (-116, 69, -90) and place 1 oak_plank to complete the shelter founda",
-        "reason": "",
-        "t": "2026-07-20 13:51:11"
+        "t": "2026-07-20 16:58:32"
       },
       {
         "ok": false,
-        "task": "Navigate to (-116, 68, -90) and place 1 oak_plank to fill the remaining gap in t",
+        "task": "Navigate to (-116, 70, -91) and place an oak_plank to extend the north wall east",
         "reason": "ran clean but no measurable progress",
-        "t": "2026-07-20 13:53:45"
+        "t": "2026-07-20 17:06:39"
+      },
+      {
+        "ok": true,
+        "task": "Navigate to (-116, 71, -90) and place an oak_plank to complete the third block o",
+        "reason": "",
+        "t": "2026-07-20 17:07:08"
       },
       {
         "ok": false,
-        "task": "Navigate to (-116, 69, -90) and place 1 oak_plank to complete the shelter founda",
+        "task": "continue building shelter foundation expansion",
         "reason": "ran clean but no measurable progress",
-        "t": "2026-07-20 13:55:04"
-      },
-      {
-        "ok": true,
-        "task": "Navigate to (-116, 69, -91) and place 1 oak_plank to complete the shelter founda",
-        "reason": "",
-        "t": "2026-07-20 13:55:29"
+        "t": "2026-07-20 17:07:55"
       },
       {
         "ok": false,
-        "task": "Navigate to (-116, 69, -91) and place 1 oak_plank to complete the shelter founda",
+        "task": "continue building workshop perimeter",
+        "reason": "runtime error: skill timed out after 90000ms",
+        "t": "2026-07-20 17:08:19"
+      },
+      {
+        "ok": false,
+        "task": "Navigate to (-116, 70, -91) and place an oak_plank to extend the north wall east",
         "reason": "ran clean but no measurable progress",
-        "t": "2026-07-20 13:56:39"
+        "t": "2026-07-20 17:16:50"
       },
       {
-        "ok": true,
-        "task": "Navigate to (-116, 69, -90) and check the block type; if it is air, place 1 oak_",
-        "reason": "",
-        "t": "2026-07-20 13:57:35"
+        "ok": false,
+        "task": "continue building workshop perimeter",
+        "reason": "skill reported: failed to craft fences: craft error: Error: missing ingredient",
+        "t": "2026-07-20 17:21:09"
       },
       {
-        "ok": true,
-        "task": "Navigate to (-116, 69, -90) and place 1 oak_plank to complete the shelter founda",
-        "reason": "",
-        "t": "2026-07-20 14:24:26"
+        "ok": false,
+        "task": "Continue building the north wall of the shelter foundation by placing oak_planks",
+        "reason": "runtime error: SYNTAX ERROR in generated code (Unexpected token 'const'). The code did not pars",
+        "t": "2026-07-20 17:25:24"
       }
     ],
-    "ok": 4,
-    "fail": 4
+    "ok": 1,
+    "fail": 7
   },
   "gather_wood": {
     "outcomes": [
@@ -266,36 +266,6 @@
   "escape_hole": {
     "outcomes": [
       {
-        "ok": false,
-        "task": "Dig down to Y=63, move back to (-88, 64, -118), pillar up to Y=65, break the blo",
-        "reason": "critic could not be parsed twice: no JSON found in: *   Task: Dig down to Y=63, move to (-88, 64, -118), pillar up to Y=",
-        "t": "2026-07-19 16:46:16"
-      },
-      {
-        "ok": false,
-        "task": "Dig straight up to escape the hole and return to open ground.",
-        "reason": "(no reason given)",
-        "t": "2026-07-19 18:34:49"
-      },
-      {
-        "ok": false,
-        "task": "Use helpers.getUnstuck() to escape the hole.",
-        "reason": "(no reason given)",
-        "t": "2026-07-19 19:07:34"
-      },
-      {
-        "ok": false,
-        "task": "Use the helpers.getUnstuck() function to escape the current hole and return to t",
-        "reason": "(no reason given)",
-        "t": "2026-07-19 19:12:14"
-      },
-      {
-        "ok": false,
-        "task": "Use the dig_out_and_hunt skill to escape the hole I am stuck in.",
-        "reason": "critic could not be parsed twice: no JSON found in: *   Task: Use `dig_out_and_hunt` to escape a hole.\n    *   Success C",
-        "t": "2026-07-19 21:12:27"
-      },
-      {
         "ok": true,
         "task": "Use dig_out_and_hunt to escape the hole I am currently stuck in.",
         "reason": "",
@@ -312,6 +282,36 @@
         "task": "Use helper skill 'getUnstuck' to dig down and escape the hole I am trapped in.",
         "reason": "critic could not be parsed twice: no JSON found in: *   Task: Use helper skill 'getUnstuck' to dig down and escape the h",
         "t": "2026-07-20 14:21:14"
+      },
+      {
+        "ok": false,
+        "task": "Mine the block below my current position to descend to Y=70 and escape the hole.",
+        "reason": "critic could not be parsed twice: no JSON found in: The agent's task was to \"Mine the block below my current position to",
+        "t": "2026-07-20 16:08:46"
+      },
+      {
+        "ok": false,
+        "task": "Escape the hole I am currently in by digging down or moving to an open area.",
+        "reason": "critic could not be parsed twice: no JSON found in: *   Task: Escape the hole by digging down or moving to an open area.",
+        "t": "2026-07-20 16:10:51"
+      },
+      {
+        "ok": false,
+        "task": "Mine the block below at (-116, 72, -89) to descend to Y=72 and escape the hole.",
+        "reason": "dug 1 blocks, no stone yet",
+        "t": "2026-07-20 16:13:06"
+      },
+      {
+        "ok": false,
+        "task": "Escape the hole by digging down to Y=63 and jumping up, or digging diagonally if",
+        "reason": "(no reason given)",
+        "t": "2026-07-20 16:14:17"
+      },
+      {
+        "ok": false,
+        "task": "Mine the block directly below at (-116, 72, -90) to descend to Y=72 and escape t",
+        "reason": "(no reason given)",
+        "t": "2026-07-20 16:23:18"
       }
     ],
     "ok": 1,
@@ -321,51 +321,51 @@
     "outcomes": [
       {
         "ok": false,
-        "task": "Navigate to the crafting table at (-118, 65, -85), craft a stone pickaxe using c",
+        "task": "Navigate to the grassy plains near the workshop (-117, 64, -91) to search for pa",
         "reason": "(no reason given)",
-        "t": "2026-07-20 13:31:35"
-      },
-      {
-        "ok": false,
-        "task": "Mine the dirt block directly below me to escape the hole and return to the surfa",
-        "reason": "(no reason given)",
-        "t": "2026-07-20 13:34:55"
-      },
-      {
-        "ok": false,
-        "task": "Mine the block directly above me to dig out of the hole and return to the surfac",
-        "reason": "critic could not be parsed twice: no JSON found in: {\"success\": false, \"confidence",
-        "t": "2026-07-20 13:40:20"
-      },
-      {
-        "ok": false,
-        "task": "Mine the dirt block directly below me to escape the hole and return to the surfa",
-        "reason": "critic could not be parsed twice: no JSON found in: {\"success\": false, \"confidence\": 1.0, \"reason\": \"The game state, inc",
-        "t": "2026-07-20 13:47:58"
+        "t": "2026-07-20 16:51:36"
       },
       {
         "ok": true,
-        "task": "Navigate to the crafting table at (-118, 65, -85), craft a chest from oak planks",
+        "task": "Navigate to the shared chest at (-117, 68, -91), open it, and check for torches.",
         "reason": "",
-        "t": "2026-07-20 13:51:47"
+        "t": "2026-07-20 16:53:13"
       },
       {
         "ok": false,
-        "task": "Mine the dirt block directly below me to escape the hole and return to the surfa",
-        "reason": "The agent failed to mine the block because it identified the block below as not being dirt, resulting in no change to th",
-        "t": "2026-07-20 14:00:18"
+        "task": "Mine the block at (-116, 71, -90) to descend to Y=71, then mine the block at (-1",
+        "reason": "The execution failed due to a syntax error in the generated code, resulting in no actions being performed.",
+        "t": "2026-07-20 17:00:44"
       },
       {
         "ok": false,
-        "task": "Navigate to the workshop area around (-117, 66, -91), use the wooden sword to hu",
-        "reason": "critic could not be parsed twice: no JSON found in: *   Task: Navigate to (-117, 66, -91), hunt passive mobs (chickens, ",
-        "t": "2026-07-20 14:01:27"
+        "task": "Mine the block at (-116, 68, -89) to descend to Y=67, then mine the block at (-1",
+        "reason": "critic could not be parsed twice: no JSON found in: *   Task: Mine block at (-116, 68, -89) to descend to Y=67, mine blo",
+        "t": "2026-07-20 17:05:01"
       },
       {
         "ok": false,
-        "task": "Navigate to the workshop area around (-117, 66, -91), use the wooden sword to hu",
-        "reason": "No passive mobs found",
-        "t": "2026-07-20 14:07:32"
+        "task": "Mine the block at (-116, 67, -89) to descend to Y=67, then mine the block at (-1",
+        "reason": "critic could not be parsed twice: no JSON found in: *   Task: Mine block at (-116, 67, -89) to descend to Y=67, then min",
+        "t": "2026-07-20 17:13:58"
+      },
+      {
+        "ok": false,
+        "task": "Navigate to the water source at (-84, 64, -80) to search for and hunt passive mo",
+        "reason": "(no reason given)",
+        "t": "2026-07-20 17:19:47"
+      },
+      {
+        "ok": false,
+        "task": "Navigate to the shared chest at (-117, 66, -91) and deposit all surplus wood, co",
+        "reason": "critic could not be parsed twice: no JSON found in: *   Task: Navigate to the shared chest at (-117, 66, -91) and deposi",
+        "t": "2026-07-20 17:26:43"
+      },
+      {
+        "ok": false,
+        "task": "Navigate to the water source at (-84, 64, -80) and hunt for passive mobs (chicke",
+        "reason": "(no reason given)",
+        "t": "2026-07-20 17:27:19"
       }
     ],
     "ok": 1,
@@ -429,12 +429,6 @@
     "outcomes": [
       {
         "ok": true,
-        "task": "Mine more cobblestone from the nearby stone blocks to build a surplus for the wo",
-        "reason": "",
-        "t": "2026-07-19 09:16:23"
-      },
-      {
-        "ok": true,
         "task": "Mine additional cobblestone from the nearby stone blocks to build a surplus for ",
         "reason": "",
         "t": "2026-07-19 09:17:33"
@@ -474,10 +468,16 @@
         "task": "Mine 10 more cobblestone blocks from the nearby ground to ensure sufficient raw ",
         "reason": "",
         "t": "2026-07-20 06:28:56"
+      },
+      {
+        "ok": false,
+        "task": "Mine cobblestone using the wooden pickaxe to get enough materials for a stone ho",
+        "reason": "The agent failed to mine cobblestone because it lacked a tool capable of mining stone, resulting in no materials to craf",
+        "t": "2026-07-20 15:10:04"
       }
     ],
-    "ok": 4,
-    "fail": 4
+    "ok": 3,
+    "fail": 5
   },
   "mine_coal": {
     "outcomes": [
@@ -522,10 +522,16 @@
         "task": "Dig a 2x2 shaft down to Y=62 to expose stone layers and search for coal ore.",
         "reason": "(no reason given)",
         "t": "2026-07-20 13:57:41"
+      },
+      {
+        "ok": false,
+        "task": "Mine 8 coal ore near the current location to replenish the community's fuel supp",
+        "reason": "The agent identified coal ore in the vicinity but failed to mine any into its inventory, leaving the coal_ore count at 0",
+        "t": "2026-07-20 15:12:03"
       }
     ],
     "ok": 2,
-    "fail": 5
+    "fail": 6
   },
   "gather_dirt": {
     "outcomes": [
@@ -597,36 +603,6 @@
     "outcomes": [
       {
         "ok": false,
-        "task": "Use the deposit_or_gather skill to deposit the 8 wheat and 13 wheat_seeds from m",
-        "reason": "The agent failed to deposit the items because it could not open the chest, as evidenced by the 'windowOpen did not fire'",
-        "t": "2026-07-20 03:04:46"
-      },
-      {
-        "ok": false,
-        "task": "Use the deposit_or_gather skill to deposit all wheat and wheat_seeds into the ne",
-        "reason": "The inventory remains unchanged because the agent failed to open the chest, as indicated by the 'deposit_failed' status ",
-        "t": "2026-07-20 03:50:48"
-      },
-      {
-        "ok": true,
-        "task": "Check for nearby passive mobs (chickens, cows, pigs) around the workshop (-117, ",
-        "reason": "",
-        "t": "2026-07-20 06:36:13"
-      },
-      {
-        "ok": true,
-        "task": "Use the gather_meat skill to check for nearby passive mobs (chickens, cows, pigs",
-        "reason": "",
-        "t": "2026-07-20 07:13:18"
-      },
-      {
-        "ok": false,
-        "task": "Mine the block directly above my head (at x=-138, y=71, z=-156) using my hands t",
-        "reason": "(no reason given)",
-        "t": "2026-07-20 08:08:27"
-      },
-      {
-        "ok": false,
         "task": "Use the gather_meat skill to locate and kill a nearby passive mob for raw meat, ",
         "reason": "The agent failed to find any passive mobs in the area, resulting in no meat being obtained or deposited.",
         "t": "2026-07-20 13:20:03"
@@ -642,64 +618,94 @@
         "task": "Use the gather_meat skill to check for nearby passive mobs (chickens, cows, pigs",
         "reason": "(no reason given)",
         "t": "2026-07-20 14:12:39"
+      },
+      {
+        "ok": false,
+        "task": "Use the gather_meat skill to check for nearby passive mobs (chickens, cows, pigs",
+        "reason": "No passive mobs found after wait",
+        "t": "2026-07-20 14:57:21"
+      },
+      {
+        "ok": false,
+        "task": "Mine the block below to descend to Y=67 and handle falling into deeper holes.",
+        "reason": "critic could not be parsed twice: no JSON found in: *   Task: Mine the block below to descend to Y=67 and handle falling",
+        "t": "2026-07-20 15:14:19"
+      },
+      {
+        "ok": false,
+        "task": "Mine the block below to descend to Y=67 and handle falling into deeper holes.",
+        "reason": "critic could not be parsed twice: no JSON found in: *   Task: Mine the block below to descend to Y=67 and handle falling",
+        "t": "2026-07-20 15:29:53"
+      },
+      {
+        "ok": false,
+        "task": "Mine the block below to descend to Y=67 and handle falling into deeper holes.",
+        "reason": "The agent failed to execute any code due to a syntax error in the generated script, resulting in no change to the game s",
+        "t": "2026-07-20 15:36:46"
+      },
+      {
+        "ok": true,
+        "task": "Navigate away from the water source to the grassy plains near the workshop (-117",
+        "reason": "",
+        "t": "2026-07-20 15:55:49"
       }
     ],
-    "ok": 2,
-    "fail": 6
+    "ok": 1,
+    "fail": 7
   },
   "place_torch": {
     "outcomes": [
       {
         "ok": false,
-        "task": "Navigate to the shared chest at (-117, 68, -91) to retrieve cobblestone walls an",
-        "reason": "runtime error: skill timed out after 90000ms",
-        "t": "2026-07-20 09:40:51"
+        "task": "Retrieve 20 torches from the shared chest at (-117, 68, -91), then navigate to p",
+        "reason": "The agent failed to retrieve torches because the chest was empty, resulting in no progress toward the navigation or buil",
+        "t": "2026-07-20 16:48:50"
+      },
+      {
+        "ok": true,
+        "task": "Craft torches from charcoal and sticks, then navigate to position (-168, 70, -12",
+        "reason": "",
+        "t": "2026-07-20 16:54:30"
       },
       {
         "ok": false,
-        "task": "Navigate to position (-158, 70, -127) to place a cobblestone_wall block extendin",
+        "task": "Navigate to position (-169, 70, -127) to place a cobblestone_wall block and a to",
         "reason": "runtime error: SYNTAX ERROR in generated code (Unexpected identifier 'previous'). The code did ",
-        "t": "2026-07-20 09:47:04"
+        "t": "2026-07-20 17:01:55"
+      },
+      {
+        "ok": true,
+        "task": "Navigate to position (-169, 70, -127) to place a cobblestone_wall block and a to",
+        "reason": "",
+        "t": "2026-07-20 17:03:05"
       },
       {
         "ok": false,
-        "task": "Navigate to position (-159, 70, -127) to place a cobblestone_wall block extendin",
-        "reason": "runtime error: skill timed out after 90000ms",
-        "t": "2026-07-20 09:51:40"
+        "task": "Navigate to the shared chest at (-117, 68, -91) to retrieve torches, then naviga",
+        "reason": "skill reported: Failed to withdraw fences",
+        "t": "2026-07-20 17:10:27"
       },
       {
         "ok": false,
-        "task": "Place a torch at (-117, 70, -92) to light the north wall section and prevent mob",
-        "reason": "runtime error: SYNTAX ERROR in generated code (Unexpected token '...'). The code did not parse.",
-        "t": "2026-07-20 09:59:09"
+        "task": "Navigate to position (-169, 70, -127) to place a cobblestone_wall block and a to",
+        "reason": "skill reported: craft_failed",
+        "t": "2026-07-20 17:16:06"
+      },
+      {
+        "ok": true,
+        "task": "Navigate to position (-169, 70, -127) to check if a cobblestone_wall block exist",
+        "reason": "",
+        "t": "2026-07-20 17:17:02"
       },
       {
         "ok": false,
-        "task": "Navigate to position (-117, 70, -91) and place a torch on the side of the existi",
-        "reason": "runtime error: skill timed out after 90000ms",
-        "t": "2026-07-20 10:12:52"
-      },
-      {
-        "ok": false,
-        "task": "Navigate to position (-158, 70, -127) to place a cobblestone_wall block extendin",
-        "reason": "runtime error: skill timed out after 90000ms",
-        "t": "2026-07-20 10:24:57"
-      },
-      {
-        "ok": false,
-        "task": "Navigate to position (-139, 70, -156) to place a cobblestone_wall block extendin",
-        "reason": "runtime error: skill timed out after 90000ms",
-        "t": "2026-07-20 11:07:13"
-      },
-      {
-        "ok": false,
-        "task": "Navigate to the shared chest at (-117, 68, -91) to retrieve cobblestone walls an",
-        "reason": "runtime error: SYNTAX ERROR in generated code (Unexpected token '{'). The code did not parse. C",
-        "t": "2026-07-20 13:11:35"
+        "task": "Continue extending the workshop perimeter wall westward from (-169, 70, -127) to",
+        "reason": "skill reported: Failed to place wall",
+        "t": "2026-07-20 17:25:58"
       }
     ],
-    "ok": 0,
-    "fail": 8
+    "ok": 3,
+    "fail": 5
   },
   "craft_torch": {
     "outcomes": [

@@ -39,6 +39,21 @@ BLACKBOARD = os.path.join(STATE_DIR, "blackboard.json")   # legacy path (migrati
 _bb_migrated = False
 _bb_migrate_lock = threading.Lock()
 
+
+# Adding logging for LLM Prompt token size to look at optimizing LLM performance
+def estimate_tokens(text):
+    """Rough token count: 1 token ≈ 0.75 words"""
+    if not text:
+        return 0
+    return len(str(text).split()) * 1.33
+
+def log_prompt_tokens(label, content):
+    """Log token count for a prompt section."""
+    tokens = estimate_tokens(content)
+    log(f"  📊 {label}: ~{tokens} tokens")
+    return tokens
+
+
 def _migrate_bb_once():
     global _bb_migrated
     with _bb_migrate_lock:
@@ -979,6 +994,12 @@ def run_bot(bot_cfg, start_delay=0.0):
             # you can watch for concurrency pressure as bot count grows.
             log("  " + llm.stats_line())
             log("  " + llm.stats_by_label())
+            
+            # Token accounting (optional debug), LLM performance tuning
+            propose_content = prompts.propose_prompt(...)  # build the prompt
+            total_tokens = sum(estimate_tokens(c["content"]) for c in propose_content)
+            log(f"  📊 PROPOSE PROMPT: ~{total_tokens} tokens")
+            
             time.sleep(config.PAUSE_BETWEEN)
         log(f"=== {username} run complete ===")
     except Exception as e:
