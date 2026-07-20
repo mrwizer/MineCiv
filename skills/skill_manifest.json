@@ -366,7 +366,7 @@
       "waypoint"
     ],
     "file": "navigate_to_landmark.js",
-    "uses": 236,
+    "uses": 239,
     "fails": 0,
     "revisions": 1,
     "retired": false,
@@ -435,7 +435,7 @@
     ],
     "file": "farm_cobblestone_hoe.js",
     "uses": 0,
-    "fails": 2,
+    "fails": 3,
     "revisions": 0,
     "retired": false,
     "sig": [

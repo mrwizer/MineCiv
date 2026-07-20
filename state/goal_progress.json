@@ -106,14 +106,6 @@
   "Rowan": {
     "steps": [
       {
-        "did": "Navigate to the water source at (-84, 64, -80), hunt for any nearby passive mobs (chickens, cows, pigs, salmon) for raw food, and deposit the food into the shared chest at (-117, 66, -91).",
-        "t": "2026-07-20 00:59"
-      },
-      {
-        "did": "Navigate to the water source at (-84, 64, -80) and use the wooden hoe to till the dirt blocks adjacent to the water to prepare farmland.",
-        "t": "2026-07-20 01:43"
-      },
-      {
         "did": "Navigate to the water source at (-84, 64, -80), equip the wheat seeds, and plant them on the tilled farmland blocks adjacent to the water.",
         "t": "2026-07-20 02:17"
       },
@@ -204,6 +196,14 @@
       {
         "did": "Craft a stone pickaxe from the 20 cobblestone in inventory, then use it to mine more cobblestone if needed to craft a stone sword, and hunt the nearby sheep for mutton.",
         "t": "2026-07-20 16:42"
+      },
+      {
+        "did": "Hunt for passive mobs (chickens, cows, pigs, salmon) near the water source at (-84, 64, -80) to gather raw food, then deposit it in the shared chest at (-117, 66, -91).",
+        "t": "2026-07-20 17:43"
+      },
+      {
+        "did": "Navigate to the grassy plains near the workshop (-117, 64, -91) and harvest tall grass to collect wheat seeds, then deposit any existing food in the shared chest at (-117, 66, -91).",
+        "t": "2026-07-20 17:43"
       }
     ]
   },
@@ -229,10 +229,6 @@
   },
   "Mason": {
     "steps": [
-      {
-        "did": "Navigate to the shelter foundation site at (-116, 69, -90) and place oak_planks to complete the foundation expansion.",
-        "t": "2026-07-20 14:50"
-      },
       {
         "did": "Navigate to the shelter foundation site at (-116, 69, -90) and place oak_planks to complete the foundation expansion.",
         "t": "2026-07-20 14:57"
@@ -328,6 +324,10 @@
       {
         "did": "Navigate to (-116, 71, -90) and place an oak_plank to complete the third block of the north wall, stacking on the block at (-116, 70, -90).",
         "t": "2026-07-20 17:07"
+      },
+      {
+        "did": "Navigate to (-116, 72, -89) and place an oak_plank to continue the north wall eastward from the corner at (-116, 72, -90).",
+        "t": "2026-07-20 17:45"
       }
     ]
   },

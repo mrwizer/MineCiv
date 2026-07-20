@@ -3,12 +3,6 @@
     "outcomes": [
       {
         "ok": false,
-        "task": "Use the craft_wooden_pickaxe skill to craft a wooden pickaxe and a wooden sword,",
-        "reason": "critic could not be parsed twice: no JSON found in: The agent was tasked to:\n    1. Use `craft_wooden_pickaxe` to craft ",
-        "t": "2026-07-20 11:47:27"
-      },
-      {
-        "ok": false,
         "task": "Use the gather_meat skill to hunt for nearby passive mobs (chickens, cows, pigs)",
         "reason": "No mobs found after waiting",
         "t": "2026-07-20 12:30:59"
@@ -48,10 +42,16 @@
         "task": "Craft a stone sword using the cobblestone in inventory, then hunt nearby passive",
         "reason": "(no reason given)",
         "t": "2026-07-20 16:47:07"
+      },
+      {
+        "ok": true,
+        "task": "Hunt for passive mobs (chickens, cows, pigs, salmon) near the water source at (-",
+        "reason": "",
+        "t": "2026-07-20 17:43:19"
       }
     ],
-    "ok": 1,
-    "fail": 7
+    "ok": 2,
+    "fail": 6
   },
   "craft_wooden_pickaxe": {
     "outcomes": [
@@ -111,24 +111,6 @@
     "outcomes": [
       {
         "ok": false,
-        "task": "continue building workshop perimeter",
-        "reason": "ran clean but no measurable progress",
-        "t": "2026-07-20 16:58:32"
-      },
-      {
-        "ok": false,
-        "task": "Navigate to (-116, 70, -91) and place an oak_plank to extend the north wall east",
-        "reason": "ran clean but no measurable progress",
-        "t": "2026-07-20 17:06:39"
-      },
-      {
-        "ok": true,
-        "task": "Navigate to (-116, 71, -90) and place an oak_plank to complete the third block o",
-        "reason": "",
-        "t": "2026-07-20 17:07:08"
-      },
-      {
-        "ok": false,
         "task": "continue building shelter foundation expansion",
         "reason": "ran clean but no measurable progress",
         "t": "2026-07-20 17:07:55"
@@ -156,6 +138,24 @@
         "task": "Continue building the north wall of the shelter foundation by placing oak_planks",
         "reason": "runtime error: SYNTAX ERROR in generated code (Unexpected token 'const'). The code did not pars",
         "t": "2026-07-20 17:25:24"
+      },
+      {
+        "ok": false,
+        "task": "Navigate to (-116, 71, -90) and place an oak_plank to continue the north wall up",
+        "reason": "skill reported: No oak_planks available",
+        "t": "2026-07-20 17:43:44"
+      },
+      {
+        "ok": false,
+        "task": "Navigate to (-116, 72, -89) and place an oak_plank to continue the north wall ea",
+        "reason": "ran clean but no measurable progress",
+        "t": "2026-07-20 17:45:07"
+      },
+      {
+        "ok": true,
+        "task": "Navigate to (-116, 72, -89) and place an oak_plank to continue the north wall ea",
+        "reason": "",
+        "t": "2026-07-20 17:45:29"
       }
     ],
     "ok": 1,
@@ -320,12 +320,6 @@
   "reach_location": {
     "outcomes": [
       {
-        "ok": false,
-        "task": "Navigate to the grassy plains near the workshop (-117, 64, -91) to search for pa",
-        "reason": "(no reason given)",
-        "t": "2026-07-20 16:51:36"
-      },
-      {
         "ok": true,
         "task": "Navigate to the shared chest at (-117, 68, -91), open it, and check for torches.",
         "reason": "",
@@ -366,10 +360,16 @@
         "task": "Navigate to the water source at (-84, 64, -80) and hunt for passive mobs (chicke",
         "reason": "(no reason given)",
         "t": "2026-07-20 17:27:19"
+      },
+      {
+        "ok": true,
+        "task": "Navigate to the grassy plains near the workshop (-117, 64, -91) and harvest tall",
+        "reason": "",
+        "t": "2026-07-20 17:43:38"
       }
     ],
-    "ok": 1,
-    "fail": 7
+    "ok": 2,
+    "fail": 6
   },
   "craft_stone_pickaxe": {
     "outcomes": [
@@ -656,12 +656,6 @@
   "place_torch": {
     "outcomes": [
       {
-        "ok": false,
-        "task": "Retrieve 20 torches from the shared chest at (-117, 68, -91), then navigate to p",
-        "reason": "The agent failed to retrieve torches because the chest was empty, resulting in no progress toward the navigation or buil",
-        "t": "2026-07-20 16:48:50"
-      },
-      {
         "ok": true,
         "task": "Craft torches from charcoal and sticks, then navigate to position (-168, 70, -12",
         "reason": "",
@@ -702,6 +696,12 @@
         "task": "Continue extending the workshop perimeter wall westward from (-169, 70, -127) to",
         "reason": "skill reported: Failed to place wall",
         "t": "2026-07-20 17:25:58"
+      },
+      {
+        "ok": false,
+        "task": "Place cobblestone_wall at (-170, 70, -127) and torch at (-170, 70, -127) to cont",
+        "reason": "runtime error: SYNTAX ERROR in generated code (Unexpected identifier 'previous'). The code did ",
+        "t": "2026-07-20 17:45:32"
       }
     ],
     "ok": 3,

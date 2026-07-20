@@ -75,11 +75,16 @@ def _migrate_bb_once():
             except Exception:
                 pass
 
+BLACKBOARD_NOTES = 15   # notes injected into every strategy prompt. Most-recent only:
+                        # live coordination (workshop coords, who's building what NOW)
+                        # is in the newest notes; older ones are stale and just cost
+                        # tokens. Was 30 — halved to trim the strategy prompt. Bump back
+                        # up if agents start losing useful shared context.
 def read_blackboard():
-    """Returns the same shape callers expect: {"notes":[...], ...}. Notes come
-    from the store (most-recent 30, oldest-first for readable prompt injection)."""
+    """Returns the same shape callers expect: {"notes":[...], ...}. Notes come from
+    the store (most-recent BLACKBOARD_NOTES, oldest-first for readable injection)."""
     _migrate_bb_once()
-    return {"notes": store.notes_recent(30), "structures": [], "needs": []}
+    return {"notes": store.notes_recent(BLACKBOARD_NOTES), "structures": [], "needs": []}
 
 def write_blackboard(bb):
     """Only used to reset the board. Clears store notes; ignores the vestigial

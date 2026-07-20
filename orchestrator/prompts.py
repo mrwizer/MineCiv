@@ -52,303 +52,185 @@ def compact_json(obj):
 #  failures — this is just the head start for the obvious stuff.)
 SEEDED_HAZARDS = """\
 KNOWN HAZARDS TO AVOID (general survival principles):
-- To reach a block BELOW you, descend in a staircase: step forward-and-down one at a
-  time so there is always a walk-back-up path. NEVER mine the block directly beneath
-  your feet or dig a vertical shaft — you fall into a pit you can't climb out of and
-  waste time escaping. If helpers.mobility().dropStraightDown grows past 1 while
-  descending, stop going down and go around or step back up.
-- PREFER ore you can reach WITHOUT descending: ore exposed in cave walls, ravines,
-  cliff faces, or at your own level. Going down to tunnel for ore should be a last
-  resort, not the first move — gather what's reachable on foot first.
-- Never dig straight up — falling gravel/sand can suffocate you, or you fall.
-- Gravel and sand fall when unsupported; don't stand under them or dig them from below.
-- Water/lava: don't dig into a block face you can't see behind near liquids; keep a
-  bucket or a block to wall off flows. Never path through lava.
-- Falling: don't walk off drops taller than 3 blocks; pillar down or find a slope.
-- Hunger: eat before food gets low; you can't sprint or regen while starving.
-- Night & mobs: if it's night or dark and you have no shelter/light, retreat or
-  wall yourself in rather than fighting in the open.
-- Dropped items despawn in ~5 minutes; collect what you mine promptly.
-- Don't propose or attempt impossible things: crafting items that don't exist,
-  using a recipe you lack materials/tools for, or Mineflayer API calls you're not
-  sure exist. Verify block/item names against mcData before relying on them.
-- Structures must be grounded and connected — don't build floating or disjoint blocks.
-- Never move by setting coordinates or teleporting — the server kicks you for
-  impossible movement. Travel only via pathfinder; climb via jump + placing blocks.
-- LEAVE NO TRAP: if you dig a pit or hole you (or others) could fall into and not
-  easily climb out of, fill it back with helpers.fillHole() before moving on, or
-  dig a staircase instead of a vertical shaft. A competent player cleans up hazards.
+- Reach a block BELOW you via a staircase (step forward-and-down, always a walk-back-up
+  path). NEVER mine directly beneath your feet or dig a vertical shaft — you trap
+  yourself. If mobility().dropStraightDown grows past 1 while descending, stop.
+- PREFER ore reachable WITHOUT descending (cave walls, ravines, cliffs, your own level).
+  Tunneling down for ore is a last resort — gather what's reachable on foot first.
+- Never dig straight up (falling gravel/sand suffocates you, or you fall).
+- Gravel/sand fall when unsupported — don't stand under them or dig them from below.
+- Near water/lava: don't dig into a face you can't see behind; wall off flows. Never
+  path through lava.
+- Don't walk off drops taller than 3 blocks; pillar down or find a slope.
+- Eat before food gets low — you can't sprint or regen while starving.
+- Night/dark with no shelter or light: retreat or wall yourself in, don't fight in the open.
+- Dropped items despawn in ~5 min; collect what you mine promptly.
+- Don't attempt impossible things (crafting nonexistent items, recipes you lack inputs/
+  tools for, unsure API calls). Verify names against mcData first.
+- Structures must be grounded and connected — no floating or disjoint blocks.
+- Never move by setting coordinates or teleporting (server kicks you). Travel via
+  pathfinder; climb via jump + placing blocks.
+- LEAVE NO TRAP: fill any pit/hole you dig with helpers.fillHole() before moving on, or
+  staircase instead of a vertical shaft.
 """
 
 CODE_CONTRACT = """\
-You write the BODY of an async Mineflayer function. Available in scope:
-  bot      - the mineflayer bot (already spawned, pathfinder loaded)
-  mcData   - minecraft-data for this version (mcData.blocksByName, itemsByName, ...)
-  Vec3     - the vec3 constructor: new Vec3(x,y,z)
-  goals    - pathfinder goals: goals.GoalNear, goals.GoalBlock, goals.GoalXZ ...
-  log      - log(msg) to send a debug line back to the orchestrator
-  helpers  - PREFER THESE over raw bot calls; they are tested and reliable:
+You write the BODY of an async Mineflayer function. In scope:
+  bot     - mineflayer bot (spawned, pathfinder loaded)
+  mcData  - minecraft-data (mcData.blocksByName, itemsByName, ...)
+  Vec3    - vec3 constructor: new Vec3(x,y,z)
+  goals   - pathfinder goals: goals.GoalNear, goals.GoalBlock, goals.GoalXZ ...
+  log     - log(msg) sends a debug line to the orchestrator
+  helpers - PREFER THESE over raw bot calls; tested and reliable:
       await helpers.gotoXYZ(x,y,z,range?)      travel via pathfinder
-      helpers.findBlocks(name,count,maxDist)   -> array of Vec3 positions
-      helpers.mobility()                       -> {surroundedAtFeet, dropStraightDown,
-                                                   likelyStuckInHole, canJumpUp,
-                                                   blockedSidesAtHead}
+      helpers.findBlocks(name,count,maxDist)   -> [Vec3]
+      helpers.mobility()  -> {surroundedAtFeet,dropStraightDown,likelyStuckInHole,
+                              canJumpUp,blockedSidesAtHead}
       helpers.invCount(name) / helpers.hasItem(name)   FRESH inventory (never stale)
       await helpers.equipItem(name)            -> true/false (won't throw)
-      await helpers.placeAt(x,y,z,name)        -> true/false, verifies placement.
-                                                  REQUIRES solid ground directly
-                                                  below (won't place floating in
-                                                  air). Use for tables/chests/
-                                                  furnaces ON THE GROUND.
-      await helpers.pillarUp(n,name?)          -> {ok,placed}  jump+place upward.
-                                                  ONLY for escaping when BURIED
-                                                  underground. NEVER on the surface
-                                                  (builds a useless dirt tower).
-      await helpers.getUnstuck()               -> {ok,method}  ESCAPE ANY bad spot
-                                                  (pit, cave, ravine): pathfinds to
-                                                  sky, digs out sideways, and only
-                                                  pillars/mines-up when truly buried.
-                                                  Use whenever mobility says stuck.
-      await helpers.escapeToSurface(targetY?)  -> {ok,method,y}  THE way out when
-                                                  BURIED/underground: mines straight
-                                                  up through ceilings, pillars up open
-                                                  shafts, verifies height each step,
-                                                  stops at open sky. Prefer this over
-                                                  writing your own pillar/dig loop —
-                                                  do NOT reimplement escape logic.
-      await helpers.collectBlock(name,count,maxDist)  -> {ok,collected,item,have}
-                                                  find+path+equip tool+dig+pickup.
-                                                  `collected` is the VERIFIED inventory
-                                                  gain — trust it, don't re-count yourself.
-                                                  USE THIS to gather wood/dirt/ore.
-      await helpers.acquireStone(count?,maxDist?)  -> {ok,status,collected,have}
-                                                  A CONVENIENCE that tries the common cases
-                                                  (mine where you stand, else walk to nearby
-                                                  exposed rock). It is NOT magic and it will
-                                                  NOT dig down for you. Read its status and
-                                                  DECIDE THE NEXT STEP YOURSELF:
-                                                    'got'          -> success (collected>0)
-                                                    'need_tool'    -> craft/equip a pickaxe
-                                                    'all_buried' / 'no_stone_here' ->
-                                                        NO exposed stone is reachable. This is
-                                                        NORMAL on grassy/plains terrain. Do what
-                                                        a human does: DIG DOWN to the rock. Call
-                                                        helpers.digStaircaseDown(8), then
-                                                        collectBlock('stone', count, 6).
-                                                    'blocked'      -> getUnstuck, then retry
-                                                  You are ENCOURAGED to compose your own approach
-                                                  from the primitives below rather than relying
-                                                  on acquireStone alone. If it keeps failing,
-                                                  STOP calling it and dig down instead.
-      await helpers.digStaircaseDown(maxDepth?)  -> {ok,hitStone,depth,reason,stoppedFor}
-                                                  THE human "no rock in sight, so dig down to
-                                                  it" move. Digs a safe, climbable staircase
-                                                  DOWN through dirt/grass until it reaches the
-                                                  stone layer (usually 3-6 blocks on plains),
-                                                  hits maxDepth, or stops for a hazard
-                                                  (lava/water/cavern — reported in stoppedFor).
-                                                  When hitStone is true you are AT the stone —
-                                                  just call collectBlock('stone', count, 6).
-                                                  This is the reliable way to get your FIRST
-                                                  cobblestone when nothing is exposed.
-      await helpers.findMineableStone(maxDist?)  -> {ok,status,x,y,z}. TRAVELS to the nearest
-                                                  EXPOSED stone (cliff/cave/hill) and stops
-                                                  next to it. Use when you can SEE rock is
-                                                  somewhere but not underfoot; otherwise dig
-                                                  down. You do NOT gotoXYZ afterward.
-      await helpers.collectAnyLog(count)       -> gather whatever wood species is
-                                                  nearest. USE THIS for wood — do NOT
-                                                  assume birch/oak/cherry; use what exists.
+      await helpers.placeAt(x,y,z,name)        -> true/false; verifies. Needs solid
+                                                  ground directly below (won't float).
+                                                  For tables/chests/furnaces on ground.
+      await helpers.pillarUp(n,name?)          -> {ok,placed}. Jump+place up. ONLY to
+                                                  escape when BURIED; NEVER on surface.
+      await helpers.getUnstuck()               -> {ok,method}. Escape ANY bad spot
+                                                  (pit/cave/ravine). Use when mobility
+                                                  says stuck.
+      await helpers.escapeToSurface(targetY?)  -> {ok,method,y}. THE way out when buried:
+                                                  mines/pillars up to open sky. Don't
+                                                  reimplement escape logic.
+      await helpers.collectBlock(name,count,maxDist)  -> {ok,collected,item,have}.
+                                                  find+path+equip+dig+pickup. `collected`
+                                                  is the VERIFIED gain — trust it, don't
+                                                  re-count. USE for wood/dirt/ore.
+      await helpers.acquireStone(count?,maxDist?)  -> {ok,status,collected,have}. Tries
+                                                  common cases; will NOT dig down. Read
+                                                  status, decide next step: 'got'=success;
+                                                  'need_tool'=craft/equip a pickaxe;
+                                                  'all_buried'/'no_stone_here'=no exposed
+                                                  stone (NORMAL on plains) -> call
+                                                  digStaircaseDown(8) then
+                                                  collectBlock('stone',count,6);
+                                                  'blocked'=getUnstuck then retry.
+      await helpers.digStaircaseDown(maxDepth?)  -> {ok,hitStone,depth,reason,stoppedFor}.
+                                                  Safe climbable staircase down to the
+                                                  stone layer (3-6 blocks on plains), or
+                                                  stops for a hazard (in stoppedFor).
+                                                  hitStone -> collectBlock('stone',count,6).
+      await helpers.findMineableStone(maxDist?)  -> {ok,status,x,y,z}. TRAVELS to nearest
+                                                  exposed stone and stops there. Do NOT
+                                                  gotoXYZ afterward.
+      await helpers.collectAnyLog(count)       -> gather nearest wood species. USE for
+                                                  wood; don't assume oak/birch/cherry.
       helpers.anyLogInInventory() / anyPlanksInInventory()  -> a species you HAVE, or null
-      await helpers.dig(target)                -> {ok}  dig one block; target may be a
-                                                  block name, a {x,y,z}, or a Block.
-      await helpers.craftItem(name,count)      -> {ok,crafted,count} or {ok:false,reason}
-                                                  On failure it reports EXACTLY what's
-                                                  missing (e.g. "missing: 3 cobblestone,
-                                                  2 stick") — read `reason`/`missing` and
-                                                  go acquire those prerequisites first.
-                                                  Does the FULL chain: if the recipe
-                                                  needs a table it will craft one (from
-                                                  planks), PLACE it, and use it — all
-                                                  automatically. USE THIS to craft
-                                                  anything; never call bot.craft directly
-                                                  and don't place tables yourself.
-      await helpers.depositToChest(items)      -> {ok,deposited,reason}. Put items
-                                                  INTO a shared chest (finds nearest,
-                                                  or places one if you hold a spare).
-                                                  items=[{name,count?}] — omit count
-                                                  to deposit ALL of that item. THIS is
-                                                  how a gatherer SUPPLIES the builders;
-                                                  don't just hoard in your inventory.
-      await helpers.withdrawFromChest(items)   -> {ok,withdrawn,reason}. Pull items
-                                                  FROM a shared chest into inventory.
-                                                  items=[{name,count?}].
-      await helpers.smelt(inputName,count?)    -> {ok,smelted,output,count,reason}
-                                                  THE way to smelt in a furnace. Does the
-                                                  WHOLE furnace operation safely: find or
-                                                  place a furnace, add fuel (uses coal/
-                                                  charcoal, else planks/logs), insert the
-                                                  input, wait, and take the output. NEVER
-                                                  call bot.openFurnace yourself — it crashes
-                                                  if the furnace block is missing; smelt()
-                                                  guards that. Smelts: cobblestone->stone,
-                                                  sand->glass, raw_iron->iron_ingot,
-                                                  any log->charcoal, etc.
-                                                  IMPORTANT: stone_bricks are CRAFTED, not
-                                                  smelted. To get stone bricks: smelt
-                                                  cobblestone->stone, THEN
-                                                  craftItem('stone_bricks').
-      await helpers.placeNearby(name)          -> true/false  place a block (e.g. chest,
-                                                  table) in a GOOD open spot beside you
-                                                  (auto-rejects trees/foliage/sand — a
-                                                  crafting table won't go in a tree).
-      await helpers.placeAtWorkshop(name, WORKSHOP)  -> {ok, noWorkshop?}  walk to the
-                                                  community workshop site and place the
-                                                  block there so shared infrastructure
-                                                  CLUSTERS. WORKSHOP is provided in scope
-                                                  (coords object, or null if none sited).
-                                                  If it returns {noWorkshop:true}, no
-                                                  workshop exists yet — see below.
-      helpers.goodSiteHere()                   -> {x,y,z} or null. A physics-valid spot
-                                                  for the workshop at your current
-                                                  location (solid ground, open, not in a
-                                                  tree). Used by the DECIDER to turn
-                                                  "here" into concrete buildable coords.
+      await helpers.dig(target)                -> {ok}. Dig one block (name/{x,y,z}/Block).
+      await helpers.craftItem(name,count)      -> {ok,crafted,count} | {ok:false,reason}.
+                                                  On failure reports EXACTLY what's missing
+                                                  (read reason/missing, get those first).
+                                                  Full chain: auto-crafts+places a table if
+                                                  needed. USE for all crafting; never
+                                                  bot.craft, don't place tables yourself.
+      await helpers.depositToChest(items)      -> {ok,deposited,reason}. items=[{name,count?}],
+                                                  omit count = deposit ALL. How a gatherer
+                                                  SUPPLIES builders; don't hoard.
+      await helpers.withdrawFromChest(items)   -> {ok,withdrawn,reason}. items=[{name,count?}].
+      await helpers.smelt(inputName,count?)    -> {ok,smelted,output,count,reason}. Full safe
+                                                  furnace op (finds/places furnace, fuels,
+                                                  waits, takes output). NEVER bot.openFurnace.
+                                                  Smelts cobblestone->stone, sand->glass,
+                                                  raw_iron->iron_ingot, log->charcoal. NOTE:
+                                                  stone_bricks are CRAFTED not smelted — smelt
+                                                  cobble->stone then craftItem('stone_bricks').
+      await helpers.placeNearby(name)          -> true/false. Place a block in a good open
+                                                  spot beside you (rejects trees/foliage/sand).
+      await helpers.placeAtWorkshop(name,WORKSHOP)  -> {ok,noWorkshop?}. Walk to the shared
+                                                  workshop and place there so infra CLUSTERS.
+                                                  WORKSHOP is in scope (coords or null);
+                                                  noWorkshop:true = none sited yet (see below).
+      helpers.goodSiteHere()                   -> {x,y,z}|null. Physics-valid workshop spot
+                                                  at your location (for the DECIDER).
       helpers.nearbyEntities(maxDist?)         -> [{name,type,kind,dist,pos,id}]
-      helpers.nearestHostile(maxDist?)         -> entity or null (for the protector)
-      await helpers.drop(name,count?)          -> give away/toss items (e.g. to share
-                                                  with another bot). NOT for "using up"
-                                                  materials — leftovers are fine.
-      helpers.groundY(x, z)                    -> {groundY, floorY, found}. The REAL
-                                                  ground surface Y at a column, in
-                                                  absolute world coords. floorY (=
-                                                  ground+1) is where a floor/first
-                                                  course goes. USE THIS instead of
-                                                  guessing a Y or doing math on the
-                                                  surfaceHeights grid — picking a Y
-                                                  that's inside the terrain makes every
-                                                  place fail ("didn't stick").
-      await helpers.buildBlocks(cells,name)    -> BUILD ANY SHAPE. cells is a list
-                                                  of {x,y,z} coords YOU design — a box,
-                                                  an L, walls with a door gap, a roof,
-                                                  any form. For FLOOR/footprint cells you
-                                                  may OMIT y ({x,z} only) and each lands
-                                                  on the real ground surface at that
-                                                  column automatically (no height math).
-                                                  Returns {placed,already,failed,
-                                                  failures:[{x,y,z,reason}]}.
-                                                  It handles physics for you: orders
-                                                  blocks bottom-up so none float, walks
-                                                  to each, and TELLS YOU per-cell why any
-                                                  failed (reason: no_support_neighbour,
-                                                  no_item, submerged, place_did_not_stick)
-                                                  so you fix your DESIGN and continue.
-                                                  This is your main build verb — compute
-                                                  the coordinates of the structure you
-                                                  reasoned out, then pass them here. You
-                                                  are NOT limited to straight lines.
-      await helpers.buildLine(start,'x'|'z',len,name)  -> convenience for the trivial
-                                                  case: one straight run along x or z.
-                                                  For anything else use buildBlocks.
-      await helpers.fillHole(name?)            -> {ok,filled}  fill a pit you dug
-                                                  (leave no trap behind)
-      -- PRIMITIVE VERBS (the mechanics; YOU choose the target/amount/place) --
-      await helpers.exploreFor(nameSubstr,opts?)  -> TRAVEL until a block type is in
-                                                  range (e.g. '_log','stone'). Use
-                                                  this when a gather fails with "none
-                                                  nearby" instead of retrying in place.
-      await helpers.equipBestToolFor(block)    -> equips the right tool for a block
-                                                  (name or Block). Call before mining.
-      await helpers.attack(target,opts?)       -> hit an entity until it's gone. Pass
-                                                  an entity (from nearbyEntities) or a
-                                                  name. YOU decide WHAT to attack.
-      await helpers.eat()                      -> eat if hungry (survival reflex).
-      await helpers.till(pos?)                 -> turn dirt/grass into farmland (needs
-                                                  a hoe). YOU decide WHERE.
-      await helpers.plant(seedName,pos?)       -> plant a seed on farmland. YOU decide
-                                                  WHAT crop and WHERE.
-      await helpers.harvest(cropName,maxDist?) -> break mature crops & collect. YOU
-                                                  decide WHEN and WHAT.
+      helpers.nearestHostile(maxDist?)         -> entity|null (for the protector)
+      await helpers.drop(name,count?)          -> give/toss items (e.g. share with a bot).
+      helpers.groundY(x,z)                     -> {groundY,floorY,found}. REAL ground surface
+                                                  Y (absolute coords); floorY=first-course Y.
+                                                  USE instead of guessing Y or doing math on
+                                                  the surfaceHeights grid.
+      await helpers.buildBlocks(cells,name)    -> BUILD ANY SHAPE. cells=[{x,y,z}] YOU design
+                                                  (box/L/walls-with-door-gap/roof/any form).
+                                                  FLOOR cells may OMIT y ({x,z}) to land on
+                                                  real ground automatically. Returns {placed,
+                                                  already,failed,failures:[{x,y,z,reason}]}.
+                                                  Orders bottom-up so none float; per-cell
+                                                  reason (no_support_neighbour/no_item/
+                                                  submerged/place_did_not_stick) so you fix
+                                                  the DESIGN. Your main build verb — NOT
+                                                  limited to straight lines.
+      await helpers.buildLine(start,'x'|'z',len,name)  -> one straight run. Else buildBlocks.
+      await helpers.fillHole(name?)            -> {ok,filled}. Fill a pit you dug (leave no trap).
+      -- PRIMITIVE VERBS (mechanics; YOU choose target/amount/place) --
+      await helpers.exploreFor(nameSubstr,opts?)  -> TRAVEL until a block type is in range
+                                                  (e.g. '_log','stone'). Use after "none nearby".
+      await helpers.equipBestToolFor(block)    -> equip the right tool (name/Block). Before mining.
+      await helpers.attack(target,opts?)       -> hit an entity until gone (entity or name).
+      await helpers.eat()                      -> eat if hungry.
+      await helpers.till(pos?)                 -> dirt/grass -> farmland (needs a hoe).
+      await helpers.plant(seedName,pos?)       -> plant a seed on farmland.
+      await helpers.harvest(cropName,maxDist?) -> break mature crops & collect.
 
 RULES:
-- YOUR JOB IS TO CHOOSE AND SEQUENCE, NOT TO RE-IMPLEMENT MECHANICS. The helpers
-  above are your hands — moving, mining, crafting, placing, tilling, attacking are
-  SOLVED. You do not write find/path/dig/craft loops. You decide WHAT to do, HOW
-  MUCH, WHERE, and IN WHAT ORDER, then call the matching helper. A good task body is
-  usually 3-10 helper calls with a little logic between them, checking each {ok}
-  result and reacting. If you find yourself hand-writing a loop over blocks or a raw
-  bot.* call, STOP — there is almost certainly a helper for it. Reserve real code for
-  genuinely NEW combinations the helpers don't cover.
-- BREVITY IS MANDATORY: keep the whole body UNDER 25 lines and under ~1500 chars.
-  Long code causes truncation and syntax errors. No long comments. No prose lines.
-  Write ONLY valid JavaScript statements — never put explanations as bare words.
-- Use `await` for every async op. Use the helpers above instead of raw bot.placeBlock
-  / bot.equip / reading bot.inventory directly — those are where failures happen.
-- If mobility() shows you're stuck (surroundedAtFeet>=3 or likelyStuckInHole),
-  your FIRST action must be `await helpers.getUnstuck()`.
-- Do NOT call process.exit, require(), setInterval, or connect to anything.
-- MOVEMENT: NEVER set bot.entity.position or teleport — the server kicks you.
-  Travel with helpers.gotoXYZ / pathfinder. To escape a bad spot use
-  helpers.getUnstuck() (it chooses the right method). Do NOT pillar up on the
-  surface to "get a better view" or "reach" something — build and stand on the
-  ground.
-- Only reference variables actually in scope (bot, mcData, Vec3, log, helpers, goals).
-  Do not invent variables like `mobility`, `state`, `Block`, or write bare words.
-- Verify blocks/items exist before using them (mcData.blocksByName[name], hasItem).
-- To GATHER wood/dirt/ore: use `await helpers.collectBlock(name, count)`.
-  To GATHER STONE/COBBLESTONE: use `await helpers.acquireStone(count)` — it relocates
-  to exposed rock for you and returns a `status` telling you the next move if it
-  came up short (need_tool / all_buried / no_stone_here / blocked). Do NOT hand-write
-  find/path/dig loops, and do NOT call findMineableStone then gotoXYZ yourself — they
-  time out or pass undefined coords. Gather small counts per task (e.g. 4-8), not 20
-  at once. The returned `collected` is the VERIFIED inventory gain — trust that number;
-  do NOT read inventory yourself to "confirm" (it can be stale and you'll wrongly think
-  you failed).
-- GATHERING WITHOUT BURYING YOURSELF: pathfinding is tuned to avoid deep drops, but
-  you still choose WHAT to target. Prefer the nearest source you can reach on foot or
-  by staircasing, not one straight below you. After gathering, if
-  helpers.mobility() shows surroundedAtFeet>=3 or likelyStuckInHole, call
-  `await helpers.getUnstuck()` before returning so you don't end the task in a pit.
-- WOOD SPECIES: never assume a species. Do NOT ask for birch/cherry/oak specifically.
-  Use `helpers.collectAnyLog(count)` to get whatever wood is nearby, and
-  `helpers.anyPlanksInInventory()` / `craftItem('<species>_planks')` with a species you
-  actually HAVE. craftItem will auto-substitute a species you own if you guess wrong.
-- To CRAFT: use `await helpers.craftItem(name, count)`; it finds/places a crafting
-  table if needed. Check {ok,reason}. Never call bot.craft or bot.recipesFor yourself.
-- TO BUILD ANY STRUCTURE (floor, wall, roof, enclosure): use
-  `await helpers.buildBlocks(cells, name)` — compute the FULL list of {x,y,z} cells
-  for the shape the task named and pass them in ONE call. Do NOT hand-write a loop of
-  placeAt calls. Get heights from `helpers.groundY(x,z)` (absolute world coords) or
-  omit `y` entirely on floor cells; NEVER do arithmetic on the surfaceHeights grid
-  (it is indexed by offset from the bot, not by world coordinate — that is what puts
-  blocks inside solid ground). Read the returned `failures[]` and fix the DESIGN;
-  never retry an identical failing coordinate. See BUILD RULES below.
-- COMMUNITY WORKSHOP (shared build site):
-  * WORKSHOP (an {x,y,z} object or null) and IS_DECIDER (true/false) are in scope.
-  * To place SHARED infrastructure (crafting_table, furnace, chest, etc.) when a
-    workshop EXISTS: `const r = await helpers.placeAtWorkshop('furnace', WORKSHOP);`
-    so it clusters at the site. If r.noWorkshop is true, no site exists yet.
-  * If you needed shared infrastructure but WORKSHOP is null and you are NOT the
-    decider: do the immediate work if you can (e.g. place a temporary table on good
-    ground with placeNearby), and RETURN a summary with `need_workshop:true` so the
-    group registers the demand. Do NOT found the workshop yourself.
-  * If IS_DECIDER is true and you are siting the workshop: move to/So stand on flat
-    open ground near where the group works, then `const site = helpers.goodSiteHere();`
-    and if site is not null, RETURN `{establish_workshop: site}` (optionally also
-    place the first table there). Choose sensibly — not in a tree, not on a cliff.
-- Only call helpers that exist in the list above. Do NOT invent names like
-  `helpers.nearbyBlockCensus`, `craftCraft`, `collectFromDistance`, `collect`, etc.
-  — that's an instant failure. If you need to gather, it is `helpers.collectBlock`
-  or `helpers.collectAnyLog`; there is no other collect method.
-- WHEN A GATHER FAILS WITH "none nearby" / "no logs of any species": do NOT retry
-  the same gather in place — the resource isn't here. Either the gather already
-  explored (collectAnyLog now travels automatically), or call
-  `await helpers.exploreFor('_log')` (or 'stone', etc.) yourself, THEN gather. Never
-  loop the same in-place collect that just reported nothing nearby.
-- To see mobs: `helpers.nearbyEntities()` / `helpers.nearestHostile()`. There is no
-  `nearbyEntities` variable — you must CALL the helper.
-- End by `return <summary>` — a small JSON object, e.g. {collected:'oak_log', count:3}.
-- Wrap risky lookups in guards; if you can't do the task, `return {error:'reason'}`.
+- CHOOSE AND SEQUENCE; don't re-implement mechanics. The helpers are your hands —
+  moving/mining/crafting/placing/tilling/attacking are SOLVED. Don't write find/path/
+  dig/craft loops. A good body is 3-10 helper calls with logic between, checking each
+  {ok}. If you're hand-writing a block loop or raw bot.* call, STOP — there's a helper.
+- BREVITY IS MANDATORY: body UNDER 25 lines and ~1500 chars. Long code truncates. No
+  long comments, no prose lines — ONLY valid JavaScript statements.
+- Use `await` for every async op. Prefer helpers over raw bot.placeBlock/bot.equip/
+  reading bot.inventory (those are where failures happen).
+- If mobility() shows stuck (surroundedAtFeet>=3 or likelyStuckInHole), your FIRST
+  action is `await helpers.getUnstuck()`.
+- No process.exit, require(), setInterval, or network connections.
+- MOVEMENT: NEVER set bot.entity.position or teleport (server kicks you). Travel via
+  gotoXYZ/pathfinder; escape via getUnstuck(). Do NOT pillar up on the surface.
+- Only reference in-scope vars (bot, mcData, Vec3, log, helpers, goals). Don't invent
+  variables like `mobility`, `state`, `Block`, or write bare words.
+- Verify blocks/items exist before use (mcData.blocksByName[name], hasItem).
+- GATHER wood/dirt/ore: `helpers.collectBlock(name,count)`. STONE/COBBLE:
+  `helpers.acquireStone(count)` — read its `status` for the next move; don't hand-write
+  find/path/dig loops or findMineableStone+gotoXYZ (they time out / pass undefined
+  coords). Gather small counts (4-8). Trust the returned `collected`; don't re-read
+  inventory to "confirm" (stale → false failure).
+- DON'T BURY YOURSELF: prefer the nearest source reachable on foot or by staircase, not
+  one straight below. After gathering, if mobility shows surroundedAtFeet>=3 or
+  likelyStuckInHole, call getUnstuck() before returning.
+- WOOD SPECIES: never assume one. Use `collectAnyLog(count)` and
+  `anyPlanksInInventory()` / `craftItem('<species>_planks')` with a species you HAVE
+  (craftItem auto-substitutes if you guess wrong).
+- CRAFT: `helpers.craftItem(name,count)` (finds/places a table). Check {ok,reason}.
+  Never bot.craft or bot.recipesFor.
+- BUILD any structure (floor/wall/roof/enclosure): `helpers.buildBlocks(cells,name)` —
+  compute the FULL {x,y,z} list in ONE call, don't loop placeAt. Heights from
+  `groundY(x,z)` or omit y on floor cells; NEVER do arithmetic on surfaceHeights (it is
+  indexed by offset from the bot, not world coords — that puts blocks inside terrain).
+  Read `failures[]` and fix the DESIGN; never retry an identical failing coordinate.
+- COMMUNITY WORKSHOP: WORKSHOP ({x,y,z} or null) and IS_DECIDER (true/false) in scope.
+  * Shared infra (crafting_table/furnace/chest) when a workshop EXISTS:
+    `const r = await helpers.placeAtWorkshop('furnace', WORKSHOP);` (r.noWorkshop=true
+    means none sited yet).
+  * Needed shared infra but WORKSHOP is null and you are NOT the decider: do the
+    immediate work if you can (placeNearby on good ground) and RETURN a summary with
+    `need_workshop:true`. Do NOT found the workshop yourself.
+  * IS_DECIDER siting it: stand on flat open ground near where the group works, then
+    `const site = helpers.goodSiteHere();` if site is not null RETURN
+    `{establish_workshop: site}` (optionally place the first table). Not in a tree/cliff.
+- Only call helpers that EXIST above. Don't invent names (nearbyBlockCensus, craftCraft,
+  collectFromDistance, collect) — instant failure. Gather = collectBlock/collectAnyLog only.
+- Gather failed "none nearby" / "no logs of any species": do NOT retry in place. Call
+  `helpers.exploreFor('_log')` (or 'stone', etc.) THEN gather. Never loop the same
+  in-place collect that reported nothing.
+- Mobs: `helpers.nearbyEntities()` / `helpers.nearestHostile()` — CALL the helper.
+- End with `return <summary>` — a small JSON object, e.g. {collected:'oak_log', count:3}.
+- Guard risky lookups; if you can't do the task, `return {error:'reason'}`.
 Return ONLY a ```javascript code block, nothing else.
 """
 

@@ -11,6 +11,76 @@ look if the next run misbehaves.
 
 ---
 
+## 2026-07-20 — v23: shrink LLM prompts ~40% (state + CODE_CONTRACT + hazards) and add per-call-type token logging
+
+Prompts had grown to ~9k+ tokens each, and on the single V100 actor box the prefill of
+that much context was a real slice of per-cycle latency (plus it crowded the KV cache).
+This session trims prompt size without removing any information the model actually uses,
+and adds visibility so the effect is measurable rather than guessed.
+
+### What
+
+**#1 — Slim the game state in actor prompts.** The raw snapshot was serialized with
+`json.dumps(state, indent=2)`. The single worst offender was `spatialMap.surfaceHeights`
+— an 11×11 int matrix that `indent=2` explodes onto ~130 lines (~500–800 tokens) for a
+grid the coder is explicitly told NOT to do math on (it uses `helpers.groundY()`); the
+ASCII `grid` already gives spatial sense, and the critic already stripped it for the same
+reason. New `slim_state()` / `state_json()` / `compact_json()` helpers drop
+`surfaceHeights` + the redundant `spatialMap.note`, filter zero-count inventory, and
+switch to compact (no-indent) JSON. Applied to the propose, code, and design prompts
+(design keeps `surfaceHeights` — it anchors structures to real ground). Observed:
+`strategy` prompts fell from ~9k to ~5k tokens.
+
+**#2 — Compress `CODE_CONTRACT`.** The helper contract in every code-gen + revise call
+was 5,553 tokens of verbose per-helper prose. Rewrote it to keep EVERY helper signature,
+return shape, and behavioral warning (trust `collected`, `acquireStone` won't dig down,
+never math on `surfaceHeights`, workshop protocol, etc.) but cut redundant examples and
+filler → **3,183 tokens (~2,370 saved per call)**. Helper-name diff vs HEAD confirms no
+helper was dropped.
+
+**#3 — Compress `SEEDED_HAZARDS`.** Same treatment: all 13 distinct survival principles
+kept, wording tightened → 525 → 384 tokens.
+
+**#4 — Cap blackboard notes 30 → 15** (`BLACKBOARD_NOTES`) in `read_blackboard()`.
+Most-recent only; live coordination is in the newest notes, older ones are stale.
+
+**#5 — Per-call-type token accounting.** `_chat()` now estimates prompt tokens
+(~4 chars/token) once per call and records them per label; `stats_by_label()` prints
+`~N ptok` alongside timing, e.g. `code-gen: 7x 40s avg, ~8097 ptok`. This is what makes
+the trims measurable live. Also removed a broken debug stub in `run_cycle` (left by an
+earlier edit) that called `prompts.propose_prompt(...)` with a literal `...` and an
+undefined `estimate_tokens` — it would have thrown every cycle if reached.
+
+### Why
+
+Net effect: a code-gen prompt drops from ~9.7k to ~5.6k tokens (~40%) and a strategy
+prompt from ~9k to ~4.6k, with no loss of helper capability, hazard coverage, or game
+state the model uses. Less prefill per call = faster slot turnover on the shared box.
+
+### Files
+`orchestrator/prompts.py` (`slim_state`/`state_json`/`compact_json`; propose/code/design
+state serialization; compressed `CODE_CONTRACT` + `SEEDED_HAZARDS`), `orchestrator/llm.py`
+(`_est_prompt_tokens`, `ptoks` in `_bump_label`/`_chat`/`stats_by_label`),
+`orchestrator/runner.py` (`BLACKBOARD_NOTES`, removed broken token-logging stub).
+
+### Verified
+`py_compile` on all three files. Measured before/after token counts: `CODE_CONTRACT`
+5,553 → 3,183, `SEEDED_HAZARDS` 525 → 384. Helper-name diff (`helpers.<name>` set) vs
+HEAD is identical (the two apparent diffs are `anyPlanksInInventory`, still on its
+signature line unprefixed, and `nearbyBlockCensus`, a don't-invent negative example — no
+real helper lost). A live `--debug` run after change #1 showed `strategy` prompts at
+~5k ptok (down from ~9k) via the new `by-type` log line.
+
+### Still unverified
+Not yet run live with #2–#4 applied. Watch the `by-type … ptok` numbers to confirm
+`code-gen` lands near ~5.6k, and watch that build/gather/craft success rates are
+unchanged (the compressed contract/hazards keep every rule, but confirm no regression in
+generated-code quality). The `SLOW code-gen` warnings in the last run were concurrency
+pressure on the single V100, not prompt length — smaller prefill should reduce them, but
+if code-gen stays routinely >60s the next lever is box saturation, not tokens.
+
+---
+
 ## 2026-07-18 — v22: cut LLM calls per cycle — skip critic on trusted work + continue builds without re-planning
 
 Bots stood idle ~78% of the time not because of threading (they're already fully
