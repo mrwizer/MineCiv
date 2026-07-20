@@ -994,12 +994,6 @@ def run_bot(bot_cfg, start_delay=0.0):
             # you can watch for concurrency pressure as bot count grows.
             log("  " + llm.stats_line())
             log("  " + llm.stats_by_label())
-            
-            # Token accounting (optional debug), LLM performance tuning
-            propose_content = prompts.propose_prompt(...)  # build the prompt
-            total_tokens = sum(estimate_tokens(c["content"]) for c in propose_content)
-            log(f"  📊 PROPOSE PROMPT: ~{total_tokens} tokens")
-            
             time.sleep(config.PAUSE_BETWEEN)
         log(f"=== {username} run complete ===")
     except Exception as e:

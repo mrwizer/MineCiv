@@ -1,6 +1,49 @@
 """prompts.py — system + user prompt builders for actor and critic."""
 import json
 
+
+# --- PROMPT-SIZE HELPERS -----------------------------------------------------
+# The single biggest, least-useful chunk of every actor prompt was the raw game
+# snapshot serialized with indent=2. Two things bloated it enormously:
+#   1. spatialMap.surfaceHeights — an 11x11 INT matrix. With indent=2, json.dumps
+#      puts every one of the ~121 integers on its OWN line (~130 lines, ~500-800
+#      tokens) for a grid the actor barely uses: the coder is explicitly told to
+#      use helpers.groundY() and NOT to do arithmetic on this grid (see
+#      CODE_CONTRACT), and the ASCII `grid` already gives spatial sense. The
+#      critic already strips this for the same reason (see critic_prompt).
+#   2. spatialMap.note — a ~100-token explainer the legend already covers.
+# Plus indent=2 itself inflates the whole object ~30% on whitespace.
+def slim_state(state, keep_heights=False):
+    """Return a NEW state dict trimmed for prompts (never mutates the live
+    snapshot): drop spatialMap.note and (unless keep_heights) surfaceHeights, and
+    filter zero-count inventory slots. keep_heights=True retains surfaceHeights for
+    the design prompt, which anchors structures to real ground."""
+    if not isinstance(state, dict):
+        return state
+    s = dict(state)
+    inv = s.get("inventory")
+    if isinstance(inv, dict):
+        s["inventory"] = {k: v for k, v in inv.items() if v}
+    sm = s.get("spatialMap")
+    if isinstance(sm, dict):
+        sm = dict(sm)
+        sm.pop("note", None)
+        if not keep_heights:
+            sm.pop("surfaceHeights", None)
+        s["spatialMap"] = sm
+    return s
+
+def state_json(state, keep_heights=False):
+    """Compact (no-indent) JSON of the slimmed state. Compact serialization saves
+    another ~30% over indent=2 with no loss of information — models read minified
+    JSON fine, and the ASCII grid rows stay intact as separate array strings."""
+    return json.dumps(slim_state(state, keep_heights), separators=(",", ":"))
+
+def compact_json(obj):
+    """Compact JSON for any prompt payload (e.g. the blackboard) — same tokens
+    saved as state_json, for objects that don't need the state-specific trimming."""
+    return json.dumps(obj, separators=(",", ":"))
+
 # --- SEEDED HAZARDS ---------------------------------------------------------
 # These are the PREDICTABLE ways a survival-Minecraft agent traps or kills
 # itself. Seed them once so the bots don't have to learn each the hard way.
@@ -400,10 +443,10 @@ PROGRESS YOU'VE MADE TOWARD THAT GOAL SO FAR:
 {progress}
 
 CURRENT GAME STATE:
-{json.dumps(state, indent=2)}
+{state_json(state)}
 
 SHARED BLACKBOARD (community notes from all agents):
-{json.dumps(blackboard, indent=2)}
+{compact_json(blackboard)}
 
 SHARED COMMUNITY INFRASTRUCTURE (built by ANY agent — this belongs to everyone):
 {community_structures}
@@ -554,7 +597,7 @@ STRUCTURE PURPOSE: {purpose}
 {cont}{anchor}
 CURRENT GAME STATE (use position, spatialMap.origin and surfaceHeights to anchor to
 REAL ground; do not invent a Y that floats inside or above terrain):
-{json.dumps(state, indent=2)}
+{state_json(state, keep_heights=True)}
 {build_block}
 LESSONS (obey):
 {lessons}
@@ -680,7 +723,7 @@ TASK: {task}
 SUCCESS LOOKS LIKE: {success_looks_like}
 
 CURRENT GAME STATE:
-{json.dumps(state, indent=2)}
+{state_json(state)}
 
 {SEEDED_HAZARDS}
 {build_block}{design_block}

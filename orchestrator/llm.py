@@ -179,10 +179,19 @@ def _bump(url, **deltas):
         for k, v in deltas.items():
             s[k] += v
 
-def _bump_label(label, dt, slow):
+def _bump_label(label, dt, slow, ptoks=0):
     with _stats_lock:
-        s = _label_stats.setdefault(label, {"calls": 0, "total_s": 0.0, "slow": 0})
+        s = _label_stats.setdefault(label, {"calls": 0, "total_s": 0.0, "slow": 0,
+                                            "ptoks": 0})
         s["calls"] += 1; s["total_s"] += dt; s["slow"] += (1 if slow else 0)
+        s["ptoks"] += ptoks
+
+def _est_prompt_tokens(messages):
+    """Cheap prompt-size estimate (~4 chars/token) so we can SEE which call type is
+    driving the token bill — no tokenizer dependency, good enough for tracking the
+    effect of prompt-trimming. For an EXACT count, POST the concatenated content to
+    the llama.cpp /tokenize endpoint; this heuristic is for continuous logging."""
+    return sum(len(m.get("content", "") or "") for m in messages) // 4
 
 def stats_snapshot():
     """Return a copy of per-endpoint stats for periodic logging by the runner."""
@@ -209,7 +218,8 @@ def stats_by_label():
         out = []
         for label, s in sorted(_label_stats.items()):
             avg = (s["total_s"] / s["calls"]) if s["calls"] else 0
-            out.append(f"{label}: {s['calls']}x {avg:.0f}s avg"
+            avg_t = (s["ptoks"] / s["calls"]) if s["calls"] else 0
+            out.append(f"{label}: {s['calls']}x {avg:.0f}s avg, ~{avg_t:.0f} ptok"
                        + (f" ({s['slow']} slow)" if s["slow"] else ""))
         return "by-type — " + " | ".join(out) if out else "by-type — (none)"
 
@@ -251,6 +261,9 @@ def _chat(endpoint, messages, temperature=0.6, max_tokens=2048, think=None, labe
     # A reasoning call is EXPECTED to be slow; a mechanical one is not. Pick the
     # threshold accordingly so alerts mean something.
     slow_threshold = SLOW_REASON_S if do_think else SLOW_MECH_S
+    # Prompt-size estimate is constant across retries (messages don't change), so
+    # compute it once here and record it per label on success.
+    ptoks = _est_prompt_tokens(messages)
     with gate["sem"]:
         last_err = None
         for attempt in range(1, MAX_ATTEMPTS + 1):
@@ -282,7 +295,7 @@ def _chat(endpoint, messages, temperature=0.6, max_tokens=2048, think=None, labe
                 dt = time.time() - t0
                 _bump(url, calls=1, total_s=dt)
                 is_slow = dt > slow_threshold
-                _bump_label(label, dt, is_slow)
+                _bump_label(label, dt, is_slow, ptoks)
                 if is_slow:
                     _bump(url, slow=1)
                     kind = "reasoning" if do_think else "mechanical"
