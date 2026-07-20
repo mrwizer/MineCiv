@@ -9,10 +9,8 @@ const passive = entities.find(e => e.type === 'mob' && ['chicken', 'pig', 'cow',
 
 if (passive) {
   await helpers.equipItem('wooden_sword');
-  // Ensure we are close enough to attack
   await helpers.gotoXYZ(passive.pos.x, passive.pos.y, passive.pos.z, 2);
   await helpers.attack(passive);
-  // Collect drops (meat/seeds)
   const result = await helpers.collectBlock(passive.kind, 5);
   if (result.collected > 0) {
     return { status: 'hunted', mob: passive.kind, collected: result.collected };
@@ -20,7 +18,6 @@ if (passive) {
 }
 
 // 3. Fallback: Forage seeds from grass
-// Check for tall grass and short grass
 const grasses = helpers.findBlocks('tall_grass', 10, 8).concat(helpers.findBlocks('short_grass', 10, 8));
 if (grasses.length > 0) {
   const target = grasses[0];

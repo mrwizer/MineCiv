@@ -576,6 +576,18 @@ DESIGN RULES:
   If your first cell list fails its own purpose, FIX the cells before returning.
   Put the outcome of that check in "review".
 
+  - PHYSICS VALIDATION CHECKLIST — before returning, verify your cells pass ALL of these:
+  1. SUPPORT CHECK: Every cell that is NOT on the ground layer must have another
+     cell in your design directly below it (y-1) OR beside it as a support. No floating blocks.
+  2. GROUND ANCHORING: Floor/footprint cells should either omit 'y' (letting helpers
+     place them on actual ground) or use groundY(x,z) to find the real surface.
+  3. ENCLOSURE CHECK (for shelter purpose): Walk the perimeter — are all 4 sides
+     present? Is there a roof covering the top? Is there exactly ONE 1-block gap for a door?
+  4. CONTINUITY CHECK (for wall purpose): The wall forms a continuous barrier with
+     no gaps wider than 1 block. Check each segment connects to the next.
+  5. BUILD ORDER: Your cells can be ordered bottom-up (lower Y first). If a cell
+     requires another to exist first, that supporting cell must be in your list.
+  
 Reply with ONLY this JSON (no prose, no code fences):
 {{"name": "<short structure name, e.g. 'north wall' or 'starter hut'>",
   "purpose": "<shelter|wall|storage|lighting|path|decoration|other>",
@@ -587,7 +599,8 @@ Reply with ONLY this JSON (no prose, no code fences):
 
 
 def code_prompt(task, success_looks_like, state, attempt_history=None,
-                total_attempts=1, lessons="(none)", build_rules="", design=None):
+                total_attempts=1, lessons="(none)", build_rules="", design=None,
+                structure_purpose=""):
     """attempt_history: list of {attempt, code, error, stack, critic_reason}.
     Showing the model its OWN prior code + every failure is what stops it from
     regenerating the same broken code.
@@ -671,6 +684,7 @@ CURRENT GAME STATE:
 
 {SEEDED_HAZARDS}
 {build_block}{design_block}
+{structure_purpose}
 LESSONS YOU AND OTHER AGENTS LEARNED FROM PAST FAILURES (obey these):
 {lessons}
 {history_block}{escalation}

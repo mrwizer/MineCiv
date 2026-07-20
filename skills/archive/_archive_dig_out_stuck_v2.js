@@ -6,11 +6,12 @@ if (res.ok) {
   return { status: 'escaped', method: 'getUnstuck' };
 }
 
-log('getUnstuck failed. Checking state.');
+log('getUnstuck failed or incomplete. Verifying current state.');
 const mob = helpers.mobility();
 
 // 2. If still buried (block above), pillar up to break surface
 if (mob.surroundedAtFeet >= 3 || mob.likelyStuckInHole) {
+  // Ensure we have a pillar block. Default to dirt if empty.
   let pillarBlock = 'dirt';
   if (!helpers.hasItem(pillarBlock)) {
     // Try to find dirt nearby or use whatever is in inventory

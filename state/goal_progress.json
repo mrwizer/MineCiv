@@ -2,68 +2,208 @@
   "Garrick": {
     "steps": [
       {
-        "did": "Gather oak logs and craft a wooden pickaxe to enable stone mining.",
-        "t": "2026-07-19 08:39"
+        "did": "Navigate to position (-139, 68, -127) to resume work on the workshop perimeter wall.",
+        "t": "2026-07-20 03:26"
       },
       {
-        "did": "Gather oak logs and craft a wooden pickaxe to enable stone mining.",
-        "t": "2026-07-19 09:08"
+        "did": "Navigate to position (-139, 68, -127) and place a cobblestone_wall block to extend the workshop perimeter wall westward to (-140, 68, -127), then place a torch at (-140, 68, -127) to light the new section.",
+        "t": "2026-07-20 03:43"
       },
       {
-        "did": "Craft a wooden pickaxe from oak logs and sticks, then craft a crafting table to enable stone mining and advanced crafting.",
-        "t": "2026-07-19 09:11"
+        "did": "Navigate to position (-141, 68, -127) and place a cobblestone_wall block to extend the workshop perimeter wall westward from (-140, 68, -127) to (-141, 68, -127), then place a torch at (-141, 68, -127) to light the new section.",
+        "t": "2026-07-20 03:55"
       },
       {
-        "did": "Mine 10 cobblestone using the wooden pickaxe, then craft a stone pickaxe.",
-        "t": "2026-07-19 09:16"
+        "did": "Navigate to position (-141, 68, -127) and place a cobblestone_wall block to extend the workshop perimeter wall westward from (-141, 68, -127) to (-142, 68, -127), then place a torch at (-142, 68, -127) to light the new section.",
+        "t": "2026-07-20 04:05"
       },
       {
-        "did": "Mine stone blocks to expose and collect coal ore, then craft a stone sword for defense.",
-        "t": "2026-07-19 09:27"
+        "did": "Navigate to position (-142, 68, -127) and place a cobblestone_wall block to extend the workshop perimeter wall westward from (-142, 68, -127) to (-143, 68, -127), then place a torch at (-143, 68, -127) to light the new section.",
+        "t": "2026-07-20 04:13"
       },
       {
-        "did": "Craft stone swords and torches to prepare for perimeter defense, then restart the perimeter wall construction using cobblestone walls (walls) instead of fences.",
-        "t": "2026-07-19 11:12"
+        "did": "Navigate to position (-144, 68, -127) and place a cobblestone_wall block to extend the workshop perimeter wall westward from (-143, 68, -127) to (-144, 68, -127), then place a torch at (-144, 68, -127) to light the new section.",
+        "t": "2026-07-20 04:13"
       },
       {
-        "did": "Continue building the workshop perimeter wall using the existing design.",
-        "t": "2026-07-19 11:19"
+        "did": "Navigate to the workshop at (-117, 68, -91) to retrieve more cobblestone and torches from the shared chests.",
+        "t": "2026-07-20 04:14"
       },
       {
-        "did": "Continue building the workshop perimeter wall using the existing design, but ensure the code explicitly crafts 'cobblestone_wall' items from cobblestone and sticks if not already present, and places them one by one with position verification.",
-        "t": "2026-07-19 11:29"
+        "did": "Navigate to position (-145, 68, -127) and place a cobblestone_wall block to extend the workshop perimeter wall westward from (-144, 68, -127) to (-145, 68, -127), then place a torch at (-145, 68, -127) to light the new section.",
+        "t": "2026-07-20 04:28"
       },
       {
-        "did": "Continue placing cobblestone walls to extend the workshop perimeter defensive line from the current position.",
-        "t": "2026-07-19 11:40"
+        "did": "Navigate to position (-146, 68, -127) and place a cobblestone_wall block to extend the workshop perimeter wall westward from (-145, 68, -127) to (-146, 68, -127), then place a torch at (-146, 68, -127) to light the new section.",
+        "t": "2026-07-20 04:33"
+      },
+      {
+        "did": "Navigate to the shared chest at (-117, 68, -91), retrieve cobblestone and torches (or coal/planks to craft torches if available), then return to position (-147, 68, -127) and place a cobblestone_wall block to extend the workshop perimeter wall westward from (-146, 68, -127) to (-147, 68, -127), followed by placing a torch at (-147, 68, -127) to light the new section.",
+        "t": "2026-07-20 04:46"
+      },
+      {
+        "did": "Navigate to the wandering trader near the workshop. If possible, trade for torches or coal. If trading is not viable or fails, navigate to the shared chest at (-117, 68, -91) and deposit 20 oak_planks and 20 sticks to stockpile basic materials for the community while I reassess the lighting situation.",
+        "t": "2026-07-20 05:17"
+      },
+      {
+        "did": "Navigate to position (-148, 68, -127) and place a cobblestone_wall block to extend the workshop perimeter wall westward from (-147, 68, -127) to (-148, 68, -127), then place a torch at (-148, 68, -127) to light the new section.",
+        "t": "2026-07-20 05:20"
       },
       {
         "did": "continue building workshop perimeter",
-        "t": "2026-07-19 11:41"
+        "t": "2026-07-20 05:22"
       },
       {
-        "did": "Navigate to the end of the existing workshop perimeter wall segment at (-92, 68, -127), look at the adjacent block to the west at (-93, 68, -127), and place one cobblestone_wall there to extend the defensive line.",
-        "t": "2026-07-19 11:50"
+        "did": "continue building workshop perimeter",
+        "t": "2026-07-20 05:23"
+      },
+      {
+        "did": "Navigate to the shared chest at (-117, 68, -91) to retrieve cobblestone and torches, then return to position (-149, 68, -127) to place a cobblestone_wall block and a torch, extending the workshop perimeter westward.",
+        "t": "2026-07-20 05:31"
+      },
+      {
+        "did": "Navigate to the shared chest at (-117, 68, -91) to retrieve cobblestone walls and torches, then return to position (-151, 70, -127) to place a cobblestone_wall block to extend the workshop perimeter westward, followed by placing a torch at (-151, 70, -127) to light the new section.",
+        "t": "2026-07-20 05:37"
+      },
+      {
+        "did": "Navigate to the shared chest at (-117, 68, -91), retrieve cobblestone walls and torches, then return to position (-152, 70, -127) to place a cobblestone_wall block and a torch, extending the workshop perimeter westward.",
+        "t": "2026-07-20 05:42"
+      },
+      {
+        "did": "Navigate to the shared chest at (-117, 68, -91) to ensure I have cobblestone walls and torches, then move to position (-153, 70, -127) to place a cobblestone_wall block extending the perimeter wall westward from (-152, 70, -127), and place a torch at (-153, 70, -127) to light the new section.",
+        "t": "2026-07-20 05:46"
+      },
+      {
+        "did": "Navigate to the shared chest at (-117, 68, -91) to retrieve a large supply of cobblestone walls and torches, ensuring I have enough to continue the perimeter build for multiple steps.",
+        "t": "2026-07-20 05:52"
+      },
+      {
+        "did": "Navigate to position (-154, 70, -127) to place a cobblestone_wall block extending the perimeter wall westward from (-153, 70, -127), and place a torch at (-154, 70, -127) to light the new section.",
+        "t": "2026-07-20 05:53"
+      },
+      {
+        "did": "continue building workshop perimeter",
+        "t": "2026-07-20 05:55"
+      },
+      {
+        "did": "Navigate to the shared chest at (-117, 68, -91), retrieve 20 cobblestone walls and 10 torches, then navigate to position (-155, 70, -127) to place a cobblestone_wall block extending the perimeter wall westward from (-154, 70, -127), and place a torch at (-155, 70, -127) to light the new section.",
+        "t": "2026-07-20 05:56"
+      },
+      {
+        "did": "Navigate to position (-156, 70, -127) to place a cobblestone_wall block extending the perimeter wall westward from (-155, 70, -127), and place a torch at (-156, 70, -127) to light the new section.",
+        "t": "2026-07-20 06:02"
+      },
+      {
+        "did": "Navigate to position (-157, 70, -127) to place a cobblestone_wall block extending the perimeter wall westward from (-156, 70, -127), and place a torch at (-157, 70, -127) to light the new section.",
+        "t": "2026-07-20 06:12"
+      },
+      {
+        "did": "Mine the dirt block at (-138, 70, 155) to the south to create an exit path, then navigate to the surface and return to the workshop perimeter build.",
+        "t": "2026-07-20 09:26"
       }
     ]
   },
   "Rowan": {
     "steps": [
       {
-        "did": "Collect an oak log using the collect_any_log skill.",
-        "t": "2026-07-19 08:41"
+        "did": "Navigate to nearby water bodies and break tall grass to collect wheat seeds; if no seeds are found, hunt nearby passive mobs for food.",
+        "t": "2026-07-19 12:10"
       },
       {
-        "did": "Craft a wooden pickaxe from the oak planks and sticks in inventory.",
-        "t": "2026-07-19 10:53"
+        "did": "Navigate to the water source at (-84, 64, -80) and use the stone hoe to till the adjacent dirt blocks to prepare farmland.",
+        "t": "2026-07-19 12:30"
       },
       {
-        "did": "Craft a wooden hoe and use it to till nearby dirt blocks near water to prepare farmland.",
-        "t": "2026-07-19 11:15"
+        "did": "Use the collect_wood skill to locate and harvest 5 wood logs, then craft planks and sticks to enable tool crafting.",
+        "t": "2026-07-19 17:58"
       },
       {
-        "did": "Navigate to the nearby water body and break tall grass to collect wheat seeds. If no seeds are found or the area is empty, attack any nearby passive mobs (chickens, cows, pigs) for raw food.",
-        "t": "2026-07-19 11:51"
+        "did": "Navigate to the crafting table at (-87, 61, -81), craft a stone hoe if possible (requires cobblestone and sticks), and then till the dirt blocks adjacent to the water at (-84, 64, -80) to prepare farmland. If stone hoe crafting fails due to lack of cobblestone, craft a wooden hoe and till the land.",
+        "t": "2026-07-19 18:20"
+      },
+      {
+        "did": "Navigate to the nearby crafting table at (-87, 65, -81), craft sticks from oak planks, and craft a stone pickaxe using any available cobblestone (or mine for it if needed). Then, return to the water source at (-84, 64, -80) and break tall grass to collect wheat seeds. If no seeds are found, hunt nearby passive mobs for raw food.",
+        "t": "2026-07-19 20:10"
+      },
+      {
+        "did": "Mine cobblestone using the stone pickaxe to secure resources for future tool upgrades or food processing, then attempt to craft a better hoe or simply wait for passive mobs to spawn nearby for hunting.",
+        "t": "2026-07-19 20:30"
+      },
+      {
+        "did": "Navigate to the nearby water source at (-84, 64, -80), break tall grass to collect wheat seeds, and if none are found, hunt the nearby salmon for raw food.",
+        "t": "2026-07-19 20:35"
+      },
+      {
+        "did": "Navigate to the water source at (-84, 64, -80) using the navigate_to_landmark skill. Once there, use the wooden hoe to till any untiled dirt blocks adjacent to the water, and then plant the wheat seeds on the tilled farmland.",
+        "t": "2026-07-19 21:07"
+      },
+      {
+        "did": "Navigate to the water source at (-84, 64, -80), stand adjacent to the tilled farmland block, and place the wheat seeds on it.",
+        "t": "2026-07-19 23:04"
+      },
+      {
+        "did": "Use dig_out_and_hunt to escape the hole I am currently stuck in.",
+        "t": "2026-07-19 23:55"
+      },
+      {
+        "did": "Navigate to the water source at (-84, 64, -80), hunt for any nearby passive mobs (chickens, cows, pigs, salmon) for raw food, and deposit the food into the shared chest at (-117, 66, -91).",
+        "t": "2026-07-20 00:59"
+      },
+      {
+        "did": "Navigate to the water source at (-84, 64, -80) and use the wooden hoe to till the dirt blocks adjacent to the water to prepare farmland.",
+        "t": "2026-07-20 01:43"
+      },
+      {
+        "did": "Navigate to the water source at (-84, 64, -80), equip the wheat seeds, and plant them on the tilled farmland blocks adjacent to the water.",
+        "t": "2026-07-20 02:17"
+      },
+      {
+        "did": "Navigate to the water source at (-84, 64, -80) and use the wooden hoe to place the wheat seeds on the tilled farmland blocks adjacent to the water.",
+        "t": "2026-07-20 02:18"
+      },
+      {
+        "did": "Navigate to the water source at (-84, 64, -80) and plant the wheat seeds on the tilled farmland blocks to establish the farm.",
+        "t": "2026-07-20 03:05"
+      },
+      {
+        "did": "Navigate to the water source at (-84, 64, -80) and check the status of the tilled farmland; if wheat has grown, harvest it, otherwise till more adjacent dirt blocks to expand the farm.",
+        "t": "2026-07-20 03:10"
+      },
+      {
+        "did": "Navigate to the water source at (-84, 64, -80).",
+        "t": "2026-07-20 04:02"
+      },
+      {
+        "did": "Gather wood logs to craft a wooden pickaxe and basic tools, enabling me to mine stone and eventually resume farming or hunting effectively.",
+        "t": "2026-07-20 04:04"
+      },
+      {
+        "did": "Navigate to the water source at (-84, 64, -80), hunt for any nearby passive mobs (chickens, cows, pigs, salmon) for raw food, and deposit the food into the shared chest at (-117, 66, -91).",
+        "t": "2026-07-20 04:20"
+      },
+      {
+        "did": "Navigate to the water source at (-84, 64, -80), hunt for any nearby passive mobs (chickens, cows, pigs, salmon) for raw food, and deposit the food into the shared chest at (-117, 66, -91).",
+        "t": "2026-07-20 04:34"
+      },
+      {
+        "did": "Check for nearby passive mobs (chickens, cows, pigs) around the workshop (-117, 64, -91). If found, kill one and deposit the raw meat into the shared chest at (-117, 66, -91). If no mobs are found, wait 10 seconds and check again.",
+        "t": "2026-07-20 06:36"
+      },
+      {
+        "did": "Use the gather_meat skill to check for nearby passive mobs (chickens, cows, pigs) around the workshop (-117, 64, -91). If found, kill one and deposit the raw meat into the shared chest at (-117, 66, -91). If no mobs are found, wait 10 seconds and check again.",
+        "t": "2026-07-20 07:13"
+      },
+      {
+        "did": "Navigate to the nearest oak tree and collect 5 wood logs using the collect_wood skill.",
+        "t": "2026-07-20 11:12"
+      },
+      {
+        "did": "Use the equip_wooden_tools skill to craft a wooden pickaxe and sword from the oak logs and planks in inventory, enabling hunting or mining.",
+        "t": "2026-07-20 13:04"
+      },
+      {
+        "did": "Navigate to the crafting table at (-118, 65, -85), craft a chest from oak planks, and then use the wooden sword to hunt for nearby passive mobs (chickens, cows, pigs) to gather raw food for the community.",
+        "t": "2026-07-20 13:51"
       }
     ]
   },
@@ -90,24 +230,104 @@
   "Mason": {
     "steps": [
       {
-        "did": "Gather 5 wood logs and craft a wooden pickaxe",
-        "t": "2026-07-19 08:59"
+        "did": "Navigate to (-115, 69, -92) and place a cobblestone_wall block to extend the west wall of the storage building.",
+        "t": "2026-07-20 12:52"
       },
       {
-        "did": "Gather 5 wood logs and craft a wooden pickaxe",
-        "t": "2026-07-19 09:15"
+        "did": "Navigate to (-115, 69, -90) and place a cobblestone_wall block to complete the north-west corner of the storage building's first floor.",
+        "t": "2026-07-20 12:53"
       },
       {
-        "did": "Mine 10 cobblestone using the wooden pickaxe, then craft a stone pickaxe.",
-        "t": "2026-07-19 09:34"
+        "did": "Navigate to (-114, 69, -91) and place a cobblestone_wall block to complete the north wall of the storage building's first floor.",
+        "t": "2026-07-20 12:57"
       },
       {
-        "did": "Mine at least 20 cobblestone to prepare materials for the stone storage building.",
-        "t": "2026-07-19 11:13"
+        "did": "Navigate to (-116, 69, -90) and place 1 oak_plank to complete the shelter foundation expansion.",
+        "t": "2026-07-20 12:59"
       },
       {
-        "did": "Claim the community_storage_hub slot and place the chest to establish the storage foundation.",
-        "t": "2026-07-19 11:59"
+        "did": "Navigate to (-114, 69, -90) and place a cobblestone_wall block to complete the north-east corner of the storage building's first floor.",
+        "t": "2026-07-20 13:01"
+      },
+      {
+        "did": "Navigate to (-115, 69, -92) and place a cobblestone_wall block to continue the west wall of the storage building.",
+        "t": "2026-07-20 13:04"
+      },
+      {
+        "did": "Mine cobblestone to replenish wall materials",
+        "t": "2026-07-20 13:07"
+      },
+      {
+        "did": "Navigate to (-114, 69, -92) and place a cobblestone_wall block to continue the west wall of the storage building.",
+        "t": "2026-07-20 13:08"
+      },
+      {
+        "did": "Navigate to (-114, 70, -92) and place a cobblestone_wall block to continue the west wall of the storage building upwards.",
+        "t": "2026-07-20 13:11"
+      },
+      {
+        "did": "continue building shelter foundation expansion",
+        "t": "2026-07-20 13:12"
+      },
+      {
+        "did": "Navigate to (-115, 68, -91) and survey the area for the storage building and shelter foundation.",
+        "t": "2026-07-20 13:13"
+      },
+      {
+        "did": "Navigate to (-116, 68, -90) and place 1 oak_plank to complete the shelter foundation expansion.",
+        "t": "2026-07-20 13:15"
+      },
+      {
+        "did": "Navigate to (-115, 69, -93) and place a cobblestone_wall block to extend the west wall of the storage building upwards.",
+        "t": "2026-07-20 13:17"
+      },
+      {
+        "did": "Navigate to (-115, 69, -92) and place 1 cobblestone_wall block to complete the north wall of the storage building's first floor.",
+        "t": "2026-07-20 13:21"
+      },
+      {
+        "did": "Navigate to (-115, 68, -90) and place 1 oak_plank to continue the shelter foundation expansion.",
+        "t": "2026-07-20 13:23"
+      },
+      {
+        "did": "Navigate to (-116, 69, -90) and place 1 oak_plank to complete the shelter foundation expansion.",
+        "t": "2026-07-20 13:28"
+      },
+      {
+        "did": "Navigate to (-116, 69, -90) and place 1 oak_plank to complete the shelter foundation expansion.",
+        "t": "2026-07-20 13:35"
+      },
+      {
+        "did": "Mine cobblestone to replenish wall materials for the storage building and perimeter wall.",
+        "t": "2026-07-20 13:40"
+      },
+      {
+        "did": "Mine cobblestone to replenish wall materials for the storage building and perimeter wall.",
+        "t": "2026-07-20 13:41"
+      },
+      {
+        "did": "Navigate to the storage building site at (-115, 69, -91) and place cobblestone_wall blocks to continue the north wall upwards to Y=70.",
+        "t": "2026-07-20 13:48"
+      },
+      {
+        "did": "Navigate to (-116, 69, -90) and place 1 oak_plank to complete the shelter foundation expansion.",
+        "t": "2026-07-20 13:51"
+      },
+      {
+        "did": "Navigate to (-116, 69, -91) and place 1 oak_plank to complete the shelter foundation expansion.",
+        "t": "2026-07-20 13:55"
+      },
+      {
+        "did": "Navigate to (-116, 69, -90) and check the block type; if it is air, place 1 oak_plank to complete the shelter foundation expansion.",
+        "t": "2026-07-20 13:57"
+      },
+      {
+        "did": "Dig down to escape the hole: mine the dirt block directly below me to drop to Y=67.",
+        "t": "2026-07-20 14:23"
+      },
+      {
+        "did": "Navigate to (-116, 69, -90) and place 1 oak_plank to complete the shelter foundation expansion.",
+        "t": "2026-07-20 14:24"
       }
     ]
   },
@@ -176,6 +396,10 @@
       {
         "did": "Craft and equip a stone axe to efficiently gather wood for the community.",
         "t": "2026-07-19 10:54"
+      },
+      {
+        "did": "Dig down to Y=63 to create a 2-block high shaft, then jump up to escape the hole and reach the surface.",
+        "t": "2026-07-20 01:52"
       }
     ]
   },

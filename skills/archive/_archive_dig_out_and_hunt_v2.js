@@ -8,7 +8,6 @@ if (mob.likelyStuckInHole || mob.surroundedAtFeet >= 3) {
 // 2. Find passive mobs
 const entities = helpers.nearbyEntities(20);
 const passive = entities.find(e => e.type === 'mob' && e.kind === 'passive');
-
 if (!passive) {
   // Roam to find food
   const dest = new Vec3(

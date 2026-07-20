@@ -1,12 +1,12 @@
 log('dig_out_of_hole: starting escape');
-// 1. Primary: Automated unstuck (handles pits, caves, general entrapment)
+// 1. Primary escape: getUnstuck handles pits, caves, and general stuck states.
 const u = await helpers.getUnstuck();
 if (u.ok) {
   log('dig_out_of_hole: escaped via getUnstuck');
   return { status: 'escaped', method: 'getUnstuck' };
 }
 
-// 2. Secondary: Escape to surface (handles being buried underground)
+// 2. Secondary escape: escapeToSurface handles being buried underground (pillar/dig up).
 // This is safer than manual digging for vertical shafts.
 const s = await helpers.escapeToSurface();
 if (s.ok) {
@@ -14,7 +14,7 @@ if (s.ok) {
   return { status: 'escaped', method: 'escapeToSurface' };
 }
 
-// 3. Last resort: Manual dig if helpers fail (e.g., specific block obstruction)
+// 3. Last resort: Manual dig if helpers fail (e.g., specific block obstruction).
 // Only dig blocks directly above to avoid falling into a new hole.
 const pos = bot.entity.position;
 const blockAbove = await bot.blockAt(new Vec3(pos.x, pos.y + 1, pos.z));

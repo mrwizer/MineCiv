@@ -10,8 +10,8 @@
       "mine"
     ],
     "file": "collect_wood.js",
-    "uses": 4,
-    "fails": 1,
+    "uses": 5,
+    "fails": 6,
     "revisions": 0,
     "retired": false,
     "sig": [
@@ -31,15 +31,17 @@
     ],
     "file": "craft_crafting_table.js",
     "uses": 1,
-    "fails": 0,
-    "revisions": 0,
+    "fails": 3,
+    "revisions": 1,
     "retired": false,
     "sig": [
       "craft",
       "crafting",
       "table"
     ],
-    "created": "2026-07-19 08:59:29"
+    "created": "2026-07-19 08:59:29",
+    "last_revised": "2026-07-19 17:22:33",
+    "revision_note": "The agent failed to open the crafting window, resulting in no oak_planks being added to the inventory."
   },
   "craft_wooden_pickaxe": {
     "description": "Gathers 5 wood logs and crafts a wooden pickaxe",
@@ -52,7 +54,7 @@
     ],
     "file": "craft_wooden_pickaxe.js",
     "uses": 6,
-    "fails": 6,
+    "fails": 19,
     "revisions": 0,
     "retired": false,
     "sig": [
@@ -73,15 +75,17 @@
     ],
     "file": "dig_out_stuck.js",
     "uses": 0,
-    "fails": 3,
-    "revisions": 0,
-    "retired": false,
+    "fails": 1,
+    "revisions": 4,
+    "retired": true,
     "sig": [
       "dig",
       "out",
       "stuck"
     ],
-    "created": "2026-07-19 09:05:05"
+    "created": "2026-07-19 09:05:05",
+    "last_revised": "2026-07-19 19:36:00",
+    "revision_note": "critic could not be parsed twice: no JSON found in: *   Task: Dig down to Y=62 to escape the current hole level and reac"
   },
   "craft_stone_pickaxe": {
     "description": "Mine cobblestone if necessary and craft a stone pickaxe to improve mining efficiency.",
@@ -93,7 +97,7 @@
       "cobblestone"
     ],
     "file": "craft_stone_pickaxe.js",
-    "uses": 16,
+    "uses": 19,
     "fails": 4,
     "revisions": 0,
     "retired": false,
@@ -136,7 +140,7 @@
     ],
     "file": "craft_shelter_planks.js",
     "uses": 0,
-    "fails": 0,
+    "fails": 2,
     "revisions": 0,
     "retired": false,
     "sig": [
@@ -158,14 +162,16 @@
     ],
     "file": "claim_and_goto.js",
     "uses": 1,
-    "fails": 5,
-    "revisions": 0,
+    "fails": 4,
+    "revisions": 1,
     "retired": false,
     "sig": [
       "claim",
       "goto"
     ],
-    "created": "2026-07-19 09:13:12"
+    "created": "2026-07-19 09:13:12",
+    "last_revised": "2026-07-19 12:34:24",
+    "revision_note": "ran clean but no measurable progress"
   },
   "acquire_cobblestone": {
     "description": "Breaks the initial resource deadlock by digging down to exposed stone or collecting dropped cobblestone to enable stone tool crafting.",
@@ -199,16 +205,18 @@
       "mining"
     ],
     "file": "equip_wooden_tools.js",
-    "uses": 0,
-    "fails": 0,
-    "revisions": 0,
+    "uses": 2,
+    "fails": 1,
+    "revisions": 1,
     "retired": false,
     "sig": [
       "equip",
       "tool",
       "wooden"
     ],
-    "created": "2026-07-19 09:14:42"
+    "created": "2026-07-19 09:14:42",
+    "last_revised": "2026-07-20 12:57:05",
+    "revision_note": "critic could not be parsed twice: no JSON found in: {\"success\": false, \"confidence\":"
   },
   "craft_and_till": {
     "description": "Crafts a wooden hoe from available resources and tills nearby dirt blocks for farming.",
@@ -222,14 +230,16 @@
     ],
     "file": "craft_and_till.js",
     "uses": 0,
-    "fails": 4,
-    "revisions": 0,
+    "fails": 3,
+    "revisions": 1,
     "retired": false,
     "sig": [
       "craft",
       "till"
     ],
-    "created": "2026-07-19 09:25:05"
+    "created": "2026-07-19 09:25:05",
+    "last_revised": "2026-07-19 14:29:02",
+    "revision_note": "(no reason given)"
   },
   "deposit_materials": {
     "description": "Navigate to the community workshop and deposit specified raw materials into storage chests.",
@@ -266,15 +276,17 @@
     ],
     "file": "dig_out_of_hole.js",
     "uses": 1,
-    "fails": 2,
-    "revisions": 0,
-    "retired": false,
+    "fails": 1,
+    "revisions": 4,
+    "retired": true,
     "sig": [
       "dig",
       "hole",
       "out"
     ],
-    "created": "2026-07-19 09:32:05"
+    "created": "2026-07-19 09:32:05",
+    "last_revised": "2026-07-19 16:43:00",
+    "revision_note": "critic could not be parsed twice: no JSON found in: *   Task: Dig down to Y=63, move back to (-88, 64, -118), pillar up "
   },
   "mine_cobblestone": {
     "description": "Equip a stone pickaxe and collect at least 20 cobblestone by mining exposed blocks or digging down to the stone layer.",
@@ -288,7 +300,7 @@
       "resource"
     ],
     "file": "mine_cobblestone.js",
-    "uses": 1,
+    "uses": 17,
     "fails": 0,
     "revisions": 0,
     "retired": false,
@@ -310,15 +322,17 @@
     ],
     "file": "deposit_or_gather.js",
     "uses": 0,
-    "fails": 3,
-    "revisions": 0,
+    "fails": 1,
+    "revisions": 1,
     "retired": false,
     "sig": [
       "deposit",
       "gather",
       "or"
     ],
-    "created": "2026-07-19 09:41:18"
+    "created": "2026-07-19 09:41:18",
+    "last_revised": "2026-07-19 12:24:59",
+    "revision_note": "critic could not be parsed twice: no JSON found in: *   Task: Navigate to the shared chest at (-117, 67, -91) and deposi"
   },
   "craft_and_chop": {
     "description": "Gathers cobblestone if needed, crafts a stone axe, and uses it to chop down the nearest tree for logs.",
@@ -331,7 +345,7 @@
     ],
     "file": "craft_and_chop.js",
     "uses": 1,
-    "fails": 0,
+    "fails": 2,
     "revisions": 0,
     "retired": false,
     "sig": [
@@ -350,15 +364,17 @@
       "waypoint"
     ],
     "file": "navigate_to_landmark.js",
-    "uses": 1,
-    "fails": 1,
-    "revisions": 0,
+    "uses": 202,
+    "fails": 0,
+    "revisions": 1,
     "retired": false,
     "sig": [
       "landmark",
       "navigate"
     ],
-    "created": "2026-07-19 09:43:41"
+    "created": "2026-07-19 09:43:41",
+    "last_revised": "2026-07-19 19:09:13",
+    "revision_note": "critic could not be parsed twice: no JSON found in: *   Task: Navigate to position (-117, 68, -89) to return to the shel"
   },
   "hunt_or_forage": {
     "description": "Hunt nearby passive mobs for food or break grass to collect seeds as a fallback.",
@@ -371,17 +387,17 @@
     ],
     "file": "hunt_or_forage.js",
     "uses": 6,
-    "fails": 7,
-    "revisions": 3,
-    "retired": false,
+    "fails": 1,
+    "revisions": 4,
+    "retired": true,
     "sig": [
       "forage",
       "hunt",
       "or"
     ],
     "created": "2026-07-19 09:50:38",
-    "last_revised": "2026-07-19 11:44:12",
-    "revision_note": "critic could not be parsed twice: no JSON found in: *   Task: Go to crafting table at (-80, 63, -83), craft a wooden pic"
+    "last_revised": "2026-07-19 12:02:10",
+    "revision_note": "The agent returned a 'no_resources' status and inventory remained unchanged, indicating it failed to obtain raw meat or "
   },
   "craft_chest_from_logs": {
     "description": "Gathers oak logs, crafts planks and sticks, and produces a chest, optionally creating a crafting table if required by the environment.",
@@ -395,14 +411,16 @@
     ],
     "file": "craft_chest_from_logs.js",
     "uses": 0,
-    "fails": 4,
-    "revisions": 0,
+    "fails": 1,
+    "revisions": 2,
     "retired": false,
     "sig": [
       "craft",
       "log"
     ],
-    "created": "2026-07-19 09:56:01"
+    "created": "2026-07-19 09:56:01",
+    "last_revised": "2026-07-20 03:36:03",
+    "revision_note": "critic could not be parsed twice: no JSON found in: {\"success\": false, \"confidence\": 1.0, \"reason\": \"The agent failed to"
   },
   "farm_cobblestone_hoe": {
     "description": "Crafts a stone hoe using available cobblestone and sticks, tills dirt near water, and plants seeds if available.",
@@ -415,7 +433,7 @@
     ],
     "file": "farm_cobblestone_hoe.js",
     "uses": 0,
-    "fails": 0,
+    "fails": 2,
     "revisions": 0,
     "retired": false,
     "sig": [
@@ -435,16 +453,18 @@
       "escape"
     ],
     "file": "dig_out_and_hunt.js",
-    "uses": 0,
-    "fails": 0,
-    "revisions": 0,
-    "retired": false,
+    "uses": 1,
+    "fails": 1,
+    "revisions": 4,
+    "retired": true,
     "sig": [
       "dig",
       "hunt",
       "out"
     ],
-    "created": "2026-07-19 11:15:24"
+    "created": "2026-07-19 11:15:24",
+    "last_revised": "2026-07-20 01:16:19",
+    "revision_note": "critic could not be parsed twice: no JSON found in: *   Task: Use `dig_out_and_hunt` to escape the hole and reach the su"
   },
   "farm_replenish": {
     "description": "Till dirt, plant wheat seeds, and harvest seeds from tall grass to sustain farming resources.",
@@ -456,8 +476,8 @@
       "harvesting"
     ],
     "file": "farm_replenish.js",
-    "uses": 0,
-    "fails": 0,
+    "uses": 1,
+    "fails": 3,
     "revisions": 0,
     "retired": false,
     "sig": [
@@ -478,13 +498,146 @@
     ],
     "file": "farm_wheat.js",
     "uses": 1,
-    "fails": 0,
-    "revisions": 0,
-    "retired": false,
+    "fails": 1,
+    "revisions": 4,
+    "retired": true,
     "sig": [
       "farm",
       "wheat"
     ],
-    "created": "2026-07-19 11:39:26"
+    "created": "2026-07-19 11:39:26",
+    "last_revised": "2026-07-20 00:36:45",
+    "revision_note": "The inventory count of wheat_seeds remained at 13 and the spatial map showed no changes, indicating the agent failed to "
+  },
+  "craft_planks": {
+    "description": "Crafts oak planks from oak logs in inventory.",
+    "keywords": [
+      "craft",
+      "planks",
+      "oak"
+    ],
+    "file": "craft_planks.js",
+    "uses": 0,
+    "fails": 1,
+    "revisions": 4,
+    "retired": true,
+    "sig": [
+      "craft",
+      "plank"
+    ],
+    "created": "2026-07-19 12:05:28",
+    "last_revised": "2026-07-19 15:40:26",
+    "revision_note": "The crafting failed because the craft window did not open, and the inventory count of oak_planks remained unchanged."
+  },
+  "till_farmland": {
+    "description": "Navigate to a water source and till adjacent dirt or grass blocks to create farmland.",
+    "keywords": [
+      "farmland",
+      "till",
+      "hoe",
+      "water",
+      "agriculture",
+      "dirt"
+    ],
+    "file": "till_farmland.js",
+    "uses": 0,
+    "fails": 3,
+    "revisions": 2,
+    "retired": false,
+    "sig": [
+      "farmland",
+      "till"
+    ],
+    "created": "2026-07-19 12:30:32",
+    "last_revised": "2026-07-20 03:13:39",
+    "revision_note": "critic could not be parsed twice: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+  },
+  "gather_wood_resources": {
+    "description": "Collects 5 logs, crafts planks, and crafts sticks to prepare for tool creation.",
+    "keywords": [
+      "wood",
+      "logs",
+      "planks",
+      "sticks",
+      "crafting",
+      "collection"
+    ],
+    "file": "gather_wood_resources.js",
+    "uses": 0,
+    "fails": 0,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "gather",
+      "resource",
+      "wood"
+    ],
+    "created": "2026-07-19 17:58:27"
+  },
+  "plant_crops": {
+    "description": "Navigate to a water source, ensure adjacent farmland is tilled if necessary, and plant seeds.",
+    "keywords": [
+      "plant",
+      "farm",
+      "wheat",
+      "seeds",
+      "agriculture"
+    ],
+    "file": "plant_crops.js",
+    "uses": 0,
+    "fails": 1,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "crop",
+      "plant"
+    ],
+    "created": "2026-07-20 02:17:09"
+  },
+  "gather_meat": {
+    "description": "Locate nearby passive mobs, kill one for raw meat, and deposit it into the shared workshop chest.",
+    "keywords": [
+      "meat",
+      "passive",
+      "mobs",
+      "chicken",
+      "cow",
+      "pig",
+      "deposit",
+      "chest",
+      "food"
+    ],
+    "file": "gather_meat.js",
+    "uses": 1,
+    "fails": 4,
+    "revisions": 4,
+    "retired": true,
+    "sig": [
+      "gather",
+      "meat"
+    ],
+    "created": "2026-07-20 06:36:13",
+    "last_revised": "2026-07-20 13:13:10",
+    "revision_note": "The agent remained in the same position and did not find any mobs or change its inventory, resulting in no progress towa"
+  },
+  "escape_hole": {
+    "description": "Mines the block below to descend to Y=67 and handles falling into deeper holes.",
+    "keywords": [
+      "escape",
+      "hole",
+      "dig",
+      "drop",
+      "unstuck"
+    ],
+    "file": "escape_hole.js",
+    "uses": 0,
+    "fails": 0,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "escape",
+      "hole"
+    ],
+    "created": "2026-07-20 14:23:01"
   }
 }
