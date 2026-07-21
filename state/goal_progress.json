@@ -2,30 +2,6 @@
   "Garrick": {
     "steps": [
       {
-        "did": "Navigate to the shared chest at (-117, 68, -91) to retrieve a large supply of cobblestone walls and torches, ensuring I have enough to continue the perimeter build for multiple steps.",
-        "t": "2026-07-20 05:52"
-      },
-      {
-        "did": "Navigate to position (-154, 70, -127) to place a cobblestone_wall block extending the perimeter wall westward from (-153, 70, -127), and place a torch at (-154, 70, -127) to light the new section.",
-        "t": "2026-07-20 05:53"
-      },
-      {
-        "did": "continue building workshop perimeter",
-        "t": "2026-07-20 05:55"
-      },
-      {
-        "did": "Navigate to the shared chest at (-117, 68, -91), retrieve 20 cobblestone walls and 10 torches, then navigate to position (-155, 70, -127) to place a cobblestone_wall block extending the perimeter wall westward from (-154, 70, -127), and place a torch at (-155, 70, -127) to light the new section.",
-        "t": "2026-07-20 05:56"
-      },
-      {
-        "did": "Navigate to position (-156, 70, -127) to place a cobblestone_wall block extending the perimeter wall westward from (-155, 70, -127), and place a torch at (-156, 70, -127) to light the new section.",
-        "t": "2026-07-20 06:02"
-      },
-      {
-        "did": "Navigate to position (-157, 70, -127) to place a cobblestone_wall block extending the perimeter wall westward from (-156, 70, -127), and place a torch at (-157, 70, -127) to light the new section.",
-        "t": "2026-07-20 06:12"
-      },
-      {
         "did": "Mine the dirt block at (-138, 70, 155) to the south to create an exit path, then navigate to the surface and return to the workshop perimeter build.",
         "t": "2026-07-20 09:26"
       },
@@ -100,19 +76,35 @@
       {
         "did": "Place a cobblestone_wall block at (-170, 70, -127) and a torch at (-170, 70, -127) to extend the perimeter wall westward from (-169, 70, -127).",
         "t": "2026-07-20 19:13"
+      },
+      {
+        "did": "Craft torches from charcoal and sticks, then continue extending the cobblestone wall perimeter westward with torches at each section",
+        "t": "2026-07-20 21:49"
+      },
+      {
+        "did": "Craft torches from charcoal and sticks, then place cobblestone_wall and torch at (-171, 70, -127) to continue the workshop perimeter westward",
+        "t": "2026-07-20 21:56"
+      },
+      {
+        "did": "Craft torches from charcoal and sticks",
+        "t": "2026-07-20 22:02"
+      },
+      {
+        "did": "Continue building the workshop perimeter wall westward at (-172, 70, -127) with a cobblestone_wall and a torch",
+        "t": "2026-07-20 22:08"
+      },
+      {
+        "did": "Navigate to (-173, 70, -127) to verify the ground is clear, then place a cobblestone_wall and a torch to extend the workshop perimeter westward.",
+        "t": "2026-07-20 22:11"
+      },
+      {
+        "did": "Propose a Village Plan with a defined perimeter rectangle and a shelter slot, then navigate to the northwest corner of the proposed perimeter to verify the terrain.",
+        "t": "2026-07-20 22:47"
       }
     ]
   },
   "Rowan": {
     "steps": [
-      {
-        "did": "Navigate to the water source at (-84, 64, -80), hunt for any nearby passive mobs (chickens, cows, pigs, salmon) for raw food, and deposit the food into the shared chest at (-117, 66, -91).",
-        "t": "2026-07-20 04:34"
-      },
-      {
-        "did": "Check for nearby passive mobs (chickens, cows, pigs) around the workshop (-117, 64, -91). If found, kill one and deposit the raw meat into the shared chest at (-117, 66, -91). If no mobs are found, wait 10 seconds and check again.",
-        "t": "2026-07-20 06:36"
-      },
       {
         "did": "Use the gather_meat skill to check for nearby passive mobs (chickens, cows, pigs) around the workshop (-117, 64, -91). If found, kill one and deposit the raw meat into the shared chest at (-117, 66, -91). If no mobs are found, wait 10 seconds and check again.",
         "t": "2026-07-20 07:13"
@@ -204,6 +196,14 @@
       {
         "did": "Navigate to the water source at (-84, 64, -80) and hunt for salmon or other aquatic mobs for immediate food, and check for any existing seeds or food in the nearby shared chests.",
         "t": "2026-07-20 19:13"
+      },
+      {
+        "did": "Harvest wheat seeds from nearby tall grass and till dirt blocks near the water source",
+        "t": "2026-07-20 21:52"
+      },
+      {
+        "did": "Till dirt blocks adjacent to the water source at (-84, 64, -80) to create farmland.",
+        "t": "2026-07-20 22:09"
       }
     ]
   },
@@ -229,14 +229,6 @@
   },
   "Mason": {
     "steps": [
-      {
-        "did": "Navigate to the shelter foundation site at (-116, 69, -90) and place the remaining oak_plank block to complete the foundation expansion.",
-        "t": "2026-07-20 15:00"
-      },
-      {
-        "did": "Navigate to (-116, 69, -90) and place 1 oak_plank to complete the shelter foundation expansion.",
-        "t": "2026-07-20 15:11"
-      },
       {
         "did": "Navigate to a nearby tree and mine oak logs to replenish oak_planks for the shelter construction.",
         "t": "2026-07-20 15:13"
@@ -328,6 +320,14 @@
       {
         "did": "Continue building the north wall of the shelter upwards to height 4 by placing an oak_plank at (-116, 74, -90) and extending eastward to (-116, 74, -89).",
         "t": "2026-07-20 18:17"
+      },
+      {
+        "did": "Navigate to (-116, 69, -91) to verify the current state of the shelter foundation and identify which wall sections are actually complete before attempting to build more",
+        "t": "2026-07-20 22:07"
+      },
+      {
+        "did": "Navigate to (-116, 70, -90) and place oak_planks to complete the south wall segment at Y=69, then verify the placement before proceeding to the next corner.",
+        "t": "2026-07-20 22:11"
       }
     ]
   },
@@ -404,6 +404,22 @@
       {
         "did": "deposit_or_gather",
         "t": "2026-07-20 19:16"
+      },
+      {
+        "did": "mine_cobblestone",
+        "t": "2026-07-20 21:54"
+      },
+      {
+        "did": "Navigate to the nearest shared chest at (-130, 60, 2) and deposit surplus cobblestone and oak logs for the community",
+        "t": "2026-07-20 21:55"
+      },
+      {
+        "did": "Navigate to the shared chest at (-130, 60, 2)",
+        "t": "2026-07-20 22:06"
+      },
+      {
+        "did": "Navigate to the shared chest at (-130, 60, 2) and deposit surplus cobblestone and oak logs for the community",
+        "t": "2026-07-20 22:10"
       }
     ]
   },

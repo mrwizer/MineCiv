@@ -702,12 +702,20 @@ def run_cycle(bridge, bot_cfg, log, recent, recent_failures, blocked_prereqs,
             # but the ceiling stays modest (0.5) since a coder rarely needs high entropy
             # to vary an approach, and higher temp mostly reintroduces syntax slips.
             code_temp = min(0.5, 0.2 + 0.15 * (attempt - 1))
-            code = llm.extract_code(llm.actor(prompts.code_prompt(
+            _raw = llm.actor(prompts.code_prompt(
                 task, success_looks_like, state,
                 attempt_history=attempt_history, total_attempts=attempt,
                 lessons=lessons.lessons_block(),
                 build_rules=structures.build_mechanics_block(),
-                design=design_for_code), label="code-gen", temperature=code_temp))
+                design=design_for_code), label="code-gen", temperature=code_temp)
+            code = llm.extract_code(_raw)
+            # EMPTY-CODE DIAGNOSTIC: the call succeeded but extraction yielded nothing
+            # usable — either the model returned an empty/fence-only response, or
+            # extract_code missed it. An empty body silently no-ops the whole cycle
+            # ("0 chars"), so surface the RAW response head to tell which it is.
+            if len(code) < 10:
+                log(f"  ⚠ code-gen extracted {len(code)} chars — raw response head: "
+                    f"{(_raw or '(empty)')[:300]!r}")
             reused_name = None   # freshly written this attempt
         log(f"attempt {attempt}: executing ({len(code)} chars)")
         # Make the community workshop site available to skill code as `WORKSHOP`

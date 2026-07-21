@@ -152,6 +152,33 @@ endpoint-type filter (moot now that all bots share boxes). Verified: all files c
 routing resolves (mechanical→V100, reasoning→DGX-with-thinking, lesson→DGX-no-thinking);
 all 20 bots bind `(actor, critic)`.
 
+**#13 — Revert thinking-on-strategy (it caused multi-minute stalls) + empty-completion
+diagnostic.** #12 turned thinking ON for `strategy`/`design` on the DGX. Live result: on
+the 122B-A10B at ~20 t/s effective, a thinking call ran to the 6000-token cap = 220-280s,
+blew past the 300s TIMEOUT, and RETRIED — a 5-to-15-minute stall per strategy call.
+Reverted: `THINKING_LABELS` now holds only FUTURE society labels (governance/policy/
+dispute/trade) that don't fire yet, so strategy/design run WITHOUT a trace (~15-40s, still
+far smarter than the old model). Lesson recorded in the comment: don't enable a thinking
+label unless the box can think in tens of seconds or the trace is bounded. Separately,
+added a `_chat` diagnostic that distinguishes an EMPTY-AFTER-STRIP answer (model emitted
+an unterminated `<think>` that `_strip_think` removed → the coder shouldn't be doing that)
+from an EMPTY COMPLETION (server returned no content, logs `finish_reason`/`max_tokens`),
+to root-cause the recurring `0 chars` code-gen. Verified: `strategy`/`design` no longer
+think; files compile.
+
+**#14 — Root-cause the `0 chars` code-gen: the coder was thinking.** The empty-completion
+diagnostic showed `finish=length` + empty `content` + a full 1536-token generation on
+complex (design-build) prompts — the signature of output routed into `reasoning_content`
+(an unclosed `<think>` trace). The Qwen2.5-Coder GGUF's chat template DOES support
+thinking, and because the actor was marked `reasoning:False` we were SKIPPING the
+`enable_thinking:False` control — so nothing suppressed the trace, and on long prompts it
+filled the whole budget without ever emitting code. Fix: actor `reasoning:True` so
+code-gen (not a THINKING_LABEL) sends `enable_thinking:False`, keeping the answer in
+`content`. Also: `_chat` now salvages `reasoning_content` when `content` is empty (safety
+net + it logs the advice to start the coder's llama-server with `--reasoning-format
+none`). This only surfaced now because the earlier MoE actor didn't have a thinking
+template; the switch to a Coder GGUF with one exposed it.
+
 ### Why
 
 Net effect: a code-gen prompt drops from ~9.7k to ~5.6k tokens (~40%) and a strategy

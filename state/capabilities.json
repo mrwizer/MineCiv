@@ -111,55 +111,55 @@
     "outcomes": [
       {
         "ok": false,
-        "task": "Equip oak_planks and place a block at (-116, 73, -90) to continue raising the no",
+        "task": "Continue building the 5x5 shelter walls at (-116,69,-91) by completing the east,",
         "reason": "ran clean but no measurable progress",
-        "t": "2026-07-20 18:02:57"
+        "t": "2026-07-20 22:04:32"
+      },
+      {
+        "ok": false,
+        "task": "Continue building the 5x5 shelter walls at (-116,69,-91) by completing the north",
+        "reason": "ran clean but no measurable progress",
+        "t": "2026-07-20 22:06:29"
       },
       {
         "ok": true,
-        "task": "Equip oak_planks and place a block at (-116, 73, -90) to raise the north wall of",
+        "task": "Navigate to (-116, 69, -91) to verify the current state of the shelter foundatio",
         "reason": "",
-        "t": "2026-07-20 18:04:19"
-      },
-      {
-        "ok": false,
-        "task": "continue building shelter foundation expansion",
-        "reason": "ran clean but no measurable progress",
-        "t": "2026-07-20 18:05:22"
-      },
-      {
-        "ok": false,
-        "task": "Equip oak_planks and place a block at (-116, 73, -89) to complete the corner of ",
-        "reason": "ran clean but no measurable progress",
-        "t": "2026-07-20 18:06:30"
-      },
-      {
-        "ok": false,
-        "task": "Continue building the north wall of the shelter upwards to height 3 by placing a",
-        "reason": "runtime error: SYNTAX ERROR in generated code (Unexpected number). The code did not parse. Chec",
-        "t": "2026-07-20 18:15:50"
-      },
-      {
-        "ok": false,
-        "task": "Continue extending the workshop perimeter wall westward to position (-170, 70, -",
-        "reason": "runtime error: SYNTAX ERROR in generated code (Unexpected identifier 'Need'). The code did not ",
-        "t": "2026-07-20 18:16:22"
+        "t": "2026-07-20 22:07:24"
       },
       {
         "ok": true,
-        "task": "Continue building the north wall of the shelter upwards to height 4 by placing a",
+        "task": "Continue building the workshop perimeter wall westward at (-172, 70, -127) with ",
         "reason": "",
-        "t": "2026-07-20 18:17:40"
+        "t": "2026-07-20 22:08:43"
       },
       {
         "ok": false,
-        "task": "Continue building the north wall of the shelter upwards by placing oak_planks at",
-        "reason": "The execution failed due to a syntax error in the generated code, resulting in no blocks being placed.",
-        "t": "2026-07-20 18:42:47"
+        "task": "Build the 5x5 shelter walls to a height of 2 blocks, enclosing the perimeter at ",
+        "reason": "ran clean but no measurable progress",
+        "t": "2026-07-20 22:10:37"
+      },
+      {
+        "ok": false,
+        "task": "continue building workshop perimeter",
+        "reason": "ran clean but no measurable progress",
+        "t": "2026-07-20 22:10:42"
+      },
+      {
+        "ok": true,
+        "task": "Navigate to (-116, 70, -90) and place oak_planks to complete the south wall segm",
+        "reason": "",
+        "t": "2026-07-20 22:11:05"
+      },
+      {
+        "ok": true,
+        "task": "Propose a Village Plan with a defined perimeter rectangle and a shelter slot, th",
+        "reason": "",
+        "t": "2026-07-20 22:47:29"
       }
     ],
-    "ok": 2,
-    "fail": 6
+    "ok": 4,
+    "fail": 4
   },
   "gather_wood": {
     "outcomes": [
@@ -321,24 +321,6 @@
     "outcomes": [
       {
         "ok": false,
-        "task": "Switch to stone axe, navigate to the shared chest at (-117, 66, -91), and deposi",
-        "reason": "critic could not be parsed twice: no JSON found in: *   Task: Switch to stone axe, navigate to the shared chest at (-117",
-        "t": "2026-07-20 18:01:27"
-      },
-      {
-        "ok": true,
-        "task": "Navigate to the nearby crafting table at (-80, 63, -83) to check if any seeds or",
-        "reason": "",
-        "t": "2026-07-20 18:03:09"
-      },
-      {
-        "ok": false,
-        "task": "Navigate to the shared chest at (-117, 66, -91) and deposit the surplus oak plan",
-        "reason": "The agent reached the chest but failed to deposit items because it could not open the chest, as evidenced by the 'window",
-        "t": "2026-07-20 18:04:56"
-      },
-      {
-        "ok": false,
         "task": "Navigate to the grassy plains near the workshop to harvest tall grass for wheat ",
         "reason": "(no reason given)",
         "t": "2026-07-20 18:17:20"
@@ -366,10 +348,28 @@
         "task": "Navigate to the water source at (-84, 64, -80) and hunt for salmon or other aqua",
         "reason": "",
         "t": "2026-07-20 19:13:00"
+      },
+      {
+        "ok": true,
+        "task": "Navigate to the nearest shared chest at (-130, 60, 2) and deposit surplus cobble",
+        "reason": "",
+        "t": "2026-07-20 21:55:15"
+      },
+      {
+        "ok": true,
+        "task": "Navigate to the shared chest at (-130, 60, 2)",
+        "reason": "",
+        "t": "2026-07-20 22:06:32"
+      },
+      {
+        "ok": true,
+        "task": "Navigate to the shared chest at (-130, 60, 2) and deposit surplus cobblestone an",
+        "reason": "",
+        "t": "2026-07-20 22:10:51"
       }
     ],
-    "ok": 5,
-    "fail": 3
+    "ok": 7,
+    "fail": 1
   },
   "craft_stone_pickaxe": {
     "outcomes": [
@@ -537,18 +537,6 @@
     "outcomes": [
       {
         "ok": false,
-        "task": "Use the farm_replenish skill to till nearby dirt, plant the wheat seeds on the p",
-        "reason": "critic could not be parsed twice: no JSON found in: *   Task: Use `farm_replenish` to till dirt, plant wheat seeds on fa",
-        "t": "2026-07-20 01:56:04"
-      },
-      {
-        "ok": false,
-        "task": "Use the craft_and_till skill to craft a wooden hoe and till the nearby dirt bloc",
-        "reason": "critic could not be parsed twice: no JSON found in: *   Task: Use `craft_and_till` to craft a wooden hoe and till nearby",
-        "t": "2026-07-20 09:19:22"
-      },
-      {
-        "ok": false,
         "task": "Dig out of the hole by breaking the dirt block below me and moving up to the sur",
         "reason": "The execution failed with an error because the agent attempted to use a non-existent helper 'helpers.sleep', resulting i",
         "t": "2026-07-20 12:36:39"
@@ -582,10 +570,22 @@
         "task": "Dig down to escape the hole: mine the dirt block directly below me to drop to Y=",
         "reason": "",
         "t": "2026-07-20 14:23:01"
+      },
+      {
+        "ok": true,
+        "task": "Harvest wheat seeds from nearby tall grass and till dirt blocks near the water s",
+        "reason": "",
+        "t": "2026-07-20 21:52:40"
+      },
+      {
+        "ok": true,
+        "task": "Till dirt blocks adjacent to the water source at (-84, 64, -80) to create farmla",
+        "reason": "",
+        "t": "2026-07-20 22:09:04"
       }
     ],
-    "ok": 1,
-    "fail": 7
+    "ok": 3,
+    "fail": 5
   },
   "craft_stone_sword": {
     "outcomes": [
@@ -601,24 +601,6 @@
   },
   "other": {
     "outcomes": [
-      {
-        "ok": false,
-        "task": "Use the gather_meat skill to check for nearby passive mobs (chickens, cows, pigs",
-        "reason": "(no reason given)",
-        "t": "2026-07-20 14:12:39"
-      },
-      {
-        "ok": false,
-        "task": "Use the gather_meat skill to check for nearby passive mobs (chickens, cows, pigs",
-        "reason": "No passive mobs found after wait",
-        "t": "2026-07-20 14:57:21"
-      },
-      {
-        "ok": false,
-        "task": "Mine the block below to descend to Y=67 and handle falling into deeper holes.",
-        "reason": "critic could not be parsed twice: no JSON found in: *   Task: Mine the block below to descend to Y=67 and handle falling",
-        "t": "2026-07-20 15:14:19"
-      },
       {
         "ok": false,
         "task": "Mine the block below to descend to Y=67 and handle falling into deeper holes.",
@@ -648,25 +630,31 @@
         "task": "deposit_or_gather",
         "reason": "",
         "t": "2026-07-20 19:16:04"
+      },
+      {
+        "ok": true,
+        "task": "mine_cobblestone",
+        "reason": "",
+        "t": "2026-07-20 21:54:16"
+      },
+      {
+        "ok": false,
+        "task": "deposit_or_gather_materials",
+        "reason": "No inventory changes or block placements occurred, indicating the agent failed to execute the deposit action.",
+        "t": "2026-07-20 22:03:08"
+      },
+      {
+        "ok": false,
+        "task": "Harvest wheat seeds from nearby tall grass to enable planting on the newly tille",
+        "reason": "The agent failed to harvest wheat seeds as the inventory and block census remained identical before and after the action",
+        "t": "2026-07-20 22:11:00"
       }
     ],
-    "ok": 2,
-    "fail": 6
+    "ok": 3,
+    "fail": 5
   },
   "place_torch": {
     "outcomes": [
-      {
-        "ok": false,
-        "task": "Navigate to the shared chest at (-117, 68, -91) to retrieve torches, then naviga",
-        "reason": "skill reported: Failed to withdraw fences",
-        "t": "2026-07-20 17:10:27"
-      },
-      {
-        "ok": false,
-        "task": "Navigate to position (-169, 70, -127) to place a cobblestone_wall block and a to",
-        "reason": "skill reported: craft_failed",
-        "t": "2026-07-20 17:16:06"
-      },
       {
         "ok": true,
         "task": "Navigate to position (-169, 70, -127) to check if a cobblestone_wall block exist",
@@ -702,10 +690,22 @@
         "task": "Place a cobblestone_wall block at (-170, 70, -127) and a torch at (-170, 70, -12",
         "reason": "",
         "t": "2026-07-20 19:13:56"
+      },
+      {
+        "ok": true,
+        "task": "Craft torches from charcoal and sticks, then place cobblestone_wall and torch at",
+        "reason": "",
+        "t": "2026-07-20 21:56:22"
+      },
+      {
+        "ok": true,
+        "task": "Navigate to (-173, 70, -127) to verify the ground is clear, then place a cobbles",
+        "reason": "",
+        "t": "2026-07-20 22:11:13"
       }
     ],
-    "ok": 2,
-    "fail": 6
+    "ok": 4,
+    "fail": 4
   },
   "craft_torch": {
     "outcomes": [
@@ -714,10 +714,22 @@
         "task": "Retrieve oak logs and sticks from the shared chest at (-117, 68, -91), then use ",
         "reason": "critic could not be parsed twice: no JSON found in: *   Task: Retrieve oak logs and sticks from the shared chest at (-11",
         "t": "2026-07-20 05:10:20"
+      },
+      {
+        "ok": false,
+        "task": "Craft 20 torches from 5 charcoal and 20 sticks",
+        "reason": "The agent failed to craft any torches as the inventory counts for charcoal, sticks, and torches remained identical befor",
+        "t": "2026-07-20 21:55:10"
+      },
+      {
+        "ok": true,
+        "task": "Craft torches from charcoal and sticks",
+        "reason": "",
+        "t": "2026-07-20 22:02:30"
       }
     ],
-    "ok": 0,
-    "fail": 1
+    "ok": 1,
+    "fail": 2
   },
   "craft_sticks": {
     "outcomes": [

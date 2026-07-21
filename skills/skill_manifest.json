@@ -302,7 +302,7 @@
       "resource"
     ],
     "file": "mine_cobblestone.js",
-    "uses": 19,
+    "uses": 20,
     "fails": 0,
     "revisions": 0,
     "retired": false,
@@ -324,7 +324,7 @@
     ],
     "file": "deposit_or_gather.js",
     "uses": 0,
-    "fails": 2,
+    "fails": 3,
     "revisions": 1,
     "retired": false,
     "sig": [
@@ -366,7 +366,7 @@
       "waypoint"
     ],
     "file": "navigate_to_landmark.js",
-    "uses": 246,
+    "uses": 253,
     "fails": 0,
     "revisions": 1,
     "retired": false,
@@ -478,7 +478,7 @@
       "harvesting"
     ],
     "file": "farm_replenish.js",
-    "uses": 1,
+    "uses": 2,
     "fails": 4,
     "revisions": 0,
     "retired": false,
@@ -542,7 +542,7 @@
       "dirt"
     ],
     "file": "till_farmland.js",
-    "uses": 0,
+    "uses": 1,
     "fails": 3,
     "revisions": 2,
     "retired": false,
@@ -587,7 +587,7 @@
     ],
     "file": "plant_crops.js",
     "uses": 0,
-    "fails": 1,
+    "fails": 2,
     "revisions": 0,
     "retired": false,
     "sig": [
@@ -656,8 +656,8 @@
       "stick"
     ],
     "file": "secure_lighting_supply.js",
-    "uses": 1,
-    "fails": 0,
+    "uses": 4,
+    "fails": 2,
     "revisions": 0,
     "retired": false,
     "sig": [

@@ -49,15 +49,17 @@ ACTOR = {
     "key": _cfg.ACTOR_KEY,
     "model": _cfg.ACTOR_MODEL,           # llama.cpp --served-model-name
     "server": "llamacpp",
-    # The actor box serves Qwen2.5-Coder-14B — a fast CODE model (the "hands"), NOT a
-    # reasoning model. It has no <think> channel and its chat template has no
-    # `enable_thinking` toggle, so `reasoning:False` tells _chat NOT to send the
-    # Qwen3-only thinking fields (enable_thinking / reasoning_budget) that this
-    # template ignores at best and 400s on at worst. A coder model is the right tool
-    # for the code-gen role: valid syntax first-try, strong instruction-following, and
-    # no reasoning prose leaking into the code block.
-    "reasoning": False,
-    "no_think": True,           # nothing to disable — it doesn't think
+    # The actor box serves Qwen2.5-Coder-14B (the fast "hands"). We WANT it to just
+    # write code, no <think> trace — but this GGUF's chat template DOES support thinking
+    # and was emitting an unclosed <think> trace on complex prompts that llama.cpp routed
+    # into `reasoning_content`, leaving `content` empty (finish=length, 0-char code). So
+    # `reasoning:True` here means "understands the thinking toggle": since code-gen is not
+    # in THINKING_LABELS, _chat sends `enable_thinking:False` to SUPPRESS the trace so the
+    # code lands in `content`. (llama.cpp ignores the kwarg if the template doesn't use
+    # it, so this is safe either way.) Belt-and-suspenders: also start its llama-server
+    # with `--reasoning-format none`.
+    "reasoning": True,
+    "no_think": True,
 }
 CRITIC = {
     "url": _cfg.CRITIC_URL,
@@ -337,7 +339,30 @@ def _chat(endpoint, messages, temperature=0.6, max_tokens=2048, think=None, labe
                           + ("" if do_think else " — code-gen should be fast; "
                              "concurrency/GPU pressure? lower MAX_CONCURRENCY or add a box")
                           + ")")
-                return _strip_think(r.json()["choices"][0]["message"]["content"])
+                # Empty-completion handling. `finish=length` + empty `content` means the
+                # model generated a full max_tokens but none of it landed in `content` —
+                # the tell-tale sign the output went into a separate `reasoning_content`
+                # field (llama.cpp routes a <think> trace there). If the real answer is
+                # stuck in reasoning_content, salvage it (extract_code/json will pull the
+                # block out) rather than returning nothing.
+                _ch0 = r.json()["choices"][0]
+                _msg = _ch0.get("message") or {}
+                _content = _msg.get("content") or ""
+                _reasoning = _msg.get("reasoning_content") or ""
+                _finish = _ch0.get("finish_reason")
+                _box = url.split("//")[-1].split(":")[0]
+                _ans = _strip_think(_content)
+                if not _ans and _reasoning:
+                    _emit(f"CONTENT EMPTY — salvaging reasoning_content [{label}] to {_box} "
+                          f"({len(_reasoning)} chars, finish={_finish}). The coder is "
+                          f"emitting a <think> trace; start its llama-server with "
+                          f"--reasoning-format none so output stays in content.")
+                    _ans = _strip_think(_reasoning)
+                elif not _ans:
+                    _emit(f"EMPTY COMPLETION [{label}] to {_box}: no content or "
+                          f"reasoning_content (finish={_finish}, max_tokens={max_tokens}, "
+                          f"msg keys={list(_msg.keys())}).")
+                return _ans
             except requests.Timeout as e:
                 last_err = e
                 _bump(url, timeouts=1)
@@ -381,15 +406,16 @@ def _chat(endpoint, messages, temperature=0.6, max_tokens=2048, think=None, labe
                            f"{MAX_ATTEMPTS} attempts: {last_err}")
 
 # --- thinking policy ---------------------------------------------------------
-# The set of request LABELS for which the actor reasons (think=True). These all route
-# to the STRATEGIST (big DGX mind, see STRATEGIST_LABELS), where reasoning is AFFORDABLE
-# because the box is dedicated and the calls are rare — the exact situation this switch
-# was built for. Thinking stays OFF for the frequent code-gen path on the V100 coder
-# (not listed here). `design` reasons so structures come out coherent (fixes the
-# floating-wall / no_support failures); `lesson` is left off (a quick distillation).
-# Add future society labels (governance/policy/dispute/trade) as that layer arrives.
-THINKING_LABELS = {"strategy", "strategy-retry", "design",
-                   "governance", "policy", "dispute", "trade"}
+# The set of request LABELS for which the actor reasons (think=True). Kept EMPTY of any
+# CURRENTLY-FIRING label on purpose: on the DGX 122B-A10B (~20 t/s effective), a thinking
+# call runs to the 6000-token cap = ~220-280s, which blew past the 300s TIMEOUT and then
+# retried — a multi-minute stall per strategy call. So strategy/design run WITHOUT a
+# think trace (still far smarter than the old model, and ~15-40s). The listed labels are
+# FUTURE society calls that don't fire yet; they're pre-wired to reason once that layer
+# exists AND only if it's on a box/budget where a long trace is affordable. Do NOT add
+# strategy/design here unless the strategist box is fast enough to think in a few tens of
+# seconds, or you bound the trace (a small max_tokens for the thinking call).
+THINKING_LABELS = {"governance", "policy", "dispute", "trade"}
 
 def should_think(label):
     """True if this request label should use reasoning. Central switch so enabling
