@@ -51,17 +51,122 @@ the trims measurable live. Also removed a broken debug stub in `run_cycle` (left
 earlier edit) that called `prompts.propose_prompt(...)` with a literal `...` and an
 undefined `estimate_tokens` — it would have thrown every cycle if reached.
 
+**#6 — Cap answer length per call type (`MAX_TOKENS_BY_LABEL` in `llm.py`).** A
+before/after run proved the prompt trims cut `code-gen` from ~8k → ~5.6k ptok but did
+NOT reduce latency — because latency is GENERATION-bound, not prefill-bound: prefill of
+5.6k tokens is ~9s at ~600 tok/s, but the slow calls were 55–66s, i.e. ~1.6k generated
+tokens at a contended ~30 tok/s. The old blanket `max_tokens=2048` let code-gen ramble
+5× past the "<25 lines / ~1500 chars" contract (the 5k-char prose-in-code outputs that
+syntax-errored anyway). Capped: code-gen/revise-code/strategy → 1024, naming/lesson →
+512, design → 2048 (large cell lists). This truncates the SLOW tail without cutting
+legitimate output. Thinking is already off for these labels, so no reasoning trace is
+affected.
+
+**#7 — Temperature ramp on code-gen.** ~Half of code-gen failures were SYNTAX errors
+(`Unexpected identifier 'Oak'`/`'Need'`/`'previous'`) — sampling noise, not bad plans —
+and each triggers a second ~40s retry generation, the single biggest hidden GPU-load
+multiplier. First attempt now runs near-deterministic (`temperature=0.3`) for maximum
+parseable code; retries climb (0.52 → 0.74) so a known-broken approach explores a
+different one (matching the existing escalation text). Cleaner first attempts = fewer
+retries = less generation on the shared box. `code-gen` call site in `run_cycle`.
+
+**#8 — Fix failure misclassification that let broken saved skills survive forever
+(`_looks_like_code_defect` in `runner.py`).** `is_environmental_failure` ORs together
+logs + error + critic reason and text-matches env markers, so an incidental log line
+like "Coal not found" (matches the `not found` marker) flipped a genuine crash such as
+`Assignment to constant variable` into "environmental." An environmental verdict means
+the skill is never penalized/revised/retired — so a structurally broken skill
+(`deposit_or_gather`, `mine_cobblestone`) got reused and crashed EVERY cycle, burning a
+full code-execute (and often retry) each time. Added `_CODE_DEFECT_MARKERS` (JS
+syntax/reference/type-error signatures) checked against the thrown ERROR/stack only —
+never the logs — which overrides the env markers. Genuine crashes now count against the
+skill and trigger revision/retirement; real environmental failures (timeout, path
+changed, no reachable stone) and the explicit host `env_failure` flag are unaffected.
+Verified with 7 unit cases (the two real crashes from the run → code; timeout/goal-
+changed/no-stone/host-flag → environmental).
+
+**#9 — Fix the build-stuck-at-0/N bug: block-name canonicalization + build
+diagnostics.** Root cause of Mason burning ~10 cycles unable to place ONE cell: a
+persistent design authored with `block:"oak_plank"` (singular — a classic LLM error, the
+real item is `oak_planks`). `buildBlocks`, `placeAt`, and `verifyCells` all match names
+EXACTLY, and unlike `craftItem` they did NO normalization — so `buildBlocks` reported
+`no_material` "no oak_plank in inventory" DESPITE 50 oak_planks, AND `verifyCells` never
+matched the placed block, so the design sat at `0/1` forever (double failure). Added a
+shared `helpers.canonicalItemName()` (singular→plural, common aliases like `cobble`/
+`wooden_planks`, trailing-`s` toggle, real names pass through unchanged, no species swap
+that would desync build-vs-verify) and applied it at the top of all three helpers — so
+the fix is retroactive for already-stored bad designs (normalization is at read time).
+Also added an orchestrator-side BUILD DIAGNOSTIC: when a build places nothing, the log
+now surfaces `buildBlocks`' structured `status` + per-cell failure reasons (previously
+we only saw whatever the model chose to log — often an empty summary, which is exactly
+how this bug hid). Verified: `canonicalItemName` unit-tested (13 cases: singular/plural,
+aliases, valid-name passthrough, unknown passthrough); `node --check` + `py_compile`.
+
+**#10 — Undo the over-tight code-gen cap (truncation → syntax errors) + robust
+extraction.** The live run confirmed #9's name fix (Mason's design now reports "already
+complete (1/1)"), but exposed that #6's `max_tokens=1024` was TOO tight for this model:
+it writes verbose bodies (hand-rolled loops + prose) that ran ~900–950 code tokens plus
+preamble, so the cap guillotined the code mid-statement → `Unexpected end of input`
+syntax errors (3× in one short run) → a wasted ~45s generation AND a retry. Raised
+code-gen/revise-code to 1536 (fits verbose-but-valid output, still caps a true runaway);
+a truncation-retry is pure waste so this REDUCES work. Also hardened `extract_code`: an
+unclosed/truncated ``` fence now yields the code after the opener (not the prose
+preamble + stray fence marker, which was itself a syntax error). Verified with unit
+cases (closed fence, truncated fence, no fence).
+
+**#11 — Prep the actor box for a coder model (Qwen2.5-Coder-32B-Instruct).** The
+remaining code-gen failures (prose-in-code, ignoring `buildBlocks`, syntax slips) are the
+signature of a 3B-active MoE *reasoning* model doing code with thinking off — its planning
+leaks into the answer as prose. Switching the actor box to a dense CODE model addresses
+the cause. Code changes to support it: (a) endpoints now carry a `reasoning` flag
+(defaults True, so Qwen3/Gemma are unchanged); the actor endpoint is marked
+`reasoning:False`, and `_chat` only sends the Qwen3-only thinking fields
+(`enable_thinking` / `reasoning_budget`) to reasoning endpoints — a coder template lacks
+those keys and can 400 on them. (b) The code-gen temperature ramp is retuned for a coder:
+0.2 → 0.35 → 0.5 (was 0.3 → 0.52 → 0.74) — coders emit the most correct JS near-greedy.
+Server/config side (operator notes, not code): serve a GGUF (the downloaded weights are
+safetensors — convert or fetch a prebuilt GGUF); dense 32B needs `-c 32768` not `65536`
+(64k KV would OOM a 32GB V100) plus `-ctk q8_0 -ctv q8_0`; the `-a` served-model name must
+match `local_settings.ACTOR_MODEL` (`qwen2.5-32b-instruct`).
+
+**#12 — Role-split topology: Hands / Judge / Mind across three machines.** Replaced the
+old per-bot-group binding (4 vLLM boxes, 4 bots each) with a ROLE split, because the two
+cognitive jobs have opposite needs: code-gen is frequent + mechanical + latency-critical;
+strategy is rare + smart + latency-tolerant. New layout, all 20 bots sharing it:
+- **Hands** — V100 llama.cpp `qwen2.5-coder-14b` (`ACTOR`, `reasoning:False`): `code-gen`,
+  `revise-code`, `naming`. Fast, dedicated to the hot path.
+- **Judge** — Mac llama.cpp `qwen3.5-9b` (`CRITIC`, `reasoning:True` + `critic_think:False`):
+  `critic`. Reasoning model doing a judgment task, thinking off so it emits JSON directly
+  (fixes the Gemma "no JSON found" parse failures) — replaces Gemma.
+- **Mind** — single DGX vLLM `Intel/Qwen3.5-122B-A10B-int4-AutoRound` (`STRATEGIST`,
+  `reasoning:True`, `concurrency:8`): `strategy`, `strategy-retry`, `design`, `lesson`,
+  + future `governance`/`policy`/`dispute`/`trade`. ONE coherent strategic mind shared by
+  ALL bots via label routing (`STRATEGIST_LABELS` / `_actor_ep_for`), not per-bot binding.
+Thinking is now ON for the strategy/design/society labels (`THINKING_LABELS`) — affordable
+at last because it runs on the dedicated DGX, not the shared V100, and those calls are
+rare. `design` reasoning should also improve structural coherence (the `no_support`
+floating-wall failures). Config: all 16 group bots repointed to `actor`/`critic`; the 4
+`qwen_*` endpoints removed; `local_settings` gains `DGX_URL`/`DGX_MODEL`, drops the QWEN
+fields; `--debug` now runs the first `DEBUG_BOT_COUNT` (4) bots instead of an
+endpoint-type filter (moot now that all bots share boxes). Verified: all files compile;
+routing resolves (mechanical→V100, reasoning→DGX-with-thinking, lesson→DGX-no-thinking);
+all 20 bots bind `(actor, critic)`.
+
 ### Why
 
 Net effect: a code-gen prompt drops from ~9.7k to ~5.6k tokens (~40%) and a strategy
-prompt from ~9k to ~4.6k, with no loss of helper capability, hazard coverage, or game
-state the model uses. Less prefill per call = faster slot turnover on the shared box.
+prompt from ~9k to ~4.6k — lowering cost and KV-cache pressure (more prompts stay
+cached) — with no loss of helper capability, hazard coverage, or game state the model
+uses. The prompt trims alone did NOT move wall-clock latency (generation dominates under
+4-bot contention on the single V100); the #6 answer-length caps are the actual latency
+lever, expected to roughly halve the 55–66s slow code-gen tail.
 
 ### Files
 `orchestrator/prompts.py` (`slim_state`/`state_json`/`compact_json`; propose/code/design
 state serialization; compressed `CODE_CONTRACT` + `SEEDED_HAZARDS`), `orchestrator/llm.py`
-(`_est_prompt_tokens`, `ptoks` in `_bump_label`/`_chat`/`stats_by_label`),
-`orchestrator/runner.py` (`BLACKBOARD_NOTES`, removed broken token-logging stub).
+(`_est_prompt_tokens`, `ptoks` in `_bump_label`/`_chat`/`stats_by_label`;
+`MAX_TOKENS_BY_LABEL` answer-length caps in `actor()`), `orchestrator/runner.py`
+(`BLACKBOARD_NOTES`, removed broken token-logging stub).
 
 ### Verified
 `py_compile` on all three files. Measured before/after token counts: `CODE_CONTRACT`
@@ -72,12 +177,33 @@ real helper lost). A live `--debug` run after change #1 showed `strategy` prompt
 ~5k ptok (down from ~9k) via the new `by-type` log line.
 
 ### Still unverified
-Not yet run live with #2–#4 applied. Watch the `by-type … ptok` numbers to confirm
-`code-gen` lands near ~5.6k, and watch that build/gather/craft success rates are
-unchanged (the compressed contract/hazards keep every rule, but confirm no regression in
-generated-code quality). The `SLOW code-gen` warnings in the last run were concurrency
-pressure on the single V100, not prompt length — smaller prefill should reduce them, but
-if code-gen stays routinely >60s the next lever is box saturation, not tokens.
+#1–#4 confirmed live (`code-gen` ~5.6k ptok, `strategy` ~5.1k). #6 confirmed to kill the
+55–66s runaway tail (max slow call 66s → 49s) but the code-gen MEDIAN stayed ~36s —
+because at 4-bot contention on one V100 even a 1024-token generation is ~38s; latency is
+GPU-throughput-bound, not prefill- or cap-bound. `-np 2` was considered and rejected: it
+reslices a fixed ~120 tok/s ceiling (2 fast + 2 queued vs 4 medium), same total
+throughput, so it masks rather than fixes. The real load reducers are #7 (fewer syntax
+retries) and #8 (stop re-running broken skills) — both cut WORK on the box.
+#7 (temp ramp) and #8 (classifier) not yet run live: watch that first-attempt syntax
+errors drop and that `deposit_or_gather`/`mine_cobblestone`-style crashes now show
+"revising"/"retired" instead of "not counting against it". #9 CONFIRMED live: Mason's old design reported "already complete (1/1)", and the new
+"🧱 build placed nothing — status=blocked | cell reasons: no_support_neighbour" line now
+surfaces real build causes. #11 CONFIRMED live with Qwen2.5-Coder-32B on the actor box:
+ZERO syntax errors across a full run (was ~50% of code-gen), short clean bodies
+(<1.7k chars), coherent multi-cell designs, no `enable_thinking` 400s, and #8's
+classifier correctly routed an `Assignment to constant variable` crash to regeneration →
+a promoted replacement skill. Cost: dense 32B is slower (code-gen ~59s avg, design ~129s,
+strategy ~38s) — but with retries largely eliminated, per-successful-task wall-clock is
+comparable. Generations are tiny, so a 14B coder is the likely next step to reclaim
+latency at equal quality. #7 (temp ramp, now 0.2→0.35→0.5 for the coder) is moot as a
+syntax-error fix since the coder swap eliminated those outright, but stays as sane
+sampling policy. STILL OPEN quality items for the next session, both now made visible by
+this session's diagnostics and neither about the model: (1) designs that place a wall
+course with nothing under it → `no_support_neighbour` (design-authoring / build-order
+issue — Mason's 5x5 walls, Garrick's first wall attempt); (2) the Gemma critic
+occasionally emitting prose instead of its JSON verdict (`critic could not be parsed
+twice`) — critic-side robustness. Also still open: latency (dense 32B) — try the 14B
+coder — and Garrick's `oak_fence` "placement didn't stick" (fence-specific placement).
 
 ---
 

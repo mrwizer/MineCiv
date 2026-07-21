@@ -49,44 +49,56 @@ ACTOR = {
     "key": _cfg.ACTOR_KEY,
     "model": _cfg.ACTOR_MODEL,           # llama.cpp --served-model-name
     "server": "llamacpp",
-    "no_think": False,          # reasoning ON (helps strategic/civilization decisions).
-                                # The <think> trace is stripped from the response before
-                                # JSON parsing (see _strip_think) so it can't corrupt
-                                # the parsed task/code — the model still reasons, we just
-                                # don't feed the raw trace to the JSON extractor.
+    # The actor box serves Qwen2.5-Coder-14B — a fast CODE model (the "hands"), NOT a
+    # reasoning model. It has no <think> channel and its chat template has no
+    # `enable_thinking` toggle, so `reasoning:False` tells _chat NOT to send the
+    # Qwen3-only thinking fields (enable_thinking / reasoning_budget) that this
+    # template ignores at best and 400s on at worst. A coder model is the right tool
+    # for the code-gen role: valid syntax first-try, strong instruction-following, and
+    # no reasoning prose leaking into the code block.
+    "reasoning": False,
+    "no_think": True,           # nothing to disable — it doesn't think
 }
 CRITIC = {
     "url": _cfg.CRITIC_URL,
     "key": _cfg.CRITIC_KEY,
-    "model": _cfg.CRITIC_MODEL,
+    "model": _cfg.CRITIC_MODEL,      # Mac now serves Qwen3.5-9B (a reasoning model)
     "server": "llamacpp",
+    # Qwen3.5-9B is a REASONING model, so `reasoning:True` lets _chat send the
+    # `enable_thinking` control — but `critic_think:False` turns thinking OFF for the
+    # verdict: a judge should emit its small JSON directly, not spend the token budget
+    # on a <think> trace (that was the "no JSON found" parse failure). Judging is still
+    # a reasoning task; a modern 9B does it well without an explicit trace.
+    "reasoning": True,
+    "critic_think": False,
 }
 
-# --- the four new vLLM boxes (qwen3.6-35b); each = actor + self-critic for 4 bots
-def _qwen_box(url):
-    return {
-        "url": url,
-        "key": VLLM_KEY,
-        "model": _cfg.VLLM_MODEL,    # vLLM --served-model-name
-        "server": "vllm",
-        "no_think": False,          # reason on strategy (actor role), same as ACTOR
-        "critic_think": False,      # but NOT when self-critiquing (see field docs above)
-    }
-
-QWEN_A = _qwen_box(_cfg.QWEN_A_URL)
-QWEN_B = _qwen_box(_cfg.QWEN_B_URL)
-QWEN_C = _qwen_box(_cfg.QWEN_C_URL)
-QWEN_D = _qwen_box(_cfg.QWEN_D_URL)
+# --- STRATEGIST: the single big reasoning model (DGX) shared by ALL bots ------
+# The "mind" of the society. Every bot's rare, high-value reasoning calls (strategy,
+# design, lesson, and the future governance/policy/dispute labels) route HERE via
+# STRATEGIST_LABELS below — NOT per-bot binding — so there is ONE coherent strategic
+# mind for the whole community, on the biggest model we can run. It is latency-tolerant
+# (these calls are rare; continuations skip most propose calls), which is exactly why a
+# slow-but-smart 122B fits. Thinking is ON for its reasoning labels (see THINKING_LABELS).
+STRATEGIST = {
+    "url": _cfg.DGX_URL,
+    "key": VLLM_KEY,
+    "model": _cfg.DGX_MODEL,         # vLLM --served-model-name (Intel AutoRound int4)
+    "server": "vllm",
+    "reasoning": True,
+    # Higher in-flight cap than the default: one box now fields strategy for all 20
+    # bots, and the A10B MoE + vLLM continuous batching handle concurrency well. Tune
+    # down if the DGX queues; strategy is rare so this is usually ample headroom.
+    "concurrency": 8,
+}
 
 # Registry: config.py refers to boxes by these ids; runner binds each bot to its
-# actor/critic endpoint (thread-local) so the boxes run as isolated groups.
+# actor/critic endpoint (thread-local). The STRATEGIST is not per-bot bound — it is
+# label-routed (see _actor_ep_for), so all bots share the one mind.
 ENDPOINTS = {
-    "actor":  ACTOR,
-    "critic": CRITIC,
-    "qwen_a": QWEN_A,
-    "qwen_b": QWEN_B,
-    "qwen_c": QWEN_C,
-    "qwen_d": QWEN_D,
+    "actor":      ACTOR,
+    "critic":     CRITIC,
+    "strategist": STRATEGIST,
 }
 
 def get_endpoint(endpoint_id):
@@ -116,6 +128,21 @@ def _actor_ep():
 
 def _critic_ep():
     return getattr(_tls, "critic", CRITIC)
+
+# --- label routing: MIND vs HANDS -------------------------------------------
+# The actor role is split by LABEL across two machines. The rare, high-value REASONING
+# calls go to the shared STRATEGIST (big DGX model); the frequent MECHANICAL calls stay
+# on the fast per-thread coder actor (V100). This is the whole architecture: a giant
+# brain for strategy/society that can afford to be slow because it's called rarely, and
+# a fast coder for the hot code-gen path. Add future society labels (governance, policy,
+# dispute, trade) here to route them to the mind too.
+STRATEGIST_LABELS = {"strategy", "strategy-retry", "design", "lesson",
+                     "governance", "policy", "dispute", "trade"}
+
+def _actor_ep_for(label):
+    """The endpoint an actor call with this label should use: the shared STRATEGIST for
+    reasoning labels, else the thread-bound coder actor."""
+    return STRATEGIST if label in STRATEGIST_LABELS else _actor_ep()
 
 TIMEOUT = 300  # actor box (.128) also runs the MC server, so allow extra headroom
 
@@ -280,10 +307,16 @@ def _chat(endpoint, messages, temperature=0.6, max_tokens=2048, think=None, labe
                 # llama.cpp field; vLLM does not accept it and can 400 on the request,
                 # so we only send it to llama.cpp boxes. On vLLM the trace is bounded
                 # by max_tokens instead (set generously by actor() for think=True).
-                if not do_think:
-                    body["chat_template_kwargs"] = {"enable_thinking": False}
-                elif endpoint.get("server", "llamacpp") == "llamacpp":
-                    body["reasoning_budget"] = REASONING_BUDGET
+                # Thinking controls are Qwen3-only template features. Send them ONLY to
+                # REASONING endpoints (reasoning defaults True, so Qwen3/Gemma behavior
+                # is unchanged); a non-reasoning coder box (reasoning:False) gets neither
+                # enable_thinking nor reasoning_budget, since its template lacks those
+                # keys (unknown-field 400s on some servers).
+                if endpoint.get("reasoning", True):
+                    if not do_think:
+                        body["chat_template_kwargs"] = {"enable_thinking": False}
+                    elif endpoint.get("server", "llamacpp") == "llamacpp":
+                        body["reasoning_budget"] = REASONING_BUDGET
                 r = requests.post(
                     url,
                     headers={"Authorization": f"Bearer {endpoint['key']}",
@@ -348,15 +381,47 @@ def _chat(endpoint, messages, temperature=0.6, max_tokens=2048, think=None, labe
                            f"{MAX_ATTEMPTS} attempts: {last_err}")
 
 # --- thinking policy ---------------------------------------------------------
-# The set of request LABELS for which the actor reasons (think=True). Empty by
-# design: today's requests (propose/code/critic) run FAST. Add labels here to turn
-# reasoning on for future deliberative/societal requests only. See actor() below.
-THINKING_LABELS = set()
+# The set of request LABELS for which the actor reasons (think=True). These all route
+# to the STRATEGIST (big DGX mind, see STRATEGIST_LABELS), where reasoning is AFFORDABLE
+# because the box is dedicated and the calls are rare — the exact situation this switch
+# was built for. Thinking stays OFF for the frequent code-gen path on the V100 coder
+# (not listed here). `design` reasons so structures come out coherent (fixes the
+# floating-wall / no_support failures); `lesson` is left off (a quick distillation).
+# Add future society labels (governance/policy/dispute/trade) as that layer arrives.
+THINKING_LABELS = {"strategy", "strategy-retry", "design",
+                   "governance", "policy", "dispute", "trade"}
 
 def should_think(label):
     """True if this request label should use reasoning. Central switch so enabling
     deep thinking for a new kind of decision is a one-line change (add its label)."""
     return label in THINKING_LABELS
+
+
+# --- answer-length caps by label --------------------------------------------
+# GENERATION, not prefill, is the real latency driver under concurrency: prefill of
+# even a 6k-token prompt is ~10s at ~600 tok/s, but generating tokens at a CONTENDED
+# ~30 tok/s (4 bots batched on one box) is ~33ms each — so a runaway 2048-token answer
+# is ~60s. The old blanket max_tokens=2048 let a misbehaving code-gen ramble 5× past
+# the contract (a task body is meant to be <25 lines / ~1500 chars ≈ 400 tokens),
+# producing the 5k-char prose-in-code outputs that syntax-error anyway. Capping per
+# label cuts the SLOW tail without truncating legitimate output:
+#   code-gen/revise-code: a body is contractually tiny; 1024 is generous headroom yet
+#     halves a 2048-token ramble.
+#   strategy: a small JSON verdict object (~400 tok) — 1024 is plenty.
+#   design: a full {x,y,z} cell list can be large (up to ~120 cells) — keep 2048.
+#   naming/lesson: one short JSON line — 512.
+# Callers can still override with an explicit max_tokens=. Unknown labels keep 2048.
+MAX_TOKENS_BY_LABEL = {
+    # 1024 was too tight for THIS model: it writes verbose bodies (hand-rolled loops
+    # + prose) that ran ~900-950 code tokens plus preamble, so the cap guillotined the
+    # code mid-statement -> "Unexpected end of input" syntax errors -> a wasted ~45s
+    # generation AND a retry. 1536 fits the verbose-but-valid outputs while still
+    # capping a true runaway. A truncation-retry is pure waste, so this REDUCES work.
+    "code-gen": 1536, "revise-code": 1536,
+    "strategy": 1024, "strategy-retry": 1024,
+    "design": 2048,
+    "naming": 512, "lesson": 512,
+}
 
 
 def actor(messages, think=None, label=None, **kw):
@@ -380,8 +445,12 @@ def actor(messages, think=None, label=None, **kw):
     if think:
         kw.setdefault("max_tokens", 6000)   # room for reasoning trace + answer
     else:
-        kw.setdefault("max_tokens", 2048)   # answer only, no long trace
-    return _chat(_actor_ep(), messages, think=think, label=lbl, **kw)
+        # Answer only, no long trace. Cap per label so a runaway generation can't
+        # burn ~60s rambling to 2048 tokens (the dominant SLOW-call cause).
+        kw.setdefault("max_tokens", MAX_TOKENS_BY_LABEL.get(lbl, 2048))
+    # Route by label: reasoning labels -> the shared STRATEGIST (big DGX mind),
+    # everything else -> the fast per-thread coder actor (V100 hands).
+    return _chat(_actor_ep_for(lbl), messages, think=think, label=lbl, **kw)
 
 def critic(messages, **kw):
     # The critic returns ONE small JSON object: {"success":bool,"confidence":float,
@@ -410,8 +479,20 @@ def critic(messages, **kw):
                  think=ep.get("critic_think", None), **kw)
 
 def extract_code(text):
+    # 1) A properly CLOSED fenced block is the happy path.
     m = re.search(r"```(?:javascript|js)?\s*(.*?)```", text, re.DOTALL)
-    return (m.group(1) if m else text).strip()
+    if m:
+        return m.group(1).strip()
+    # 2) An UNCLOSED fence means the generation was truncated at max_tokens mid-block
+    #    (or the model forgot the closer). Take everything AFTER the opening fence to
+    #    the end — running the model's actual code, not the PROSE preamble + a stray
+    #    ``` marker (which is itself a syntax error). The body may still be incomplete,
+    #    but this at least stops a leading explanation from being executed as code.
+    m = re.search(r"```(?:javascript|js)?\s*(.*)$", text, re.DOTALL)
+    if m:
+        return m.group(1).strip()
+    # 3) No fence at all — return as-is.
+    return text.strip()
 
 def extract_json(text):
     # 1) fenced ```json { ... } ``` block (preferred)

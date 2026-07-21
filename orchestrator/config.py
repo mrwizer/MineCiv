@@ -10,22 +10,22 @@ FRESH RUNS — "give them the knowledge, not the goods" (see GOVERNANCE_PLAN.md)
   the skills folder to "clear the crap" — that's amnesia, not a reset.
   To de-duplicate the library once in a while:  python curate_skills.py
 
-ENDPOINTS & GROUPS (see GOVERNANCE_PLAN.md Part C, and llm.py):
-  Each bot is bound to an ACTOR endpoint (proposes tasks, writes code, and — for
-  the new vLLM boxes — self-critiques its own work) and a CRITIC endpoint. The
-  binding is per-bot and thread-local, so the endpoints run as ISOLATED GROUPS:
-  a slow LLM machine only stalls the ~4 bots bound to it, never the whole society.
-  Endpoint IDs below are the keys registered in llm.ENDPOINTS. Change a bot's box
-  by changing its "actor_endpoint" / "critic_endpoint" id — nothing else.
+ENDPOINTS & ROLES (see GOVERNANCE_PLAN.md Part C, and llm.py):
+  The society runs on THREE machines split by ROLE, not by bot-group. Every bot binds
+  the SAME actor + critic, and the big "mind" is shared by all bots via LABEL routing
+  in llm.py (not per-bot binding). So there is one coherent strategic mind, a fast
+  shared coder, and a shared judge:
 
-    id        machine / server                       role
-    --------  -------------------------------------  ------------------------------
-    actor     ACTOR_HOST:8888  llama.cpp/Qwen    existing actor (UNCHANGED)
-    critic    CRITIC_HOST:8888  llama.cpp/Gemma   existing critic (UNCHANGED)
-    qwen_a    VLLM_HOST_1:8000  vLLM/qwen3.6-35b  actor + self-critic for its 4 bots
-    qwen_b    VLLM_HOST_1:8001  vLLM/qwen3.6-35b  actor + self-critic for its 4 bots
-    qwen_c    VLLM_HOST_2:8002   vLLM/qwen3.6-35b  actor + self-critic for its 4 bots
-    qwen_d    VLLM_HOST_2:8003   vLLM/qwen3.6-35b  actor + self-critic for its 4 bots
+    id/route    machine / server                    role
+    ----------  ----------------------------------  ------------------------------
+    actor       V100:8888   llama.cpp / coder-14b   HANDS: code-gen, revise, naming
+    critic      Mac:8888    llama.cpp / qwen3.5-9b  JUDGE: grades success
+    strategist  DGX:8000    vLLM / qwen3.5-122b     MIND: strategy, design, lesson,
+                (label-routed in llm.py)                  + future society labels
+
+  Every bot uses "actor" + "critic"; strategy/design/lesson auto-route to the single
+  strategist for ALL bots (llm.STRATEGIST_LABELS). Change a bot's coder/judge box by
+  its "actor_endpoint" / "critic_endpoint" id; the mind is set once in llm.py.
 """
 
 MC_HOST = "localhost"
@@ -106,7 +106,7 @@ BOTS = [
         "critic_endpoint": "critic",
     },
 
-    # ------------------------------------------------ qwen_a (VLLM_HOST_1:8000)
+    # ---------------------------------------------- community members (5-8)
     {
         "username": "Alder",
         "purpose": "You are a community builder. You do NOT decide where the town "
@@ -118,8 +118,8 @@ BOTS = [
                 "them one at a time — a properly enclosed shelter, then storage, "
                 "then wall segments — coordinating through the plan with the other "
                 "builders instead of starting your own separate settlement.",
-        "actor_endpoint": "qwen_a",
-        "critic_endpoint": "qwen_a",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
     {
         "username": "Slate",
@@ -131,8 +131,8 @@ BOTS = [
         "goal": "Keep the community's shared chests stocked with cobblestone, wood, "
                 "and coal: continuously gather what is running low and deposit surplus "
                 "at the workshop, so builders always have materials on hand.",
-        "actor_endpoint": "qwen_a",
-        "critic_endpoint": "qwen_a",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
     {
         "username": "Fern",
@@ -143,8 +143,8 @@ BOTS = [
         "goal": "Secure a reliable food supply first (hunt/forage and stock it), then "
                 "if feasible start a small farm near water and keep the shared chests "
                 "stocked with food.",
-        "actor_endpoint": "qwen_a",
-        "critic_endpoint": "qwen_a",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
     {
         "username": "Sage",
@@ -159,11 +159,11 @@ BOTS = [
                 "the biggest UNMET need the group has voiced or left undone, and take "
                 "care of it, rather than pursuing one narrow specialty.",
         "floater": True,
-        "actor_endpoint": "qwen_a",
-        "critic_endpoint": "qwen_a",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
 
-    # ------------------------------------------------ qwen_b (VLLM_HOST_1:8001)
+    # --------------------------------------------- community members (9-12)
     {
         "username": "Birch",
         "purpose": "You are a community builder. Mason (the city builder) decides "
@@ -174,8 +174,8 @@ BOTS = [
         "goal": "Help raise the village center by claiming and finishing open plan "
                 "slots one at a time (enclosed shelter, storage, wall segments), "
                 "coordinating with the other builders through the plan.",
-        "actor_endpoint": "qwen_b",
-        "critic_endpoint": "qwen_b",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
     {
         "username": "Ferris",
@@ -186,8 +186,8 @@ BOTS = [
         "goal": "Keep the community's shared chests stocked with cobblestone, wood, "
                 "and coal: continuously gather what is low and deposit surplus at the "
                 "workshop.",
-        "actor_endpoint": "qwen_b",
-        "critic_endpoint": "qwen_b",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
     {
         "username": "Bastion",
@@ -201,8 +201,8 @@ BOTS = [
                 "the area and build/maintain a perimeter with a gate, then work "
                 "toward the resources and know-how to raise iron golems that guard "
                 "the settlement.",
-        "actor_endpoint": "qwen_b",
-        "critic_endpoint": "qwen_b",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
     {
         "username": "Jules",
@@ -216,11 +216,11 @@ BOTS = [
                 "biggest UNMET need the group has voiced or left undone, and handle "
                 "it, instead of pursuing one narrow specialty.",
         "floater": True,
-        "actor_endpoint": "qwen_b",
-        "critic_endpoint": "qwen_b",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
 
-    # ------------------------------------------------- qwen_c (VLLM_HOST_2:8002)
+    # -------------------------------------------- community members (13-16)
     {
         "username": "Cedar",
         "purpose": "You are a community builder. Mason (the city builder) decides "
@@ -231,8 +231,8 @@ BOTS = [
         "goal": "Help raise the village center by claiming and finishing open plan "
                 "slots one at a time (enclosed shelter, storage, wall segments), "
                 "coordinating through the plan.",
-        "actor_endpoint": "qwen_c",
-        "critic_endpoint": "qwen_c",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
     {
         "username": "Cobb",
@@ -243,8 +243,8 @@ BOTS = [
         "goal": "Keep the community's shared chests stocked with cobblestone, wood, "
                 "and coal: continuously gather what is low and deposit surplus at the "
                 "workshop.",
-        "actor_endpoint": "qwen_c",
-        "critic_endpoint": "qwen_c",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
     {
         "username": "Barley",
@@ -255,8 +255,8 @@ BOTS = [
         "goal": "Secure a reliable food supply first (hunt/forage and stock it), then "
                 "if feasible start and maintain a small farm near water, keeping the "
                 "shared chests stocked with food.",
-        "actor_endpoint": "qwen_c",
-        "critic_endpoint": "qwen_c",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
     {
         "username": "Nova",
@@ -270,11 +270,11 @@ BOTS = [
                 "biggest UNMET need the group has voiced or left undone and handle it, "
                 "rather than pursuing one narrow specialty.",
         "floater": True,
-        "actor_endpoint": "qwen_c",
-        "critic_endpoint": "qwen_c",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
 
-    # ------------------------------------------------- qwen_d (VLLM_HOST_2:8003)
+    # -------------------------------------------- community members (17-20)
     {
         "username": "Iris",
         "purpose": "You are the community's decorator — you make the settlement "
@@ -287,8 +287,8 @@ BOTS = [
                 "buildings, add decorative lighting and greenery, and give the shared "
                 "structures clean, finished facades — improving how the settlement "
                 "looks while keeping every building usable and defended.",
-        "actor_endpoint": "qwen_d",
-        "critic_endpoint": "qwen_d",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
     {
         "username": "Sentry",
@@ -300,8 +300,8 @@ BOTS = [
         "goal": "Make the community defensible and then self-defending: first light "
                 "and fortify the perimeter, then work toward the resources and "
                 "know-how to raise iron golems that guard the settlement.",
-        "actor_endpoint": "qwen_d",
-        "critic_endpoint": "qwen_d",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
     {
         "username": "Ranger",
@@ -316,8 +316,8 @@ BOTS = [
                 "note where ore, wood, water and hazards are on the blackboard, and "
                 "bring back both intelligence and any resources you gather en route, "
                 "so the community can plan where to expand and mine.",
-        "actor_endpoint": "qwen_d",
-        "critic_endpoint": "qwen_d",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
     {
         "username": "Kit",
@@ -331,8 +331,8 @@ BOTS = [
                 "biggest UNMET need the group has voiced or left undone and handle it, "
                 "rather than pursuing one narrow specialty.",
         "floater": True,
-        "actor_endpoint": "qwen_d",
-        "critic_endpoint": "qwen_d",
+        "actor_endpoint": "actor",
+        "critic_endpoint": "critic",
     },
 ]
 
@@ -356,11 +356,11 @@ MAX_SKILL_REVISIONS = 4
 #   1. PAUSE_BETWEEN (here): each bot sleeps this long between its own cycles
 #      and between retry attempts. Slows a single bot's request rate.
 #
-#   2. STAGGER_SECONDS (here): startup offset applied WITHIN each endpoint
-#      group — the k-th bot ON A GIVEN BOX waits k*STAGGER before starting, so
-#      the ~4 bots sharing a box don't all fire cycle-1 calls at the same
-#      instant. Groups start in PARALLEL (a bot on qwen_a does not wait for
-#      bots on qwen_b), which is the point of running the boxes as groups.
+#   2. STAGGER_SECONDS (here): startup offset — the k-th bot on a given actor
+#      endpoint waits k*STAGGER before starting, so bots don't all fire cycle-1
+#      calls at the same instant. NOTE: all bots now share the ONE actor box
+#      (V100 coder), so they stagger as a single group — the 20th bot starts at
+#      ~19*STAGGER. If that ramp is too slow for a full run, lower STAGGER.
 #
 #   3. Per-endpoint gate (in llm.py: MAX_CONCURRENCY / endpoint "concurrency"):
 #      the real protection. No matter how many bots run, only up to N requests
@@ -378,3 +378,9 @@ STAGGER_SECONDS = 8.0    # startup offset per bot WITHIN its endpoint group
 # False to disable the whole feature instantly and fall back to normal per-cycle
 # building everywhere — a kill switch if it ever misbehaves, no code edits needed.
 ENABLE_PERSISTENT_DESIGNS = True
+
+# --debug launches just this many bots (the first N in BOTS — the original
+# Mason/Garrick/Flint/Rowan test set) instead of all 20, for quick iteration. All
+# bots now share the same boxes (V100 coder + Mac judge + DGX mind), so debug is a
+# simple head-of-list subset, not an endpoint-based filter.
+DEBUG_BOT_COUNT = 4

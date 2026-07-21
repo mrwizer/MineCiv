@@ -1920,8 +1920,39 @@ const helpers = {
              reason:'no solid ground found in the scanned band at this column' };
   },
 
+  // Canonicalize an LLM-supplied block/item name to a REAL mcData name. The model
+  // routinely writes singular 'oak_plank' for 'oak_planks', or aliases like
+  // 'wooden_planks'/'cobble'. placeAt/buildBlocks/verifyCells all match names EXACTLY
+  // (against inventory and world blocks), so an un-normalized 'oak_plank' made
+  // buildBlocks report no_material DESPITE 50 oak_planks AND made verifyCells never
+  // match the placed block — a persistent design stuck at 0/N forever. This maps the
+  // common mistakes to the real name WITHOUT changing block identity (no species swap,
+  // which would desync build vs. verify). Unknown names pass through normalized so the
+  // caller can still report a clean 'no <name>' error. craftItem has its own richer
+  // (inventory-aware) normalization; this is the lightweight shared version for the
+  // place/build/verify path.
+  canonicalItemName(name){
+    if (typeof name !== 'string') return name;
+    let n = name.trim().toLowerCase().replace(/\s+/g,'_');
+    const FIX = {
+      plank:'oak_planks', planks:'oak_planks', wood_plank:'oak_planks',
+      wood_planks:'oak_planks', wooden_planks:'oak_planks', wood:'oak_planks',
+      sticks:'stick', crafting_bench:'crafting_table', workbench:'crafting_table',
+      cobble:'cobblestone', cobblestones:'cobblestone',
+    };
+    if (FIX[n]) n = FIX[n];
+    if (/_plank$/.test(n)) n = n.replace(/_plank$/, '_planks');   // oak_plank -> oak_planks
+    if (mcData.blocksByName[n] || mcData.itemsByName[n]) return n;   // already real
+    // Last resort: toggle a trailing 's' to reach a real name (logs->log, plank->planks).
+    if (n.endsWith('s') && (mcData.blocksByName[n.slice(0,-1)] || mcData.itemsByName[n.slice(0,-1)]))
+      return n.slice(0,-1);
+    if (mcData.blocksByName[n+'s'] || mcData.itemsByName[n+'s']) return n+'s';
+    return n;
+  },
+
   async placeAt(x, y, z, name, opts){
     const Vec3c = Vec3;
+    name = helpers.canonicalItemName(name);
     const requireFloor = !(opts && opts.allowFloating);   // default: need ground
     const target = new Vec3c(Math.floor(x), Math.floor(y), Math.floor(z));
     const existing = bot.blockAt(target);
@@ -2086,6 +2117,7 @@ const helpers = {
   // reason is one of placeAt's structured causes (no_support_neighbour, no_item,
   // place_did_not_stick, submerged, occupies_target) so the model self-corrects.
   async buildBlocks(cells, name){
+    name = helpers.canonicalItemName(name);   // 'oak_plank' -> 'oak_planks', etc.
     if (!Array.isArray(cells) || cells.length === 0)
       return { ok:false, placed:0, already:0, failed:0, of:0, failures:[],
                status:'no_cells', reason:'cells must be a non-empty array of {x,y,z}' };
@@ -2154,6 +2186,10 @@ const helpers = {
   // non-air block — useful for "is this footprint filled at all"). Returns the
   // still-MISSING cells so the coder can be handed exactly what is left to build.
   verifyCells(cells, name){
+    // Same canonicalization as buildBlocks/placeAt so a design authored with a bad
+    // name ('oak_plank') is verified against the REAL block that gets placed
+    // ('oak_planks') — otherwise present stays 0 and the design never completes.
+    if (name) name = helpers.canonicalItemName(name);
     if (!Array.isArray(cells) || cells.length === 0)
       return { ok:false, total:0, present:0, missing:[], reason:'no cells' };
     const missing = [];

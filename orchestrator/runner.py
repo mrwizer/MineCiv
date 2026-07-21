@@ -155,6 +155,32 @@ _ENV_FAIL_MARKERS = (
     "1/9", "2/9", "3/9", "instead of 9", "one block off",
 )
 
+# JS-engine error signatures that UNAMBIGUOUSLY mean the generated code is defective
+# (syntax / reference / type error), NOT a world condition. These OVERRIDE the env
+# markers above: the classifier ORs together logs + error + critic reason, so an
+# incidental log line like "Coal not found" (which matches an env marker) was flipping
+# a genuine crash such as "Assignment to constant variable" into "environmental" — and
+# an environmental verdict means the skill is never penalized, revised, or retired, so
+# a structurally broken saved skill got reused and crashed EVERY cycle. Matched against
+# the thrown ERROR/stack only (never the logs), because logs carry unrelated chatter.
+_CODE_DEFECT_MARKERS = (
+    "assignment to constant variable",
+    "is not defined",                       # ReferenceError
+    "is not a function",
+    "cannot read properties of undefined", "cannot read properties of null",
+    "cannot read property", "cannot set properties of",
+    "unexpected identifier", "unexpected token", "unexpected number",
+    "unexpected string", "unexpected end of input", "invalid or unexpected token",
+    "syntax error", "is not iterable", "missing ) after", "missing } after",
+)
+
+def _looks_like_code_defect(run):
+    """True if the THROWN error is a JS-engine defect (syntax/reference/type), meaning
+    the code is broken regardless of any world chatter in the logs. Checks the error
+    and stack ONLY — not logs — so unrelated 'not found' log lines can't mask it."""
+    err = (str(run.get("error") or "") + " " + str(run.get("stack") or "")).lower()
+    return any(m in err for m in _CODE_DEFECT_MARKERS)
+
 def is_environmental_failure(run, verdict):
     """True if this failure is about the world (no target/materials/transient),
     not a defect in the skill's code. Such failures should not count toward
@@ -173,6 +199,11 @@ def is_environmental_failure(run, verdict):
     res = run.get("result")
     if isinstance(res, dict) and "env_failure" in res:
         return bool(res["env_failure"])
+    # A hard JS-engine error is authoritative proof of a code defect — it overrides
+    # the env text-markers below, which otherwise misfire on incidental log chatter
+    # (e.g. "Coal not found" rescuing an "Assignment to constant variable" crash).
+    if _looks_like_code_defect(run):
+        return False
     blob = " ".join(run.get("logs") or [])
     if isinstance(res, dict) and res.get("reason"):
         blob += " " + str(res["reason"])
@@ -663,12 +694,20 @@ def run_cycle(bridge, bot_cfg, log, recent, recent_failures, blocked_prereqs,
             # block physics, or reading placeAt's failure reason. That gap is what
             # produced roofs floating over 2-block walls and 95 placements driven
             # into solid dirt.
+            # TEMPERATURE RAMP, tuned for the coder actor (Qwen2.5-Coder). Coder models
+            # produce the most correct, parseable JS at LOW temperature, so the first
+            # attempt is near-greedy (0.2). Retries climb (→0.35→0.50) because by then
+            # the first approach is known-broken and we want the model to explore a
+            # mechanically different one (the escalation text asks for exactly that) —
+            # but the ceiling stays modest (0.5) since a coder rarely needs high entropy
+            # to vary an approach, and higher temp mostly reintroduces syntax slips.
+            code_temp = min(0.5, 0.2 + 0.15 * (attempt - 1))
             code = llm.extract_code(llm.actor(prompts.code_prompt(
                 task, success_looks_like, state,
                 attempt_history=attempt_history, total_attempts=attempt,
                 lessons=lessons.lessons_block(),
                 build_rules=structures.build_mechanics_block(),
-                design=design_for_code), label="code-gen"))
+                design=design_for_code), label="code-gen", temperature=code_temp))
             reused_name = None   # freshly written this attempt
         log(f"attempt {attempt}: executing ({len(code)} chars)")
         # Make the community workshop site available to skill code as `WORKSHOP`
@@ -683,6 +722,23 @@ def run_cycle(bridge, bot_cfg, log, recent, recent_failures, blocked_prereqs,
         run = bridge.run_skill(preamble + code, config.SKILL_TIMEOUT_MS,
                                context={"workshop": ws, "isDecider": is_decider})
         if run.get("error"): log(f"  runtime error: {run['error']}")
+        # BUILD DIAGNOSTICS: when a build placed nothing, surface buildBlocks' STRUCTURED
+        # reason (status + the distinct per-cell failure causes) so a stuck design is
+        # debuggable and the next code_prompt/human sees WHY — not just "0/N placed".
+        # Previously the only reason we ever saw was whatever the model chose to log,
+        # which was often an empty/mis-formatted summary (that is how the oak_plank vs
+        # oak_planks no_material bug hid for so long).
+        _res = run.get("result")
+        if isinstance(_res, dict) and _res.get("placed", 0) == 0 and (
+                "failures" in _res or "status" in _res):
+            _frs = ", ".join(sorted({f.get("reason", "?") for f in
+                                     (_res.get("failures") or []) if isinstance(f, dict)}))
+            _bits = []
+            if _res.get("status"): _bits.append(f"status={_res['status']}")
+            if _res.get("reason"): _bits.append(str(_res["reason"]))
+            if _frs: _bits.append(f"cell reasons: {_frs}")
+            if _bits:
+                log(f"  🧱 build placed nothing — {' | '.join(_bits)}")
         # INVENTORY DELTA: did this attempt actually change what the bot holds?
         # Directly answers "did mining ever yield cobblestone" instead of guessing.
         delta_nonzero = False
@@ -1006,27 +1062,16 @@ def run_bot(bot_cfg, start_delay=0.0):
     finally:
         bridge.close()
 
-def _uses_only_llamacpp(bot_cfg):
-    """True if this bot's actor AND critic run on llama.cpp boxes (the V100 actor +
-    Mac critic), i.e. it needs NONE of the vLLM boxes. Server-type based, so it never
-    hardcodes an IP and keeps working if you re-address the boxes in local_settings."""
-    try:
-        a = llm.get_endpoint(bot_cfg.get("actor_endpoint", "actor"))
-        c = llm.get_endpoint(bot_cfg.get("critic_endpoint", "critic"))
-    except Exception:
-        return False
-    return a.get("server") != "vllm" and c.get("server") != "vllm"
-
-
 def main():
     ap = argparse.ArgumentParser(
         description="Run the mc-sid agent society (all bots by default).")
     ap.add_argument("usernames", nargs="*",
                     help="optional: only run these named bots (default: all).")
     ap.add_argument("--debug", action="store_true",
-                    help="only run the llama.cpp actor/critic bots (V100 + Mac); skip "
-                         "the vLLM boxes so they can be repurposed for local LLM "
-                         "coding. Without this flag, ALL bots run.")
+                    help=f"run only the first {config.DEBUG_BOT_COUNT} bots "
+                         "(Mason/Garrick/Flint/Rowan) for quick iteration. Without "
+                         "this flag, ALL bots run. All bots share the same boxes now "
+                         "(V100 coder + Mac judge + DGX mind).")
     args = ap.parse_args()
 
     os.makedirs(STATE_DIR, exist_ok=True); os.makedirs(LOG_DIR, exist_ok=True)
@@ -1040,13 +1085,13 @@ def main():
     wanted = set(args.usernames)
     bots = [b for b in config.BOTS if not wanted or b["username"] in wanted]
 
-    # --debug: drop every bot that needs a vLLM box, leaving only the llama.cpp
-    # (actor/critic) bots so the vLLM machines are free. Purely a launch-time filter —
-    # no config or code changes, and a normal run (no flag) launches everyone again.
+    # --debug: run only the first N bots for quick iteration. All bots share the same
+    # boxes now, so this is a simple head-of-list subset (the original 4), not an
+    # endpoint filter. A normal run (no flag) launches everyone.
     if args.debug:
-        kept = [b for b in bots if _uses_only_llamacpp(b)]
-        skipped = [b["username"] for b in bots if b not in kept]
-        print(f"[debug] vLLM boxes DISABLED — skipping {len(skipped)} bot(s): {skipped}")
+        kept = bots[:config.DEBUG_BOT_COUNT]
+        skipped = [b["username"] for b in bots[config.DEBUG_BOT_COUNT:]]
+        print(f"[debug] running first {len(kept)} bot(s); skipping {len(skipped)}: {skipped}")
         bots = kept
 
     if not bots:
@@ -1054,10 +1099,9 @@ def main():
         return
 
     print(f"launching {len(bots)} bot(s): {[b['username'] for b in bots]}")
-    # PER-GROUP stagger: the k-th bot ON A GIVEN BOX waits k*STAGGER so the boxes
-    # come up smoothly, but the groups start in PARALLEL (a bot on qwen_a does not
-    # wait behind bots on qwen_b). This is what makes the endpoints act as
-    # independent groups rather than one globally-serialized launch queue.
+    # STAGGER: the k-th bot on a given actor endpoint waits k*STAGGER so the box comes
+    # up smoothly instead of taking 20 simultaneous cycle-1 calls. All bots now share
+    # the one actor box (V100 coder), so this is a single staggered ramp.
     _group_index = {}
     threads = []
     for bot_cfg in bots:

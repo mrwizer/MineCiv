@@ -2,8 +2,8 @@
   {
     "text": "Always ensure generated code is syntactically complete and valid before execution to prevent parse errors.",
     "from_task": "Move to the shelter site at (-117, 68, -89) and clear any blocks in the immediat",
-    "weight": 25,
-    "last_seen": "2026-07-20 17:25"
+    "weight": 27,
+    "last_seen": "2026-07-20 18:42"
   },
   {
     "text": "Verify block existence at the target location before placement; handle existing blocks or invalid states explicitly.",

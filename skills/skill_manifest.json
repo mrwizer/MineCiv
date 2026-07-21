@@ -324,7 +324,7 @@
     ],
     "file": "deposit_or_gather.js",
     "uses": 0,
-    "fails": 1,
+    "fails": 2,
     "revisions": 1,
     "retired": false,
     "sig": [
@@ -366,7 +366,7 @@
       "waypoint"
     ],
     "file": "navigate_to_landmark.js",
-    "uses": 239,
+    "uses": 246,
     "fails": 0,
     "revisions": 1,
     "retired": false,
@@ -435,7 +435,7 @@
     ],
     "file": "farm_cobblestone_hoe.js",
     "uses": 0,
-    "fails": 3,
+    "fails": 4,
     "revisions": 0,
     "retired": false,
     "sig": [
@@ -666,5 +666,27 @@
       "supply"
     ],
     "created": "2026-07-20 16:53:13"
+  },
+  "deposit_or_gather_materials": {
+    "description": "Checks inventory and deposits cobblestone and coal in a chest if available; otherwise, gathers them or logs if necessary.",
+    "keywords": [
+      "deposit",
+      "gather",
+      "cobblestone",
+      "coal",
+      "chest"
+    ],
+    "file": "deposit_or_gather_materials.js",
+    "uses": 0,
+    "fails": 0,
+    "revisions": 0,
+    "retired": false,
+    "sig": [
+      "deposit",
+      "gather",
+      "material",
+      "or"
+    ],
+    "created": "2026-07-20 19:16:04"
   }
 }
